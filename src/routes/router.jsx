@@ -43,9 +43,9 @@ const router = createBrowserRouter([
       { path: "scheduledServices", element: <ScheduledServices/> },
       { path: "searchservices", element: <SearchServices /> },
       { path: "/completedservices/:project_id",element: <CompletedServices />},
-      { path: "/servicedetails/", element: <ServiceDetail /> },
+      { path: "/servicedetails/:service_id", element: <ServiceDetail /> },
       { path: "/dcDetails", element: <DCDetails /> },
-      { path: "/servicedetails2/:service_id?", element: <ServiceDetails2 /> },
+      { path: "/serviceworkdetails/:service_id", element: <ServiceDetails2 /> },
     {path:"*",element:<div>404 not found</div>}
     ],
   },
