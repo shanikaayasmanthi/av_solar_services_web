@@ -23,8 +23,8 @@ const Sidebar = () => {
     activeRoutes: [
       "/solarproject",
       "/projectDetails",
-      "/newprojectcustomerdetail",
-      "/newprojectdetails",
+      "/CustomerDetails",
+      "/openProject",
     ],
   },
   {

@@ -8,6 +8,8 @@ import Dashboard from "../pages/Dashboard";
 import ProjectDetails from "../pages/ProjectDetails";
 import React from 'react';
 import SolarProjects from "../pages/SolarProjects";
+import NewProjectCustomerDetails from "../pages/NewProjectCustomerDetails";
+import NewProjectOpen from "../pages/NewProjectOpen";
 
 const router = createBrowserRouter([
     {
@@ -33,6 +35,8 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard/> },
       { path: "solarProjects", element:<SolarProjects/> },
       { path: "projectDetails/:id", element: <ProjectDetails/> },
+      {path: "CustomerDetails", element: <NewProjectCustomerDetails/>},
+      {path: "openProject", element: <NewProjectOpen/>},
     {path:"*",element:<div>404 not found</div>}
     ],
   },
