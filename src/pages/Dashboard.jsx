@@ -22,7 +22,7 @@ export default function Dashboard() {
         },
       }
     )
-    console.log(response.data);
+    // console.log(response.data);
     if(response.data.status ==='Request was successful.'){
       setProjectCount(response.data.data.project_count);
       
@@ -46,7 +46,7 @@ export default function Dashboard() {
         },
       }
       )
-      console.log(response.data);
+      // console.log(response.data);
     if(response.data.status ==='Request was successful.'){
       setFirstServiceCount(response.data.data.first_service_count);
       setSecondServiceCount(response.data.data.second_service_count);

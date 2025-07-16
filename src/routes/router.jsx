@@ -8,6 +8,8 @@ import Dashboard from "../pages/Dashboard";
 import ProjectDetails from "../pages/ProjectDetails";
 import React from 'react';
 import SolarProjects from "../pages/SolarProjects";
+import NewProjectCustomerDetails from "../pages/NewProjectCustomerDetails";
+import NewProjectOpen from "../pages/NewProjectOpen";
 import ScheduledServices from "../pages/scheduledServices";
 import SearchServices from '../pages/SearchServices';
 import CompletedServices from '../pages/CompletedServices';
@@ -46,6 +48,8 @@ const router = createBrowserRouter([
       { path: "/servicedetails/:service_id", element: <ServiceDetail /> },
       { path: "/dcDetails", element: <DCDetails /> },
       { path: "/serviceworkdetails/:service_id", element: <ServiceDetails2 /> },
+      {path: "CustomerDetails", element: <NewProjectCustomerDetails/>},
+      {path: "openProject", element: <NewProjectOpen/>},
     {path:"*",element:<div>404 not found</div>}
     ],
   },

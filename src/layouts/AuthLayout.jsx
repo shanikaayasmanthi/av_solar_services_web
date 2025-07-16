@@ -8,7 +8,7 @@ export default function AuthLayout() {
     <div>
       <Header/>
       <Sidebar/>
-      <div className='mt-[85px] ml-[90px] p-9'>
+      <div className='mt-[85px] md:ml-[90px] p-9 ml-[40px]'>
         <Outlet/>
       </div>
       
