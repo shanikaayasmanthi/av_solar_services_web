@@ -30,9 +30,9 @@ const Sidebar = () => {
   {
     id: "services",
     icon: MiscellaneousServicesIcon,
-    onClickPath: "/scheduledservices",
+    onClickPath: "/scheduledServices",
     activeRoutes: [
-      "/scheduledservices",
+      "/scheduledServices",
       "/Searchservices",
       "/completedservices",
       "/servicedetails",
