@@ -22,11 +22,16 @@ const OutdoorWork = ({ serviceId }) => {
           }
         );
 
-        if (response.data && response.data.data) {
-          setOutdoorData(response.data.data);
-        } else {
-          setError('Outdoor work data not available');
-        }
+       const { data } = response;
+
+      if (data.status === 'success' && data.data) {
+        setOutdoorData(data.data);
+      } else if (data.status === 'no_data') {
+        setError(data.message || 'Outdoor work details not found for this service');
+      } else {
+        setError('Outdoor work data not available');
+      }
+
       } catch (err) {
         console.error('Error fetching outdoor work data:', err);
         setError('Failed to load outdoor work details');

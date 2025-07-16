@@ -1,7 +1,7 @@
 import React, {useEffect, useState } from 'react';
 import ImageIcon from '@mui/icons-material/Image';
 import RoofWork from '../components/RoofWork';
-import { useParams,useLocation } from 'react-router-dom';
+import { useParams,useLocation,useNavigate } from 'react-router-dom';
 import OutdoorWork from '../components/OutdoorWork';
 import MainPanelWork from '../components/MainPanelWork';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,6 +10,7 @@ import axios from 'axios';
 const ServiceDetails2 = () => {
   const location = useLocation();
   const { service_id } = useParams();
+  const navigate = useNavigate();
   //const serviceId = location.state?.serviceId;
   const projectId = location.state?.project_id;
   const projectNo = location.state?.project_no || 'Unknown';
@@ -92,6 +93,15 @@ const ServiceDetails2 = () => {
             <p className="text-gray-600 italic">No technicians assigned.</p>
           )}
         </div>
+        <div className="flex justify-end mt-5">
+  <button
+    onClick={() => navigate(-1)}
+    className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105"
+  >
+    Previous
+  </button>
+</div>
+
       </div>
     </div>
   );

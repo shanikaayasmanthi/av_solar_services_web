@@ -8,6 +8,8 @@ import { useAuth } from "../contexts/AuthContext";
 const ScheduledServices = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,18 +22,27 @@ const ScheduledServices = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/services/scheduled', {
+        const response = await axios.get(`http://127.0.0.1:8000/api/services/scheduled?page=${currentPage}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json"
           }
         });
 
-        if (response.data?.data?.services) {
-          setServices(response.data.data.services);
-        } else {
-          setError('Invalid data format received');
-        }
+        if (response.data?.data?.services?.data) {
+  setServices(response.data.data.services.data);
+  setTotalPages(response.data.data.services.last_page);
+  setCurrentPage(response.data.data.services.current_page);
+} else {
+  setError('Invalid data format received');
+}
+
+
+        // if (response.data?.data?.services) {
+        //   setServices(response.data.data.services);
+        // } else {
+        //   setError('Invalid data format received');
+        // }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,7 +51,7 @@ const ScheduledServices = () => {
     };
 
     fetchServices();
-  }, [token]);
+  }, [token, currentPage]);
 
   if (loading) return (
     <div className="text-center p-6 bg-white rounded-lg shadow-sm">
@@ -81,6 +92,23 @@ const ScheduledServices = () => {
           ))}
         </div>
       </div>
+          <div className="flex justify-end mt-6">
+      <button
+        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+        className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+      >
+        Previous
+      </button>
+      <span className="px-4 py-2 font-semibold">{currentPage} / {totalPages}</span>
+      <button
+        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+        disabled={currentPage === totalPages}
+        className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
     </div>
   );
 };
@@ -98,7 +126,8 @@ const ServiceBox = ({ service }) => {
     return number + 'th';
   };
 
-  return (
+return (
+  <div>
     <div className="min-w-[200px] p-5 bg-white rounded-xl md:w-[350px] md:h-[200px] shadow-md hover:shadow-lg transition-shadow duration-300 border border-[2px] hover:border-gray-400 hover:scale-105 border-gray-250">
       <p className="text-base font-semibold text-teal-600">Project No. {service.project_no || 'N/A'}</p>
       <p className="text-sm font-medium text-gray-700">{service.customer_name || 'No customer'}</p>
@@ -115,7 +144,9 @@ const ServiceBox = ({ service }) => {
         <p className="text-sm text-gray-500 ml-4">No supervisors assigned</p>
       )}
     </div>
-  );
+
+  </div>
+);
 };
 
 export default ScheduledServices;

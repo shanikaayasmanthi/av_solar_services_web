@@ -22,11 +22,16 @@ const MainPanelWork = ({ serviceId }) => {
           }
         );
 
-        if (response.data && response.data.data) {
-          setMainPanelData(response.data.data);
+        const { data } = response;
+
+        if (data.status === 'success' && data.data) {
+          setMainPanelData(data.data);
+        } else if (data.status === 'no_data') {
+          setError(data.message || 'Main panel work details not found for this service');
         } else {
           setError('Main panel work data not available');
         }
+
       } catch (err) {
         console.error('Error fetching main panel work data:', err);
         setError('Failed to load main panel work details');

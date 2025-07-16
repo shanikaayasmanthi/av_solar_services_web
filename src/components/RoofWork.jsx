@@ -27,7 +27,7 @@ const RoofWork = ({ serviceId }) => {
       if (data.status === 'success' && data.data) {
         setRoofData(data.data);
       } else if (data.status === 'no_data') {
-        setError(data.message || 'Roof work data not found');
+        setError(data.message || 'Roof work data not found for this service');
       } else {
         setError('Roof work data not available');
       }

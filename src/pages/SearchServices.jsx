@@ -7,28 +7,33 @@ import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 
 const SearchServices = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [projects, setProjects] = useState([]);
   const { token } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/projects/completed', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
-        setProjects(response.data.data.projects);
-      } catch (error) {
-        console.error('Error fetching completed services:', error);
-      }
-    };
+    const fetchProjects = async (page = 1) => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/projects/completed?page=${page}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+    setProjects(response.data.data.projects.data); // paginated data
+    setTotalPages(response.data.data.projects.last_page);
+    setCurrentPage(response.data.data.projects.current_page);
+  } catch (error) {
+    console.error('Error fetching completed services:', error);
+  }
+};
 
-    fetchProjects();
-  }, [token]);
+
+    fetchProjects( currentPage);
+  }, [token, currentPage]);
 
   const handleDetailsClick = (project) => {
     navigate(`/completedservices/${project.project_id}`, {
@@ -73,6 +78,24 @@ const SearchServices = () => {
             <ProjectCard filteredProjects={filteredProjects} handleDetailsClick={handleDetailsClick} />
           )}
         </div>
+        <div className="flex justify-end mt-6">
+  <button
+    onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+    disabled={currentPage === 1}
+    className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+  >
+    Previous
+  </button>
+  <span className="px-4 py-2">{currentPage} / {totalPages}</span>
+  <button
+    onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+    disabled={currentPage === totalPages}
+    className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+  >
+    Next
+  </button>
+</div>
+
       </div>
     </div>
   );
