@@ -23,16 +23,16 @@ const Sidebar = () => {
     activeRoutes: [
       "/solarproject",
       "/projectDetails",
-      "/newprojectcustomerdetail",
-      "/newprojectdetails",
+      "/CustomerDetails",
+      "/openProject",
     ],
   },
   {
     id: "services",
     icon: MiscellaneousServicesIcon,
-    onClickPath: "/scheduledservices",
+    onClickPath: "/scheduledServices",
     activeRoutes: [
-      "/scheduledservices",
+      "/scheduledServices",
       "/Searchservices",
       "/completedservices",
       "/servicedetails",

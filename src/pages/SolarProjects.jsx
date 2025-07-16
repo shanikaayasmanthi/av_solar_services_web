@@ -3,6 +3,7 @@ import Pagination from 'react-js-pagination';
 import SolarProjectRow from '../components/SolarProjectRow';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import AddModel from '../components/AddModel';
 
 export default function SolarProjects() {
     const [activeTab, setActiveTab] = useState('All');
@@ -11,6 +12,8 @@ export default function SolarProjects() {
     const [itemsPerPage, setItemsPerPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const { token } = useAuth(); // Destructuring token from useAuth
+    const [showAddModel, setShowAddModel] = useState(false);
+    const [ searchQuery, setSearchQuery ] = useState("");
 
     // Function to fetch projects
     const fetchProjects = async (pageNumber = 1, tab = activeTab) => {
@@ -28,7 +31,8 @@ export default function SolarProjects() {
                 },
                 params: { 
                     page: pageNumber,
-                    type: tab === 'All' ? '' : tab 
+                    type: tab === 'All' ? '' : tab,
+                    query:searchQuery, 
                 }
             }
         );
@@ -69,7 +73,7 @@ export default function SolarProjects() {
         if (token) {
             fetchProjects(currentPage);
         }
-    }, [currentPage, token,activeTab]); 
+    }, [currentPage, token,activeTab, searchQuery]); 
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -114,6 +118,7 @@ export default function SolarProjects() {
                     <div className="flex items-center space-x-3">
                         <div className="relative">
                             <input
+                            onChange={(e) => setSearchQuery(e.target.value)}
                                 type="text"
                                 placeholder="Search"
                                 className="w-64 px-4 py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
@@ -133,7 +138,9 @@ export default function SolarProjects() {
                                 ></path>
                             </svg>
                         </div>
-                        <button className="flex items-center justify-center w-10 h-10 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+                        <div className="relative">
+                            <button className="flex items-center justify-center w-10 h-10 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                        onClick={()=>{setShowAddModel(true)}}>
                             <svg
                                 className="w-6 h-6"
                                 fill="none"
@@ -144,6 +151,10 @@ export default function SolarProjects() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
                         </button>
+                        {showAddModel && (
+                            <AddModel show={showAddModel} onClose={() => setShowAddModel(false)} />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

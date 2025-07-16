@@ -4,19 +4,64 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import axios from "axios";
 
 const Header = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user,token, logout } = useAuth();
 
   const handleClick = () => {
     navigate("/dueservice");
   };
 
-  const handleLogout = () => {
-    logout();
+  const logoutUser = async () => {
+  // console.log("Token from AuthContext:", token);
+
+  try {
+    const response = await axios.post(
+      'http://127.0.0.1:8000/api/logout',
+      {},
+      {  
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    console.log("Logout Response Data:", response.data);
+
+    if (response.data.status === "Request was successful.") {
+      console.log("Logout successful");
+      return true;
+    } else {
+      console.warn("Logout successful, but unexpected status:", response.data.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error logging out:", error);
+    if (error.response) {
+      console.error("Server responded with:", error.response.status, error.response.data);
+      if (error.response.status === 401) {
+        console.error("Authentication failed: Token invalid or missing from header.");
+      }
+    } else if (error.request) {
+      console.error("No response received from server. Network issue or CORS preflight failure.");
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    return false;
+  }
+};
+  const handleLogout = async() => {
+    const logoutResponse = await logoutUser();
+    if(logoutResponse==true){
+      logout();
     navigate("/");
+    }
+    
   };
 
   return (
