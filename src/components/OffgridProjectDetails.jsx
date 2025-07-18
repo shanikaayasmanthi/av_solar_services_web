@@ -139,7 +139,7 @@ export default function OffgridProjectDataCard({project, offGrid}) {
       </div>
 
       {showSolarPanelModal && (
-        <SolarPanelDetailsModel show={showSolarPanelModal} onClose={()=>setShowSolarPanelModal(false)} projectId={project.id} panelCapacity={project.panel_capacity}/>
+        <SolarPanelDetailsModel show={showSolarPanelModal} onClose={()=>setShowSolarPanelModal(false)} projectId={project.id} panelCapacity={project.panel_capacity} noOfPanels={project?.no_of_panels}/>
       )}
       {showInverterModal && (
         <InverterDetailsModel show={showInverterModal} onClose={()=>setShowInverterModal(false)} projectId={project.id}/>

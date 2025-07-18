@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import SelectSolarPanelChangesModel from './SelectSolarPanelChangesModel';
 
 
-const SolarPanelDetailsModel = ({show,onClose , projectId,panelCapacity}) => {
+const SolarPanelDetailsModel = ({show,onClose , projectId,panelCapacity,noOfPanels}) => {
 
   if (!show) {
     return null;
@@ -13,8 +14,8 @@ const SolarPanelDetailsModel = ({show,onClose , projectId,panelCapacity}) => {
   const [loadingData, setLoadingData] = useState(true);
   const [solarPanelData, setSolarPanelData] = useState([]);
   const [error, setError] = useState(null);
-
-  const fetchSolarPanelData = async () => {
+  const [showModal, setShowModal] = useState(false);
+  const fetchSolarPanelData = useCallback(async () => {
     try{
         const response = await axios.get('http://127.0.0.1:8000/api/get-solar-panel',
             {
@@ -48,11 +49,15 @@ const SolarPanelDetailsModel = ({show,onClose , projectId,panelCapacity}) => {
         setError("An error occurred while fetching solar panel data.");
         setLoadingData(false);
     }
-  }
+  },[token, projectId]);
 
   useEffect(()=>{
     fetchSolarPanelData();
-  },[projectId])
+  },[fetchSolarPanelData])
+
+  const getSolarPanelCount = ()=>{
+    return solarPanelData.reduce((total, panel) => total + panel.no_of_panels, 0);
+  }
   
   return (
     <div
@@ -117,17 +122,17 @@ const SolarPanelDetailsModel = ({show,onClose , projectId,panelCapacity}) => {
         <div className="flex justify-end sm:justify-center">
           {/* Button */}
           <button
-            className="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-full cursor-pointer transition-colors duration-300 hover:bg-[#007b6b]
-                       w-auto sm:w-1/4 sm:px-3 sm:py-2"
+            className="bg-[#00a68b] text-white border-none px-1 py-1 rounded-xl cursor-pointer transition-colors duration-300 hover:bg-[#007b6b]
+                       w-auto sm:w-1/4 sm:px-1 sm:py-1.5"
             onClick={() => setShowModal(true)}
           >
             Changes on panels
           </button>
         </div>
-
-        {/* Nested Modal */}
-        {/* <SelectChanges show={showModal} onClose={() => setShowModal(false)} /> */}
       </div>
+      {showModal && (
+      <SelectSolarPanelChangesModel show={showModal} onClose={()=>{setShowModal(false)}} projectId={projectId} onPanelsUpdated={fetchSolarPanelData} solarPanels={getSolarPanelCount()<noOfPanels?true:false}/>
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext.jsx"; // Ensure this path is correct
 
@@ -8,6 +8,7 @@ const NewProjectOpen = () => {
   const location = useLocation();
   // Ensure customer_id is correctly extracted from location.state.customer.id
   const customer_id = location.state?.customerId||null;
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     project_name:"",
@@ -54,7 +55,9 @@ const NewProjectOpen = () => {
         }
       );
 
-      console.log("Project created:", response.data);
+      //need to handle the response
+      if(response.status === 200) {
+        console.log("Project created:", response.data);
       alert("Project opened successfully!");
       // Optionally, navigate to another page or clear form
       setFormData({ // Clear form after successful submission
@@ -70,6 +73,12 @@ const NewProjectOpen = () => {
         customer_id: customer_id || "",
         project_no:null,
       });
+      navigate("/solarProjects"); 
+      }else{
+        console.error("Failed to open project:", response.data);
+        alert("Failed to open project. Please try again.");
+      }
+      
 
     } catch (error) {
       console.error(
