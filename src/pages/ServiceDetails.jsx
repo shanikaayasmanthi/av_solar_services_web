@@ -6,6 +6,8 @@ import ACDetails from '../components/ACDetails';
 import axios from 'axios';
 import { useAuth } from "../contexts/AuthContext";
 
+
+
 const ServiceDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -127,12 +129,12 @@ const ServiceDetail = () => {
 
       {/* System Information Cards */}
       <div className="mb-10">
-        <h3 className="text-lg font-semibold text-gray-800 mb-8">System Information</h3>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-10 mb-6">
+        <h2 className="text-lg font-semibold mb-5 text-gray-800">System Information</h2>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-6">
           {[
             { label: "System Capacity", value: locationData.system_capacity ? `${locationData.system_capacity} kW` : 'Loading...' },
-            { label: "Inverter Capacity", value: "10 kW" },
+            // { label: "Inverter Capacity", value: "10 kW" },
             { label: "Power", value: power ? `${power} kW` : 'Loading...' },
             { label: "Time", value: powerTime ? `${formatTime(powerTime)}` : 'Loading...' }
           ].map((item, idx) => (
@@ -141,17 +143,8 @@ const ServiceDetail = () => {
               <p className="text-md font-semibold mt-1">{item.value}</p>
             </div>
           ))}
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-10 mb-6">
-          <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-300 hover:scale-105 transition-transform duration-200">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Inverter Serial No.</p>
-            <p className="text-md font-semibold mt-1">0902KDI7932750D</p>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-300 space-between hover:scale-105 transition-transform duration-200">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Inverter C/C</p>
-            <p className="text-md font-semibold mt-1">065289</p>
-          </div>
+        
+          
           <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-300 hover:scale-105 transition-transform duration-200">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Longitude</p>
             <p className="text-md font-semibold mt-1">{locationData.longitude || 'Loading...'}</p>
@@ -161,6 +154,9 @@ const ServiceDetail = () => {
             <p className="text-md font-semibold mt-1">{locationData.latitude || 'Loading...'}</p>
           </div>
         </div>
+
+        {/* <h2 className="text-lg font-semibold mb-5 text-gray-800">Inverter Details</h2> */}
+
       </div>
 
       {/* DC Table */}
@@ -191,3 +187,12 @@ const ServiceDetail = () => {
 };
 
 export default ServiceDetail;
+
+{/* <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-300 hover:scale-105 transition-transform duration-200">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Inverter Serial No.</p>
+            <p className="text-md font-semibold mt-1">0902KDI7932750D</p>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm p-3 border border-gray-300 space-between hover:scale-105 transition-transform duration-200">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Inverter C/C</p>
+            <p className="text-md font-semibold mt-1">065289</p>
+          </div> */}
