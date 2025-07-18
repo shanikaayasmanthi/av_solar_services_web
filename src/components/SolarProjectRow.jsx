@@ -28,10 +28,15 @@ const SolarProjectRow = ({project}) => {
       "
       onClick={() => handleOnClick(project.id)}
     >
-      {/* Project ID */}
-      <span className="mb-1 text-base font-bold text-gray-800 md:text-lg md:mb-0">#{project.type=='ongrid'?project.on_grid.on_grid_project_id:project.off_grid_hybrid
-.off_grid_hybrid_project_id
-}</span>
+        {/* Project ID */}
+      <span 
+        className="mb-1 text-base font-bold text-gray-800 md:text-lg md:mb-0">
+        #{
+          project.type === 'ongrid'
+            ? project.on_grid?.on_grid_project_id ?? "-"
+            : project.off_grid_hybrid?.off_grid_hybrid_project_id ?? "-"
+        }
+      </span>
 
       {/* Customer Name */}
       <span className="mb-1 text-base text-center text-gray-900 truncate md:text-lg md:mb-0 md:text-left">
