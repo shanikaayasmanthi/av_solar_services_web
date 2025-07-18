@@ -22,11 +22,16 @@ const RoofWork = ({ serviceId }) => {
           }
         );
 
-        if (response.data && response.data.data) {
-          setRoofData(response.data.data);
-        } else {
-          setError('Roof work data not available');
-        }
+        const { data } = response;
+
+      if (data.status === 'success' && data.data) {
+        setRoofData(data.data);
+      } else if (data.status === 'no_data') {
+        setError(data.message || 'Roof work data not found for this service');
+      } else {
+        setError('Roof work data not available');
+      }
+
       } catch (err) {
         console.error('Error fetching roof work data:', err);
         setError('Failed to load roof work details');
@@ -60,14 +65,14 @@ const RoofWork = ({ serviceId }) => {
 
   return (
     <div className="mt-6 w-full overflow-x-auto">
-      <h2 className="text-lg font-semibold mb-2 text-gray-800">Roof Work</h2>
-      <div className="min-w-[700px]">
-        <table className="w-full border-collapse text-sm shadow-md rounded overflow-hidden">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">Roof Work</h2>
+      <div className="md:min-w-[600px] flex justify-center">
+        <table className="w-[95%] border-collapse text-sm shadow-md rounded overflow-hidden">
           <thead>
             <tr className="bg-gray-100 text-gray-700">
-              <th className="border px-4 py-2 text-left">Activity</th>
-              <th className="border px-4 py-2 text-left">Reading</th>
-              <th className="border px-4 py-2 text-left">Comments</th>
+            <th className="border p-3 text-left w-[40%]">Activity</th>
+            <th className="border p-3 text-left w-[20%]">Reading</th>
+            <th className="border p-3 text-left w-[40%]">Comments</th>
             </tr>
           </thead>
           <tbody>
