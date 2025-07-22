@@ -5,6 +5,7 @@ import DatasetIcon from "@mui/icons-material/Dataset";
 import GroupsIcon from "@mui/icons-material/Groups";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import FaxIcon from "@mui/icons-material/Fax";
+import { Upcoming } from "@mui/icons-material";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -45,6 +46,12 @@ const Sidebar = () => {
     onClickPath: "/users",
     activeRoutes: ["/users", "/addusers"],
   },
+  {
+    id:"upcoming",
+    icon: Upcoming,
+    onClickPath: "/upcoming",
+    activeRoutes: ["/upcoming"],
+  }
 ];
 
   return (
