@@ -54,7 +54,7 @@ const CompletedServices = () => {
     }
     console.log("Navigating with service:", service);
 
-    navigate(`/servicedetails/${service.service_id}`, {
+    navigate(`/servicedetails/${service.service_id}/${service.project_id}`, {
       state: {
         serviceId: service.service_id,
         project_id: service.project_id,

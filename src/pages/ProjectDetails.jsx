@@ -34,6 +34,8 @@ const ProjectDetails = () => {
           }
         }
         );
+
+        console.log("project id", projectId);
         // console.log(projectResponse.data);
         if(projectResponse.data.status === "Request was successful."){
             const projectResponseData = projectResponse.data.data;
@@ -123,11 +125,18 @@ const ProjectDetails = () => {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2.5">
           {!summaryLoading && servicesSummary.length > 0 ? (
-            servicesSummary.map((service, index) => (
-              <>
-                <ServiceSummaryCard  service={service} key={index} onClick />
-              </>
-            ))
+               servicesSummary.map((service) => (
+                                            <ServiceSummaryCard 
+                                                key={service.service_id} 
+                                                service={service}
+                                                project_id={projectId}
+                                                project_no={project.type === 'ongrid' ? onGrid.on_grid_project_id : offGrid.off_grid_hybrid_project_id}
+                                                customer_name={project.customer_name?.name}
+                                                nearest_town={project.nearest_town}
+                                                power={service.power}
+                                                power_time={service.power_time}
+                                            />
+                                        ))
           ):(<div>
             {summeryError ? (
               <p className="text-red-500">{summeryError}</p>
