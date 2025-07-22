@@ -14,6 +14,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
   };
   const { token } = useAuth();
   const [nextServiceRound, setNextServiceRound] = useState(0);
+  const [serviceType, setServiceType] = useState("");
   const [assigner, setAssigner] = useState("");
   const [assignerId, setAssignerId] = useState(0);
   const [date, setDate] = useState(formatDate(new Date()));
@@ -42,9 +43,12 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           },
         }
       );
+      console.log(response.data);
+      
       if (response.status === 200) {
         const responseData = response.data.data;
         setNextServiceRound(responseData.next_service_round);
+        setServiceType(responseData.service_type);
       } else {
         console.log("No service rounds found for this project.");
         // return 0;
@@ -61,7 +65,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           error.response.data.message === "Already have a service to complete"
         ) {
           setNextServiceRound(0);
-          setServiceRoundError("Already have a service to complete");
+          // setServiceRoundError("Already have a service to complete");
         }
       }
       // console.error("Error getting next service round:", error);
@@ -104,6 +108,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
         {
           project_id: projectId,
           service_round: nextServiceRound,
+          service_type: serviceType,
           supervisor_id: assignerId,
           service_date: date,
         },
@@ -241,11 +246,11 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
             <div className="flex flex-row flex-wrap items-center justify-between round">
               <span className="mb-1 text-sm">Service round</span>{" "}
               <div>
-                <input
+                  <input
                   name="round"
                   type="text"
                   placeholder="Service round"
-                  value={nextServiceRound}
+                  value={nextServiceRound!=0?`${nextServiceRound}  (${serviceType})`:"Already scheduled service"}
                   onChange={(v) => {
                     setNextServiceRound(v.target.value);
                     setServiceRoundError("");

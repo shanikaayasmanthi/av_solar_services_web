@@ -179,7 +179,7 @@ export default function SolarProjects() {
 
             {/* Pagination Controls */}
                {totalItems > itemsPerPage && (
-    <div className="absolute flex justify-end mt-6 bottom-20 right-20 ">
+    <div className="flex justify-end mt-6  right-20">
         <Pagination
             activePage={currentPage}
             itemsCountPerPage={itemsPerPage}

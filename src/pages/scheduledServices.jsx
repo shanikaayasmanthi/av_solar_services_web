@@ -8,6 +8,8 @@ import { useAuth } from "../contexts/AuthContext";
 const ScheduledServices = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,18 +22,27 @@ const ScheduledServices = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/services/scheduled', {
+        const response = await axios.get(`http://127.0.0.1:8000/api/services/scheduled?page=${currentPage}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json"
           }
         });
 
-        if (response.data?.data?.services) {
-          setServices(response.data.data.services);
-        } else {
-          setError('Invalid data format received');
-        }
+        if (response.data?.data?.services?.data) {
+  setServices(response.data.data.services.data);
+  setTotalPages(response.data.data.services.last_page);
+  setCurrentPage(response.data.data.services.current_page);
+} else {
+  setError('Invalid data format received');
+}
+
+
+        // if (response.data?.data?.services) {
+        //   setServices(response.data.data.services);
+        // } else {
+        //   setError('Invalid data format received');
+        // }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,35 +51,64 @@ const ScheduledServices = () => {
     };
 
     fetchServices();
-  }, [token]);
+  }, [token, currentPage]);
 
-  if (loading) return <div className="text-center text-lg font-semibold">Loading services...</div>;
-  if (error) return <div className="text-red-500 text-center">Error: {error}</div>;
-  if (services.length === 0) return <div className="text-center">No scheduled services found</div>;
+  if (loading) return (
+    <div className="p-6 text-center bg-white rounded-lg shadow-sm">
+      <div className="text-lg font-semibold text-teal-600 animate-pulse">Loading services...</div>
+    </div>
+  );
+  if (error) return (
+    <div className="p-6 font-semibold text-center text-red-500 bg-white rounded-lg shadow-sm">
+      Error: {error}
+    </div>
+  );
+  if (services.length === 0) return (
+    <div className="p-6 font-semibold text-center text-gray-600 bg-white rounded-lg shadow-sm">
+      No scheduled services found
+    </div>
+  );
 
   return (
-    <div className="relative">
-      <h1 className="mb-6 text-3xl font-bold">Services</h1>
-      <h2 className="mt-4 ml-[18%] text-[22px] font-semibold text-black">
-        Scheduled Services
-      </h2>
+    <div className="relative mx-auto">
+      
+        <h1 className="mb-5 text-3xl font-bold text-gray-800">Services</h1>
+        <h2 className="text-2xl font-semibold text-gray-700">Scheduled Services</h2>
 
-      <div className="absolute top-0 right-10 flex gap-4 mt-2">
-        {/* <div className="rounded-xl p-2 bg-teal-500 text-white cursor-pointer">
+
+      <div className="absolute flex gap-4 top-4 right-6">
+        {/* <div className="p-3 text-white transition-colors duration-200 bg-teal-500 rounded-full shadow-md cursor-pointer hover:bg-teal-600">
           <AssignmentLateOutlinedIcon fontSize="large" />
         </div> */}
-        <div className="rounded-xl p-2 bg-teal-500 text-white cursor-pointer" onClick={handleDetailsClick}>
-          <AssignmentTurnedInOutlinedIcon fontSize="large" />
+        <div className="text-white transition-colors duration-200 bg-teal-500 rounded-md shadow-md cursor-pointer md:p-2 hover:bg-teal-600 hover:scale-110" onClick={handleDetailsClick}>
+          <AssignmentTurnedInOutlinedIcon fontSize="medium" />
         </div>
       </div>
 
-      <div className="mt-10 ml-[10%] flex flex-col gap-6">
-        <div className="flex flex-wrap gap-6">
+      <div className="flex flex-col gap-6 mt-8">
+        <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
           {services.map((service, index) => (
             <ServiceBox key={service.service_id || index} service={service} />
           ))}
         </div>
       </div>
+          <div className="flex justify-end mt-6 ">
+      <button
+        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+        className="px-3 py-1 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
+      >
+        Previous
+      </button>
+      <span className="px-2 py-2 font-semibold">{currentPage} / {totalPages}</span>
+      <button
+        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+        disabled={currentPage === totalPages}
+        className="px-2 py-2 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
     </div>
   );
 };
@@ -86,24 +126,27 @@ const ServiceBox = ({ service }) => {
     return number + 'th';
   };
 
-  return (
-    <div className="p-4 bg-gray-200 rounded-xl w-[300px] h-[200px] shadow">
-      <p className="text-sm font-semibold">Project No. {service.project_no || 'N/A'}</p>
-      <p className="text-sm">{service.customer_name || 'No customer'}</p>
-      <p className="text-sm">
+return (
+  <div>
+    <div className="min-w-[200px] p-5 bg-white rounded-xl md:w-[350px] md:h-[200px] shadow-md hover:shadow-lg transition-shadow duration-300 border-[2px] hover:border-gray-400 hover:scale-105 border-gray-250">
+      <p className="text-base font-semibold text-teal-600">Project No. {service.project_no || 'N/A'}</p>
+      <p className="text-sm font-medium text-gray-700">{service.customer_name || 'No customer'}</p>
+      <p className="text-sm text-gray-600">
         {service.service_round ? `${getOrdinalSuffix(service.service_round)} service round` : 'Service round not specified'}
       </p>
-      <p className="text-sm">{displayDate}{displayTime}</p>
-      <p className="text-sm mt-2">Assigners:</p>
+      <p className="text-sm text-gray-600">{displayDate}{displayTime}</p>
+      <p className="mt-2 text-sm font-medium text-gray-700">Assigners:</p>
       {service.supervisors && service.supervisors.length > 0 ? (
         service.supervisors.map((sup, i) => (
-          <p key={i} className="text-sm ml-4">{sup}</p>
+          <p key={i} className="ml-4 text-sm text-gray-600">{sup}</p>
         ))
       ) : (
-        <p className="text-sm ml-4">No supervisors assigned</p>
+        <p className="ml-4 text-sm text-gray-500">No supervisors assigned</p>
       )}
     </div>
-  );
+
+  </div>
+);
 };
 
 export default ScheduledServices;

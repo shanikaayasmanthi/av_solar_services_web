@@ -16,6 +16,8 @@ import CompletedServices from '../pages/CompletedServices';
 import ServiceDetail from '../pages/ServiceDetails';
 import DCDetails from '../components/DCDetails'; 
 import ServiceDetails2 from '../pages/ServiceDetails2'; 
+import Users from "../pages/Users";
+import AddUser from "../pages/AddUsers";
 
 
 const router = createBrowserRouter([
@@ -45,11 +47,13 @@ const router = createBrowserRouter([
       { path: "scheduledServices", element: <ScheduledServices/> },
       { path: "searchservices", element: <SearchServices /> },
       { path: "/completedservices/:project_id",element: <CompletedServices />},
-      { path: "/servicedetails/", element: <ServiceDetail /> },
+      { path: "/servicedetails/:service_id", element: <ServiceDetail /> },
       { path: "/dcDetails", element: <DCDetails /> },
-      { path: "/servicedetails2/:service_id?", element: <ServiceDetails2 /> },
+      { path: "/serviceworkdetails/:service_id", element: <ServiceDetails2 /> },
       {path: "CustomerDetails", element: <NewProjectCustomerDetails/>},
       {path: "openProject", element: <NewProjectOpen/>},
+      {path: "users", element: <Users />},
+      {path: "add-user", element: <AddUser />},
     {path:"*",element:<div>404 not found</div>}
     ],
   },
