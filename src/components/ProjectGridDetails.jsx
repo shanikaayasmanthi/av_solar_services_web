@@ -32,6 +32,8 @@ useEffect(() => {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      console.log('API Response:', response.data); // Debug: Log entire API response
+
       // Find the project by ID
       const project = response.data?.data?.projects?.find(
         (p) => String(p.project_id) === String(project_id)
@@ -42,13 +44,22 @@ useEffect(() => {
         return;
       }
 
-      // Set the correct project type
-      setProjectType(project.type);
-        setPanelCapacity(project.capacity || 0); // Set panel capacity
-        setNoOfPanels(project.total_panels || 0);
+      // Debug: Log the project details we received
+      console.log('Project Details:', {
+        id: project.project_id,
+        type: project.type,
+        on_grid_project_id: project.on_grid_project_id,
+        off_grid_hybrid_project_id: project.off_grid_hybrid_project_id,
+        capacity: project.capacity,
+        total_panels: project.total_panels
+      });
 
-      // Fetch detailed data for the specific project (if needed)
-      // or keep dummy data
+      // Set the correct project type and IDs
+      setProjectType(project.type);
+      setPanelCapacity(project.capacity || 0);
+      setNoOfPanels(project.total_panels || 0);
+
+      // Set form data with project IDs
       setFormData((prev) => ({
         ...prev,
         electricityBillName: '',
@@ -56,7 +67,16 @@ useEffect(() => {
         ongridRemark: '',
         connectionType: '',
         offgridRemark: '',
+        offGridHybridProjectId: project.off_grid_hybrid_project_id || '',
+        onGridProjectId: project.on_grid_project_id || ''
       }));
+
+      // Debug: Log the form data after setting
+      console.log('Form Data After Setting:', {
+        ...formData,
+        offGridHybridProjectId: project.off_grid_hybrid_project_id || '',
+        onGridProjectId: project.on_grid_project_id || ''
+      });
     } catch (error) {
       console.error('Error fetching project details:', error);
     } finally {
@@ -66,6 +86,7 @@ useEffect(() => {
 
   fetchProjectDetails();
 }, [project_id, token]);
+
 
 
 
@@ -80,7 +101,9 @@ useEffect(() => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // 🛡️ Basic validation
+  console.log('Form Data Before Submission:', formData);
+
+  // Basic validation
   if (projectType === 'ongrid') {
     if (!formData.electricityBillName.trim()) {
       alert('Electricity Bill Name is required.');
@@ -102,16 +125,19 @@ const handleSubmit = async (e) => {
       projectType === 'ongrid'
         ? {
             project_id: project_id,
+            on_grid_project_id: String(formData.onGridProjectId), // Convert to string
             electricity_bill_name: formData.electricityBillName,
             harmonic_meter: formData.harmonicMeter,
             remarks: formData.ongridRemark,
           }
         : {
             project_id: project_id,
+            off_grid_hybrid_project_id: String(formData.offGridHybridProjectId), // Convert to string
             connection_type: formData.connectionType,
             remarks: formData.offgridRemark,
-            off_grid_hybrid_project_id: '', // Optional
           };
+
+    console.log('API Payload:', payload);
 
     const endpoint =
       projectType === 'ongrid'
@@ -124,9 +150,15 @@ const handleSubmit = async (e) => {
       },
     });
 
+    console.log('API Response:', response.data);
     alert(response.data.message || 'Project details saved successfully!');
   } catch (error) {
     console.error('Error saving project details:', error);
+    if (error.response) {
+      console.error('Error Response Data:', error.response.data);
+      console.error('Error Status:', error.response.status);
+      console.error('Error Headers:', error.response.headers);
+    }
     alert('Failed to save project details');
   }
 };
@@ -176,6 +208,8 @@ return (
                 placeholder="Enter harmonic meter details"
               />
             </div>
+
+            
 
             {/* Ongrid Remark */}
             <div className="md:col-span-2">
