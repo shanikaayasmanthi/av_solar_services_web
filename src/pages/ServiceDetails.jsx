@@ -1,4 +1,3 @@
-
 import React, {useState, useEffect} from 'react';
 import ImageIcon from '@mui/icons-material/Image';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -6,6 +5,9 @@ import DCDetails from '../components/DCDetails';
 import ACDetails from '../components/ACDetails'; 
 import axios from 'axios';
 import { useAuth } from "../contexts/AuthContext";
+import InverterDetails from '../components/InverterDetails';
+
+
 
 const ServiceDetail = () => {
   const navigate = useNavigate();
@@ -181,8 +183,8 @@ const formatTime = (dateString) => {
 
       {/* inverter details */}
       <div className="mb-10 mt-10">
-        <h2 className="text-lg font-semibold mb-5 text-gray-800">Inverter Details</h2>
-        </div>
+        <InverterDetails projectId={project_id} />
+      </div>
 
       {/* DC Table */}
       <div className="mb-10 mt-10">

@@ -75,9 +75,9 @@ const CompletedServices = () => {
     <div>
       <Header />
       <Sidebar />
-      <div className="relative px-6 py-4 ">
+      <div className="relative mx-auto">
         <div className=" mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Project No: {projectNo} - Completed Services</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-5">Project No: {projectNo} - Completed Services</h1>
           <h2 className="text-xl font-medium text-gray-600">Customer: {customerName} - {town}</h2>
         </div>
 

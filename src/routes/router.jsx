@@ -18,6 +18,9 @@ import DCDetails from '../components/DCDetails';
 import ServiceDetails2 from '../pages/ServiceDetails2'; 
 import Users from "../pages/Users";
 import AddUser from "../pages/AddUsers";
+import PendingInstallationProjects from "../pages/PendingInstallationProjects";
+import PendingInstallationProjectsDetails from "../pages/PendingInstallationProjectsDetails";
+
 
 
 const router = createBrowserRouter([
@@ -54,6 +57,8 @@ const router = createBrowserRouter([
       {path: "openProject", element: <NewProjectOpen/>},
       {path: "users", element: <Users />},
       {path: "add-user", element: <AddUser />},
+      {path: "pendingInstallationProjects", element: <PendingInstallationProjects />},
+      {path: "pendingInstallationProjectsDetails/:project_id", element: <PendingInstallationProjectsDetails />},
     {path:"*",element:<div>404 not found</div>}
     ],
   },

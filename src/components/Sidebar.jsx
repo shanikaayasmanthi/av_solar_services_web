@@ -47,10 +47,10 @@ const Sidebar = () => {
     activeRoutes: ["/users", "/addusers"],
   },
   {
-    id:"upcoming",
+    id:"pending",
     icon: Upcoming,
-    onClickPath: "/upcoming",
-    activeRoutes: ["/upcoming"],
+    onClickPath: "/pendingInstallationProjects",
+    activeRoutes: ["/pendingInstallationProjects"],
   }
 ];
 

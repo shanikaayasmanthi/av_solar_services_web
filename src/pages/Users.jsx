@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Users = () => {
   const [groupedUsers, setGroupedUsers] = useState({});
   const [selectedType, setSelectedType] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
   const usersPerPage = 9; 
 
   const { token } = useAuth();
@@ -50,32 +52,56 @@ const Users = () => {
     setCurrentPage(1); // reset page when changing type
   };
 
+  // Filter users based on search term
+  const filteredUsers = (groupedUsers[selectedType] || []).filter(user => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(searchLower) ||
+      user.email.toLowerCase().includes(searchLower)
+    );
+  });
+
   // Pagination logic
-  const selectedUsers = groupedUsers[selectedType] || [];
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = selectedUsers.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(selectedUsers.length / usersPerPage);
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   return (
-    <div className="relative px-6 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-0">User Status Overview</h1>
+    <div className="relative mx-auto">
+    
+     <h1 className="text-3xl font-bold text-gray-800 mb-0">User Status Overview</h1>
 
-      <div className="flex flex-col md:flex-row justify-end space-between mr-100 gap-4 mb-6">
-        <div className="flex flex-wrap gap-3">
-          {userTypes.map((type) => (
-            <button
-              key={type}
-              onClick={() => handleTypeChange(type)}
-              className={`px-1 py-1 rounded-md text-lg font-medium transition ${
-                selectedType === type
-                  ? 'text-teal-400'
-                  : 'text-teal-600 hover:text-teal-600'
-              }`}
-            >
-              {type}
-            </button>
-          ))}
+    <div className="flex flex-col md:flex-row justify-end items-start md:items-center gap-4  mb-6">
+
+
+      <div className="flex items-center gap-4">
+              <div className="flex flex-wrap gap-3">
+        {userTypes.map((type) => (
+          <button
+            key={type}
+            onClick={() => handleTypeChange(type)}
+            className={`px-1 py-1 rounded-md text-lg font-medium transition ${
+              selectedType === type
+                ? 'text-teal-400'
+                : 'text-teal-600 hover:text-teal-600'
+            }`}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            className="w-80 px-4 py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            <SearchIcon />
+          </div>
         </div>
 
         <div
@@ -85,6 +111,7 @@ const Users = () => {
           <AddIcon fontSize="medium" />
         </div>
       </div>
+    </div>
 
       {selectedType && groupedUsers[selectedType] && (
         <div className="mb-10">

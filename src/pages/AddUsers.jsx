@@ -87,7 +87,7 @@ const Adduser = () => {
   
 
   return (
-    <div className="relative mx-auto p-6">
+    <div className="relative mx-auto ">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">User Management</h1>
       <div className="w-full  max-w-5xl bg-white shadow-lg rounded-xl p-8 border border-gray-200 mt-10">
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Add New User</h2>
