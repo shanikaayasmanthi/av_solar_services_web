@@ -16,7 +16,9 @@ const ProjectTypeDetailsForm = () => {
     harmonicMeter: '',
     ongridRemark: '',
     connectionType: '',
-    offgridRemark: ''
+    offgridRemark: '',
+    portalUsername: '',
+    portalPassword: ''
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +30,7 @@ const ProjectTypeDetailsForm = () => {
 useEffect(() => {
   const fetchProjectDetails = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/projects/uninstalled`, {
+      const response = await axios.get(`http://127.0.0.1:8000/api/projects/non-installed`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -129,11 +131,15 @@ const handleSubmit = async (e) => {
             electricity_bill_name: formData.electricityBillName,
             harmonic_meter: formData.harmonicMeter,
             remarks: formData.ongridRemark,
+            wifi_username: formData.portalUsername,
+            wifi_password: formData.portalPassword,
           }
         : {
             project_id: project_id,
             off_grid_hybrid_project_id: String(formData.offGridHybridProjectId), // Convert to string
             connection_type: formData.connectionType,
+            wifi_username: formData.portalUsername,
+            wifi_passowrd: formData.portalPassword,
             remarks: formData.offgridRemark,
           };
 
@@ -171,7 +177,7 @@ const handleSubmit = async (e) => {
 
 return (
   <>
-    <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6 flex-1 min-w-[600px] ">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6 flex-1 min-w-[600px] max-h-[500px] overflow-y-auto">
       <h2 className="text-xl font-semibold mb-6">
         {projectType === 'ongrid' ? 'Ongrid Details' : 'Offgrid Details'}
       </h2>
@@ -209,7 +215,33 @@ return (
               />
             </div>
 
-            
+                      {/* Portal Credentials */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Portal Username
+            </label>
+            <input
+              type="text"
+              name="portalUsername"
+              value={formData.portalUsername}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Enter portal username"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Portal Password
+            </label>
+            <input
+              type="password"
+              name="portalPassword"
+              value={formData.portalPassword}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Enter portal password"
+            />
+          </div>
 
             {/* Ongrid Remark */}
             <div className="md:col-span-2">
@@ -220,7 +252,7 @@ return (
                 name="ongridRemark"
                 value={formData.ongridRemark}
                 onChange={handleChange}
-                rows={2}
+                rows={1}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder="Enter any remarks"
               />
@@ -246,8 +278,34 @@ return (
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Offgrid Fields */}
-            <div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Portal Username
+            </label>
+            <input
+              type="text"
+              name="portalUsername"
+              value={formData.portalUsername}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Enter portal username"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Portal Password
+            </label>
+            <input
+              type="password"
+              name="portalPassword"
+              value={formData.portalPassword}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Enter portal password"
+            />
+          </div>
+
+                      <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Connection Type
               </label>
@@ -258,9 +316,8 @@ return (
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="">Select connection type</option>
-                <option value="AC">AC Connection</option>
-                <option value="DC">DC Connection</option>
-                <option value="Hybrid">Hybrid Connection</option>
+                <option value="AC">Single Phase</option>
+                <option value="DC">Three Phase</option>
               </select>
             </div>
             
@@ -272,7 +329,7 @@ return (
                 name="offgridRemark"
                 value={formData.offgridRemark}
                 onChange={handleChange}
-                rows={3}
+                rows={1}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 placeholder="Enter any remarks"
               />

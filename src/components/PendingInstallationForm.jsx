@@ -9,35 +9,61 @@ const PendingInstallationForm = () => {
   const [formData, setFormData] = useState({
     longitude: '',
     latitude: '',
-    portalUsername: '',
-    portalPassword: '',
     isInstalled: false,
     installationDate: '',
     isSystemOn: false,
-    systemOnDate: ''
+    systemOnDate: '',
+    projectRemarks: ''
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProjectDetails = async () => {
+useEffect(() => {
+    const fetchInstallationDetails = async () => {
       try {
-        const response = await axios.get(`/api/projects/${project_id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setFormData(prev => ({
-          ...prev,
-          ...response.data,
-          installationDate: response.data.installationDate || '',
-          systemOnDate: response.data.systemOnDate || ''
-        }));
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/projects/${project_id}/pending-installation`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+
+        if (response.data.status === 'success') {
+          const projectData = response.data.data;
+          setFormData({
+            longitude: projectData.longitude || '',
+            latitude: projectData.latitude || '',
+            isInstalled: projectData.is_installed || false,
+            installationDate: projectData.installation_date 
+              ? projectData.installation_date.split(' ')[0] 
+              : '',
+            isSystemOn: projectData.system_on_date ? true : false,
+            systemOnDate: projectData.system_on_date
+              ? projectData.system_on_date.split(' ')[0]
+              : '',
+            projectRemarks: projectData.remarks || ''
+          });
+        } else {
+          console.error('Error:', response.data.message);
+          // Handle API error message (e.g., show to user)
+        }
       } catch (error) {
-        console.error('Error fetching project details:', error);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          if (error.response.status === 404) {
+            console.error('Project not found or already installed');
+            // Handle 404 specifically (e.g., redirect or show message)
+          } else {
+            console.error('Server error:', error.response.data);
+          }
+        } else {
+          console.error('Error fetching installation details:', error.message);
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchProjectDetails();
+    fetchInstallationDetails();
   }, [project_id, token]);
 
   const handleChange = (e) => {
@@ -50,10 +76,41 @@ const PendingInstallationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!formData.longitude || !formData.latitude) {
+      alert('Longitude and Latitude are required');
+      return;
+    }
+    
+    if (formData.isInstalled && !formData.installationDate) {
+      alert('Installation date is required when installation is marked as complete');
+      return;
+    }
+    
+    if (formData.isSystemOn && !formData.systemOnDate) {
+      alert('System on date is required when system is marked as on');
+      return;
+    }
+
     try {
-      await axios.put(`/api/projects/${project_id}/installation`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const payload = {
+        longitude: formData.longitude,
+        latitude: formData.latitude,
+        installation_date: formData.isInstalled ? formData.installationDate : null,
+        system_on_date: formData.isSystemOn ? formData.systemOnDate : null,
+        remarks: formData.projectRemarks,
+        is_installed: formData.isInstalled
+      };
+
+      await axios.put(
+        `http://127.0.0.1:8000/api/projects/${project_id}/installation`, 
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
       alert('Installation details updated successfully!');
     } catch (error) {
       console.error('Error updating installation details:', error);
@@ -64,14 +121,14 @@ const PendingInstallationForm = () => {
   if (isLoading) return <div className="text-center py-8">Loading...</div>;
 
   return (
-    <div className=" h-full bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[650px] ">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6 flex-1 min-w-[600px] max-h-[500px] overflow-y-auto">
       <h2 className="text-xl font-semibold mb-6">Installation Details</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Coordinates */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Longitude
+              Longitude*
             </label>
             <input
               type="text"
@@ -80,11 +137,12 @@ const PendingInstallationForm = () => {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter longitude"
+              required
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Latitude
+              Latitude*
             </label>
             <input
               type="text"
@@ -93,38 +151,9 @@ const PendingInstallationForm = () => {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter latitude"
+              required
             />
           </div>
-
-          {/* Portal Credentials */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Portal Username
-            </label>
-            <input
-              type="text"
-              name="portalUsername"
-              value={formData.portalUsername}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="Enter portal username"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Portal Password
-            </label>
-            <input
-              type="password"
-              name="portalPassword"
-              value={formData.portalPassword}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="Enter portal password"
-            />
-          </div>
-
-          
 
           {/* Installation Status */}
           <div className="flex items-center space-x-2">
@@ -143,7 +172,7 @@ const PendingInstallationForm = () => {
           {formData.isInstalled && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Installation Date
+                Installation Date*
               </label>
               <input
                 type="date"
@@ -151,6 +180,7 @@ const PendingInstallationForm = () => {
                 value={formData.installationDate}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                required={formData.isInstalled}
               />
             </div>
           )}
@@ -172,7 +202,7 @@ const PendingInstallationForm = () => {
           {formData.isSystemOn && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                System On Date
+                System On Date*
               </label>
               <input
                 type="date"
@@ -180,30 +210,30 @@ const PendingInstallationForm = () => {
                 value={formData.systemOnDate}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                required={formData.isSystemOn}
               />
             </div>
-
-            
           )}
-        </div> 
-                  <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 mt-5">
-              Special Note
-            </label>
-            <input
-              type="text"
-              name="projectRemarks"
-              value={formData.projectRemarks}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="Enter project remarks"
-            />
-          </div>
+        </div>
 
-        <div className="flex justify-end pt-4 mt-5">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1 mt-5">
+            Special Note
+          </label>
+          <input
+            type="text"
+            name="projectRemarks"
+            value={formData.projectRemarks}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+            placeholder="Enter project remarks"
+          />
+        </div>
+
+        <div className="flex justify-end pt-4 mt-5 mb-2">
           <button
             type="submit"
-            className="px-2 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
           >
             Save Installation Details
           </button>

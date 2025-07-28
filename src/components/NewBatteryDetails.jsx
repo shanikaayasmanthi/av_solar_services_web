@@ -32,60 +32,79 @@ const NewBatteryDetails = ({ show, onClose, projectId }) => {
     setBatteryRows(batteryRows.filter(row => row.id !== id));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError("");
-    setSuccess("");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setError("");
+  setSuccess("");
 
-    try {
-      // Validate each battery row
-      const payloadBatteries = batteryRows.map(row => {
-        if (!row.brand || !row.model_code || !row.serial_no || !row.capacity) {
-          throw new Error("Please fill all fields for each battery");
-        }
-
-        const capacity = parseFloat(row.capacity);
-
-        if (isNaN(capacity)) {
-          throw new Error("Please enter a valid capacity");
-        }
-
-        return {
-          brand: row.brand,
-          model_code: row.model_code,
-          serial_no: row.serial_no,
-          capacity: capacity,
-        };
-      });
-
-      // API call to add new batteries
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/add-batteries",
-        {
-          project_id: projectId,
-          batteries: payloadBatteries,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data.status === "Request was successful.") {
-        setSuccess("Batteries added successfully!");
-        setBatteryRows([]);
-        setTimeout(() => onClose(), 1500);
-      } else {
-        throw new Error(response.data.message || "Failed to add batteries");
+  try {
+    // Validate all rows first
+    const validatedBatteries = batteryRows.map(row => {
+      if (!row.brand || !row.model_code || !row.serial_no || !row.capacity) {
+        throw new Error("Please fill all fields for each battery");
       }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsSubmitting(false);
+
+      const capacity = parseFloat(row.capacity);
+      if (isNaN(capacity)) {
+        throw new Error("Please enter valid numbers for capacity");
+      }
+
+      return {
+        brand: row.brand,
+        model_code: row.model_code,
+        serial_no: row.serial_no,
+        capacity: capacity
+      };
+    });
+
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/add-batteries",
+      {
+        project_id: projectId,
+        batteries: validatedBatteries
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (response.data.status === "success") {
+      setSuccess(response.data.message);
+      setBatteryRows([]);
+      setTimeout(() => onClose(), 1500);
+    } else {
+      throw new Error(response.data.message || "Failed to add batteries");
     }
-  };
+  } catch (err) {
+    let errorMessage = err.message;
+    
+    if (err.response) {
+      // Handle validation errors from backend
+      if (err.response.data?.errors) {
+        errorMessage = Object.values(err.response.data.errors)
+          .flat()
+          .join(", ");
+      } else if (err.response.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+      
+      // Log the full error for debugging
+      console.error('API Error:', {
+        status: err.response.status,
+        data: err.response.data,
+        headers: err.response.headers
+      });
+    }
+    
+    setError(errorMessage);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (!show) return null;
 
