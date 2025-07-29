@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AssignmentLateOutlinedIcon from '@mui/icons-material/AssignmentLateOutlined';
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { useAuth } from "../contexts/AuthContext";
 
@@ -10,10 +10,10 @@ const ScheduledServices = () => {
   const { token } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleDetailsClick = () => {
     navigate('/Searchservices');
@@ -30,19 +30,12 @@ const ScheduledServices = () => {
         });
 
         if (response.data?.data?.services?.data) {
-  setServices(response.data.data.services.data);
-  setTotalPages(response.data.data.services.last_page);
-  setCurrentPage(response.data.data.services.current_page);
-} else {
-  setError('Invalid data format received');
-}
-
-
-        // if (response.data?.data?.services) {
-        //   setServices(response.data.data.services);
-        // } else {
-        //   setError('Invalid data format received');
-        // }
+          setServices(response.data.data.services.data);
+          setTotalPages(response.data.data.services.last_page);
+          setCurrentPage(response.data.data.services.current_page);
+        } else {
+          setError('Invalid data format received');
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -52,6 +45,18 @@ const ScheduledServices = () => {
 
     fetchServices();
   }, [token, currentPage]);
+
+const filteredServices = services.filter((service) => {
+  const term = searchTerm.toLowerCase();
+  return (
+    String(service.project_no || '').toLowerCase().includes(term) ||
+    String(service.customer_name || '').toLowerCase().includes(term) ||
+    String(service.service_date || '').toLowerCase().includes(term) ||
+    (Array.isArray(service.supervisors) &&
+      service.supervisors.some(sup => String(sup).toLowerCase().includes(term)))
+  );
+});
+
 
   if (loading) return (
     <div className="p-6 text-center bg-white rounded-lg shadow-sm">
@@ -70,45 +75,62 @@ const ScheduledServices = () => {
   );
 
   return (
-    <div className="relative mx-auto">
-      
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+      <div className="relative mx-auto">
         <h1 className="mb-5 text-3xl font-bold text-gray-800">Services</h1>
         <h2 className="text-2xl font-semibold text-gray-700">Scheduled Services</h2>
 
+        {/* Search bar and icon */}
+        <div className="absolute flex gap-4 top-4 right-6 items-center">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search by project, customer, date, assigner..."
+              className="w-80 px-4 py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              <SearchIcon />
+            </div>
+          </div>
 
-      <div className="absolute flex gap-4 top-4 right-6">
-        {/* <div className="p-3 text-white transition-colors duration-200 bg-teal-500 rounded-full shadow-md cursor-pointer hover:bg-teal-600">
-          <AssignmentLateOutlinedIcon fontSize="large" />
-        </div> */}
-        <div className="text-white transition-colors duration-200 bg-teal-500 rounded-md shadow-md cursor-pointer md:p-2 hover:bg-teal-600 hover:scale-110" onClick={handleDetailsClick}>
-          <AssignmentTurnedInOutlinedIcon fontSize="medium" />
+          <div
+            className="text-white transition-colors duration-200 bg-teal-500 rounded-md shadow-md cursor-pointer md:p-2 hover:bg-teal-600 hover:scale-110"
+            onClick={handleDetailsClick}
+          >
+            <AssignmentTurnedInOutlinedIcon fontSize="medium" />
+          </div>
+        </div>
+
+        {/* Services list */}
+        <div className="flex flex-col gap-6 mt-4">
+          <div className="grid grid-cols-1 gap-10 p-6 sm:grid-cols-2 lg:grid-cols-4">
+            {filteredServices.map((service, index) => (
+              <ServiceBox key={service.service_id || index} service={service} />
+            ))}
+          </div>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-end mt-5">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="px-2 py-2 font-semibold">{currentPage} / {totalPages}</span>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-2 py-2 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       </div>
-
-      <div className="flex flex-col gap-6 mt-8">
-        <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((service, index) => (
-            <ServiceBox key={service.service_id || index} service={service} />
-          ))}
-        </div>
-      </div>
-          <div className="flex justify-end mt-6 ">
-      <button
-        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        disabled={currentPage === 1}
-        className="px-3 py-1 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
-      >
-        Previous
-      </button>
-      <span className="px-2 py-2 font-semibold">{currentPage} / {totalPages}</span>
-      <button
-        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        disabled={currentPage === totalPages}
-        className="px-2 py-2 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
-      >
-        Next
-      </button>
-    </div>
     </div>
   );
 };
@@ -126,27 +148,26 @@ const ServiceBox = ({ service }) => {
     return number + 'th';
   };
 
-return (
-  <div>
-    <div className="min-w-[200px] p-5 bg-white rounded-xl md:w-[350px] md:h-[200px] shadow-md hover:shadow-lg transition-shadow duration-300 border-[2px] hover:border-gray-400 hover:scale-105 border-gray-250">
-      <p className="text-base font-semibold text-teal-600">Project No. {service.project_no || 'N/A'}</p>
-      <p className="text-sm font-medium text-gray-700">{service.customer_name || 'No customer'}</p>
-      <p className="text-sm text-gray-600">
-        {service.service_round ? `${getOrdinalSuffix(service.service_round)} service round` : 'Service round not specified'}
-      </p>
-      <p className="text-sm text-gray-600">{displayDate}{displayTime}</p>
-      <p className="mt-2 text-sm font-medium text-gray-700">Assigners:</p>
-      {service.supervisors && service.supervisors.length > 0 ? (
-        service.supervisors.map((sup, i) => (
-          <p key={i} className="ml-4 text-sm text-gray-600">{sup}</p>
-        ))
-      ) : (
-        <p className="ml-4 text-sm text-gray-500">No supervisors assigned</p>
-      )}
+  return (
+    <div>
+      <div className="min-w-[150px] p-5 bg-white rounded-xl md:w-[320px] md:h-[180px] shadow-md hover:shadow-lg transition-shadow duration-300 border-[2px] hover:border-gray-400 hover:scale-105 border-gray-250">
+        <p className="text-base font-semibold text-teal-600">Project No. {service.project_no || 'N/A'}</p>
+        <p className="text-sm font-medium text-gray-700">{service.customer_name || 'No customer'}</p>
+        <p className="text-sm text-gray-600">
+          {service.service_round ? `${getOrdinalSuffix(service.service_round)} service round` : 'Service round not specified'}
+        </p>
+        <p className="text-sm text-gray-600">{displayDate}{displayTime}</p>
+        <p className="mt-2 text-sm font-medium text-gray-700">Assigners:</p>
+        {service.supervisors && service.supervisors.length > 0 ? (
+          service.supervisors.map((sup, i) => (
+            <p key={i} className="ml-4 text-sm text-gray-600">{sup}</p>
+          ))
+        ) : (
+          <p className="ml-4 text-sm text-gray-500">No supervisors assigned</p>
+        )}
+      </div>
     </div>
-
-  </div>
-);
+  );
 };
 
 export default ScheduledServices;

@@ -87,6 +87,7 @@ const Adduser = () => {
   
 
   return (
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto ">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">User Management</h1>
       <div className="w-full  max-w-5xl bg-white shadow-lg rounded-xl p-8 border border-gray-200 mt-10">
@@ -186,6 +187,7 @@ const Adduser = () => {
           </div>
         </form>
       </div>
+    </div>
     </div>
   );
 };

@@ -18,6 +18,7 @@ export default function PendingInstallationProjectsDetails() {
   const projectNo = location?.state?.projectNo || "Project No Not Available";
 
   return (
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto">
       <h1 className="text-3xl font-bold mb-2">Project No : {projectNo} - Installation Details</h1>
       <h2 className="text-2xl font-semibold mb-8"> {projectName}</h2>
@@ -30,6 +31,7 @@ export default function PendingInstallationProjectsDetails() {
     <PendingInstallationCustomerCard projectId={project_id} />
 
   </div>
+    </div>
     </div>
     );
 }

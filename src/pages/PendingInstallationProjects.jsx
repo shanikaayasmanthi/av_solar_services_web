@@ -99,6 +99,7 @@ export default function PendingInstallationProjects() {
     };
 
     return (
+        <div className="origin-top-left scale-[0.75] w-[133.33%]">
         <div className="relative mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-3xl font-bold">Pending Installation Projects</h1>
@@ -143,7 +144,7 @@ export default function PendingInstallationProjects() {
                                             <h3 className="text-lg font-semibold text-gray-800 mb-2">{project.project_name || 'Unnamed Project'}</h3>
                                             <p className="text-m font-semibold text-gray-800">#{project.project_no}</p>
                                         </div>
-                                        <span className={`px-2 py-1 text-s font-semibold rounded-full 
+                                        <span className={`px-2 py-1 text-s font-semibold rounded-md
                                             ${project.type === 'ongrid' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
                                             {project.type === 'ongrid' ? 'On-Grid' : 'Off-Grid'}
                                         </span>
@@ -230,6 +231,7 @@ export default function PendingInstallationProjects() {
                     )}
                 </div>
             )}
+        </div>
         </div>
     );
 }

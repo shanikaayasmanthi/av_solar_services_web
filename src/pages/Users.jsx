@@ -68,6 +68,7 @@ const Users = () => {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   return (
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto">
     
      <h1 className="text-3xl font-bold text-gray-800 mb-0">User Status Overview</h1>
@@ -167,6 +168,7 @@ const Users = () => {
           )}
         </div>
       )}
+    </div>
     </div>
   );
 };

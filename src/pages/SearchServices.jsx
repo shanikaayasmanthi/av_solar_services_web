@@ -54,6 +54,7 @@ const SearchServices = () => {
     <div>
       <Header />
       <Sidebar />
+      <div className="origin-top-left scale-[0.75] w-[133.33%]">
       <div className="relative">
         <div className="flex items-center justify-between mb-10 mr-10">
           <h1 className="text-3xl font-bold">Completed Services</h1>
@@ -96,6 +97,7 @@ const SearchServices = () => {
   </button>
 </div>
 
+      </div>
       </div>
     </div>
   );

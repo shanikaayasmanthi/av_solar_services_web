@@ -46,6 +46,7 @@ const ServiceDetails2 = () => {
   }, [service_id]);
 
   return (
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative">
       <h1 className="text-3xl font-bold mb-3">Project No: {projectNo} - Completed Services</h1>
 
@@ -103,6 +104,7 @@ const ServiceDetails2 = () => {
 </div>
 
       </div>
+    </div>
     </div>
   );
 };

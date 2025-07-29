@@ -134,6 +134,7 @@ const formatTime = (dateString) => {
   };
 
   return (
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto">
       {/* Header Section */}
       <div className="mb-6 border-b border-gray-200 pb-4">
@@ -205,6 +206,7 @@ const formatTime = (dateString) => {
           Next
         </button>
       </div>
+    </div>
     </div>
   );
 };
