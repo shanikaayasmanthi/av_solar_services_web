@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import axios from 'axios';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const CompletedServices = () => {
   const { project_id } = useParams();
@@ -77,10 +78,20 @@ const CompletedServices = () => {
       <Sidebar />
 <div className="origin-top-left scale-[0.75] w-[133.33%]">
       <div className="relative mx-auto">
-        <div className=" mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-5">Project No: {projectNo} - Completed Services</h1>
-          <h2 className="text-xl font-medium text-gray-600">Customer: {customerName} - {town}</h2>
-        </div>
+        
+<div className="flex gap-2 items-start">
+  <div
+    className="text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    onClick={() => navigate(-1)}
+  >
+    <ArrowBackIcon fontSize="medium" />
+  </div>
+  <div>
+    <h1 className="text-3xl font-bold text-gray-800 mb-5">Project No: {projectNo} - Completed Services</h1>
+    <h2 className="text-xl font-medium text-gray-600 mb-8">Customer: {customerName} - {town}</h2>
+  </div>
+</div>
+
 
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-6 p-6">
           {serviceRounds.length === 0 ? (

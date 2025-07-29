@@ -34,7 +34,7 @@ useEffect(() => {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      console.log('API Response:', response.data); // Debug: Log entire API response
+      console.log('API Response:', response.data); 
 
       // Find the project by ID
       const project = response.data?.data?.projects?.find(
@@ -46,7 +46,7 @@ useEffect(() => {
         return;
       }
 
-      // Debug: Log the project details we received
+      // Debug: Log the project details that received
       console.log('Project Details:', {
         id: project.project_id,
         type: project.type,
@@ -61,7 +61,7 @@ useEffect(() => {
       setPanelCapacity(project.capacity || 0);
       setNoOfPanels(project.total_panels || 0);
 
-      // Set form data with project IDs
+      
       setFormData((prev) => ({
         ...prev,
         electricityBillName: '',

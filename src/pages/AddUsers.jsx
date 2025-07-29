@@ -3,6 +3,8 @@ import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Adduser = () => {
   const [userTypes, setUserTypes] = useState([]);
@@ -14,7 +16,7 @@ const Adduser = () => {
   phone: '',
   user_type_id: '',
 });
-
+  const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -89,8 +91,15 @@ const Adduser = () => {
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto ">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">User Management</h1>
-      <div className="w-full  max-w-5xl bg-white shadow-lg rounded-xl p-8 border border-gray-200 mt-10">
+                <div className='flex gap-2 align-middle contents-center'>
+            <div className=' text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200 mb-10' onClick={() => navigate(-1)}>
+              <ArrowBackIcon fontSize='medium' />
+            </div>
+               <h1 className="text-3xl font-bold text-gray-800 ">User Management</h1>
+
+            </div>
+ 
+      <div className="w-full  max-w-5xl bg-white shadow-lg rounded-xl p-8 border border-gray-200 mt-15">
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Add New User</h2>
 
         {/* Success or Error Messages */}

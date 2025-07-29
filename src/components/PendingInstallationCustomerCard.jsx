@@ -202,7 +202,7 @@ const PendingInstallationCustomerCard = ({ projectId }) => {
                   />
                   <button
                     onClick={() => removePhoneNumber(index)}
-                    className="p-2 text-red-500 hover:text-red-700"
+                    className="p-2 text-red-500 text-xl hover:text-red-800 "
                   >
                     ×
                   </button>
@@ -210,7 +210,7 @@ const PendingInstallationCustomerCard = ({ projectId }) => {
               ))}
               <button
                 onClick={addPhoneNumber}
-                className="mt-2 px-3 py-2 bg-teal-200 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2"
+                className="mt-2 px-3 py-2 bg-teal-100 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2"
               >
                 + Add Phone Number
               </button>

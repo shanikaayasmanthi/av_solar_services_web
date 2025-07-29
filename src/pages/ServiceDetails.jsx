@@ -6,6 +6,7 @@ import ACDetails from '../components/ACDetails';
 import axios from 'axios';
 import { useAuth } from "../contexts/AuthContext";
 import InverterDetails from '../components/InverterDetails';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 
@@ -136,20 +137,33 @@ const formatTime = (dateString) => {
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto">
-      {/* Header Section */}
-      <div className="mb-6 border-b border-gray-200 pb-4">
-        <h1 className="text-3xl font-bold text-gray-800">
+      <div className="flex gap-2 items-start">
+  <div
+    className="text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    onClick={() => navigate(-1)}
+  >
+    <ArrowBackIcon fontSize="medium" />
+  </div>
+  <div>
+           <h1 className="text-3xl font-bold text-gray-800">
           Project No: {serviceDetails.project_no} - Completed Services
         </h1>
-        
+
+
+  </div>
+</div>
+      {/* Header Section */}
+      <div className="mb-6 border-b border-gray-200 pb-4">
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-3">
           <div>
-            <h2 className="text-xl font-medium text-gray-700">
+              <h2 className="text-xl font-medium text-gray-700 mt-1">
               <span className="font-semibold">Customer:</span> {serviceDetails.customer_name} 
               {serviceDetails.nearest_town && (
                 <span className="ml-2">- {serviceDetails.nearest_town} (Service Round {serviceDetails.service_round})</span>
               )}
-            </h2>
+            </h2>  
+
             <p className="text-md text-gray-600 mt-2 mb-5">
               {formatDate(serviceDetails.service_date)} - {serviceDetails.service_time} • 
               Supervisor: {serviceDetails.supervisor_name}

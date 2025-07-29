@@ -44,7 +44,6 @@ useEffect(() => {
           });
         } else {
           console.error('Error:', response.data.message);
-          // Handle API error message (e.g., show to user)
         }
       } catch (error) {
         if (error.response) {

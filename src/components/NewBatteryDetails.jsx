@@ -39,7 +39,6 @@ const NewBatteryDetails = ({ show, onClose, projectId }) => {
   setSuccess("");
 
   try {
-    // Validate all rows first
     const validatedBatteries = batteryRows.map(row => {
       if (!row.brand || !row.model_code || !row.serial_no || !row.capacity) {
         throw new Error("Please fill all fields for each battery");
@@ -83,7 +82,6 @@ const NewBatteryDetails = ({ show, onClose, projectId }) => {
     let errorMessage = err.message;
     
     if (err.response) {
-      // Handle validation errors from backend
       if (err.response.data?.errors) {
         errorMessage = Object.values(err.response.data.errors)
           .flat()
@@ -92,7 +90,6 @@ const NewBatteryDetails = ({ show, onClose, projectId }) => {
         errorMessage = err.response.data.message;
       }
       
-      // Log the full error for debugging
       console.error('API Error:', {
         status: err.response.status,
         data: err.response.data,

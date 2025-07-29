@@ -40,7 +40,6 @@ const NewInverterDetails = ({ show, onClose, projectId }) => {
     setSuccess("");
 
     try {
-      // Validate each inverter row
       const payloadInverters = inverterRows.map(row => {
         if (!row.brand || !row.model_code || !row.check_code || 
             !row.serial_no || !row.capacity) {
@@ -62,7 +61,6 @@ const NewInverterDetails = ({ show, onClose, projectId }) => {
         };
       });
 
-      // API call to add new inverters
       const response = await axios.post(
         "http://127.0.0.1:8000/api/change-inverters",
         {

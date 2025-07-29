@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const SearchServices = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,7 +58,14 @@ const SearchServices = () => {
       <div className="origin-top-left scale-[0.75] w-[133.33%]">
       <div className="relative">
         <div className="flex items-center justify-between mb-10 mr-10">
-          <h1 className="text-3xl font-bold">Completed Services</h1>
+          <div className='flex gap-2 align-middle contents-center'>
+            <div className=' text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200' onClick={() => navigate(-1)}>
+              <ArrowBackIcon fontSize='medium' />
+            </div>
+            <h1 className="text-3xl font-bold">Completed Services</h1>
+
+            </div>
+          
           <div className="md:min-w-[200px] relative">
             <input
               type="text"
