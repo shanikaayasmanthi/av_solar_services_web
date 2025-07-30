@@ -27,14 +27,15 @@ const OutdoorWork = ({ serviceId }) => {
       if (data.status === 'success' && data.data) {
         setOutdoorData(data.data);
       } else if (data.status === 'no_data') {
-        setError(data.message || 'Outdoor work details not found for this service');
+        setOutdoorData(null);
+        setError(""); // Not an error
       } else {
-        setError('Outdoor work data not available');
+        setError("Outdoor work data not available"); // Real error
       }
 
-      } catch (err) {
-        console.error('Error fetching outdoor work data:', err);
-        setError('Failed to load outdoor work details');
+    } catch (err) {
+      console.error('Error fetching outdoor work data:', err);
+      setError('Failed to load outdoor work details');
       } finally {
         setLoading(false);
       }
@@ -67,7 +68,15 @@ const OutdoorWork = ({ serviceId }) => {
   );
 
   if (loading) return <p className="text-gray-600">Loading outdoor work details...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>; // Real error (e.g., validation, server error)
+  }
+
+  if (!outdoorData) {
+    return <p className="text-gray-500 italic">Outdoor Work details not added yet.</p>; // No data but not error
+  }
+
 
   return (
     <div className="mt-6 w-full overflow-x-auto">

@@ -99,7 +99,7 @@ const Adduser = () => {
 
             </div>
  
-      <div className="w-full  max-w-5xl bg-white shadow-lg rounded-xl p-8 border border-gray-200 mt-15">
+      <div className="w-full  max-w-5xl bg-white shadow-lg rounded-xl p-8 border border-gray-200 mt-15 mb-20">
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Add New User</h2>
 
         {/* Success or Error Messages */}
@@ -111,26 +111,26 @@ const Adduser = () => {
           {/* Name & Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-2">Name</label>
+              <label className="text-md font-medium text-gray-700 mb-2">Name</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter name"
-                className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="border border-gray-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 required
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label className="text-md font-medium text-gray-700 mb-2">Email</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter email"
-                className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="border border-gray-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 required
               />
             </div>
@@ -139,26 +139,26 @@ const Adduser = () => {
           {/* Address & Phone */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-2">NIC Number</label>
+              <label className="text-md font-medium text-gray-700 mb-2">NIC Number</label>
               <input
                 type="text"
                 name="nic"
                 value={formData.nic}
                 onChange={handleChange}
                 placeholder="Enter NIC number"
-                className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="border border-gray-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 required
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-2">Tel. No</label>
+              <label className="text-md font-medium text-gray-700 mb-2">Tel. No</label>
               <input
                 type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="Enter phone number"
-                className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="border border-gray-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 required
               />
             </div>
@@ -167,21 +167,29 @@ const Adduser = () => {
           {/* Role Dropdown */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-gray-700 mb-2">Role</label>
+              <label className="text-md font-medium text-gray-700 mb-2">Role</label>
               <select
                 name="user_type_id"
                 value={formData.user_type_id}
                 onChange={handleChange}
-                className="width-md border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="width-md border border-gray-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 required
               >
                 <option value="" disabled>Select User Role</option>
-                {userTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name}
-                  </option>
+                {userTypes
+                  .filter((type) => type.id !== 3)
+                  .map((type) => (
+                    <option
+                      key={type.id}
+                      value={type.id}
+                      className="text-sm"
+                    >
+                      {type.name}
+                    </option>
+
                 ))}
               </select>
+
             </div>
           </div>
 
@@ -189,7 +197,7 @@ const Adduser = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-teal-600 text-white font-semibold mt-5 px-6 py-2 rounded-md hover:bg-teal-700 transition"
+              className="bg-teal-600 text-white font-semibold mt-5 mb-10 px-6 py-2 rounded-md hover:bg-teal-700 transition"
             >
               Add User
             </button>

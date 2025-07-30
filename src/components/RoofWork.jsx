@@ -27,14 +27,15 @@ const RoofWork = ({ serviceId }) => {
       if (data.status === 'success' && data.data) {
         setRoofData(data.data);
       } else if (data.status === 'no_data') {
-        setError(data.message || 'Roof work data not found for this service');
+        setRoofData(null);
+        setError(""); // Not an error
       } else {
-        setError('Roof work data not available');
+        setError("Roof work data not available"); // Real error
       }
 
-      } catch (err) {
-        console.error('Error fetching roof work data:', err);
-        setError('Failed to load roof work details');
+    } catch (err) {
+      console.error('Error fetching roof work data:', err);
+      setError('Failed to load roof work details');
       } finally {
         setLoading(false);
       }
@@ -61,7 +62,15 @@ const RoofWork = ({ serviceId }) => {
   );
 
   if (loading) return <p className="text-gray-600">Loading roof work details...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>; // Real error (e.g., validation, server error)
+  }
+
+  if (!roofData) {
+    return <p className="text-gray-500 italic">Roof work details not added yet.</p>; // No data but not error
+  }
+
 
   return (
     <div className="mt-6 w-full overflow-x-auto">

@@ -87,7 +87,7 @@ const SearchServices = () => {
             <ProjectCard filteredProjects={filteredProjects} handleDetailsClick={handleDetailsClick} />
           )}
         </div>
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end mt-4">
   <button
     onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
     disabled={currentPage === 1}

@@ -87,7 +87,8 @@ export default function PendingInstallationProjects() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+
 
     const handleViewDetails = (project) => {
         navigate(`/pendingInstallationProjectsDetails/${project.project_id}`, {
@@ -179,12 +180,13 @@ export default function PendingInstallationProjects() {
                         ))}
                     </div>
 
-                    {totalItems > itemsPerPage && (
-                        <div className="flex justify-center items-center mt-6 space-x-2">
+                    {filteredProjects.length > itemsPerPage && (
+
+                        <div className="flex justify-end items-center mt-6 space-x-2">
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                                 disabled={currentPage === 1}
-                                className="px-3 py-1 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
+                                className="px-3 py-2 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
                             >
                                 Previous
                             </button>
@@ -192,7 +194,7 @@ export default function PendingInstallationProjects() {
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                                 disabled={currentPage === totalPages}
-                                className="px-3 py-1 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
+                                className="px-3 py-2 mx-1 text-white bg-teal-500 rounded disabled:opacity-50"
                             >
                                 Next
                             </button>
