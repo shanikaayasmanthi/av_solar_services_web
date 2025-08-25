@@ -36,8 +36,9 @@ const ProjectDetails = () => {
         );
 
         console.log("project id", projectId);
+        console.log("API Response:", projectResponse.data);
         // console.log(projectResponse.data);
-        if(projectResponse.data.status === "Request was successful."){
+        if(projectResponse.data.status === "Request was successful." || projectResponse.data.success === true){
             const projectResponseData = projectResponse.data.data;
             setProject(projectResponseData.project);
             if(projectResponseData.project.type == 'offgrid'){
@@ -45,6 +46,8 @@ const ProjectDetails = () => {
             }else{
                 setOnGrid(projectResponseData.on_grid);
             }
+        } else {
+            console.error("Unexpected response structure:", projectResponse.data);
         }
         
     }catch(error){
@@ -105,25 +108,25 @@ const ProjectDetails = () => {
 
             </div>
 
-  <div class="flex flex-col flex-wrap gap-5 md:flex-row justify-center">
-    <div class="flex flex-col gap-5">
-      
+  <div className="flex flex-col flex-wrap gap-5 md:flex-row justify-center">
+    <div className="flex flex-col gap-5">
+
 <CustomerCard projectId={projectId}/>
       <div
-        class="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px] h-[100px]"
+        className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px] h-[100px]"
       >
-        <div class="flex justify-between items-center mb-2.5">
-          <h3 class="m-0 text-lg font-semibold">Services Summary</h3>
+        <div className="flex justify-between items-center mb-2.5">
+          <h3 className="m-0 text-lg font-semibold">Services Summary</h3>
           {/* <PrintIcon
-            class="rounded-full bg-[#00a68b] p-1.5 cursor-pointer" fontSize='medium'
+            className="rounded-full bg-[#00a68b] p-1.5 cursor-pointer" fontSize='medium'
             onClick={() => setSchedule(true)}
           /> */}
-          <CalendarDateRangeIcon class="icon h-8 w-8 bg-teal-600 text-white rounded-full p-1 cursor-pointer" 
+          <CalendarDateRangeIcon className="icon h-8 w-8 bg-teal-600 text-white rounded-full p-1 cursor-pointer" 
             onClick={() => setSchedule(true)}
           />
           {/* <ScheduleService show={schedule} onClose={() => setSchedule(false)} /> */}
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2.5">
           {!summaryLoading && servicesSummary.length > 0 ? (
                servicesSummary.map((service) => (
                                             <ServiceSummaryCard 
@@ -149,7 +152,7 @@ const ProjectDetails = () => {
     </div>
 
     <div
-      class="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]"
+      className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]"
     >
     {      project.type == 'ongrid'?
     (<OngridProjectDataCard project={project} onGrid={onGrid}/>)

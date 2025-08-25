@@ -66,6 +66,7 @@ export default function Dashboard() {
   },[])
   
   return (
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div> {/* Added bg-gray-100 to main content for context */}
       <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
       <div className="grid grid-cols-1 gap-6 ml-4 md:grid-cols-3">
@@ -73,6 +74,7 @@ export default function Dashboard() {
         <DashboardCard title="First Service Done on" value={firstServiceCount} />
         <DashboardCard title="Second Service Done on" value={secondServiceCount} />
       </div>
+    </div>
     </div>
   )
 }

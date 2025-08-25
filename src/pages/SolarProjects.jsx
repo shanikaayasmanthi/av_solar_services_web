@@ -7,6 +7,7 @@ import AddModel from '../components/AddModel';
 
 export default function SolarProjects() {
     const [activeTab, setActiveTab] = useState('All');
+    const [externalSubTab, setExternalSubTab] = useState('All'); // sub-tabs for external
     const [projects, setProjects] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(1);
@@ -19,52 +20,62 @@ export default function SolarProjects() {
     const fetchProjects = async (pageNumber = 1, tab = activeTab) => {
     // console.log("Current tab for fetch:", tab);
 
-    try {
-        const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-projects`, 
-            {
-                
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                params: { 
-                    page: pageNumber,
-                    type: tab === 'All' ? '' : tab,
-                    query:searchQuery, 
-                }
+ try {
+        let apiUrl = 'http://127.0.0.1:8000/api/get-projects';
+        let params = {
+            page: pageNumber,
+            query: searchQuery,
+        };
+
+        // Determine which API endpoint to call
+        if (tab === 'external') {
+            apiUrl = 'http://127.0.0.1:8000/api/external-projects';
+            // Add external sub-tab filter if not 'All'
+            if (externalSubTab !== 'All') {
+                params.type = externalSubTab.toLowerCase();
             }
-        );
+        } else {
+            // Original internal projects logic
+            params.type = tab === 'All' ? '' : tab;
+        }
+
+        const response = await axios.get(apiUrl, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            params: params
+        });
 
         const responseData = response.data;
 
         // console.log("Full response data (from Axios):", responseData);
 
-        if (responseData.status === 'Request was successful.' && responseData.data && responseData.data.projects && responseData.data.projects.data) {
-            const projectsData = responseData.data.projects;
+  let projectsData;
+        
+        if (tab === 'external') {
+            // External API: responseData.data.projects
+            projectsData = responseData.data?.projects;
+        } else {
+            // Internal API: responseData.data.projects
+            projectsData = responseData.data?.projects;
+        }
+
+        if (projectsData && projectsData.data) {
             setProjects(projectsData.data);
             setCurrentPage(projectsData.current_page);
             setItemsPerPage(projectsData.per_page);
             setTotalItems(projectsData.total);
         } else {
-            console.warn("Unexpected data structure or status:", responseData);
+            console.warn("Unexpected data structure:", responseData);
             setProjects([]);
             setTotalItems(0);
         }
 
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error(
-                'Axios API Error:',
-                error.response?.status,  
-                error.response?.data     
-            );
-
-        } else {
-            console.error('General Error fetching projects:', error);
-        }
-          setProjects([]);
+        console.error('Error fetching projects:', error);
+        setProjects([]);
         setTotalItems(0);
     }
 };
@@ -73,13 +84,14 @@ export default function SolarProjects() {
         if (token) {
             fetchProjects(currentPage);
         }
-    }, [currentPage, token,activeTab, searchQuery]); 
+    }, [currentPage, token,activeTab, externalSubTab, searchQuery]); 
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
     return (
+        <div className="origin-top-left scale-[0.75] w-[133.33%]">
         <div>
             <div className="flex items-center justify-between">
                 {/* Left section: Solar Projects title */}
@@ -87,7 +99,8 @@ export default function SolarProjects() {
 
                 {/* Middle section: Navigation tabs */}
                 <div className='md:flex'>
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-4 ">
+                        <div className="relative">
                         <button
                             className={`px-3 py-1 rounded-md text-m font-medium ${
                                 activeTab === 'All' ? 'text-teal-400' : 'text-teal-600 hover:text-teal-600'
@@ -112,7 +125,56 @@ export default function SolarProjects() {
                         >
                             Off-grid & Hybrid
                         </button>
+                       
+    <button
+        className={`px-3 py-1 rounded-md text-m font-medium ${
+            activeTab === 'external' ? 'text-teal-400' : 'text-teal-600 hover:text-teal-600'
+        }`}
+        onClick={() => setActiveTab('external')}
+    >
+        External
+    </button>
+
+    {/* External Sub Tabs - Positioned absolutely below the External button */}
+     {activeTab === 'external' && (
+        <div className="absolute left-0 top-full mt-1 w-full min-w-max bg-white rounded-md border border-gray-200 shadow-md z-10">
+            <div className="flex p-1 space-x-1">
+                <button
+                    className={`flex-1 px-2 py-1 text-sm rounded ${
+                        externalSubTab === 'All' 
+                            ? 'bg-teal-100 text-teal-700 font-medium' 
+                            : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setExternalSubTab('All')}
+                >
+                    All
+                </button>
+                <button
+                    className={`flex-1 px-2 py-1 text-sm rounded ${
+                        externalSubTab === 'Ongrid' 
+                            ? 'bg-teal-100 text-teal-700 font-medium' 
+                            : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setExternalSubTab('Ongrid')}
+                >
+                    On-grid
+                </button>
+                <button
+                    className={`flex-1 px-2 py-1 text-sm rounded ${
+                        externalSubTab === 'Offgrid' 
+                            ? 'bg-teal-100 text-teal-700 font-medium' 
+                            : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setExternalSubTab('Offgrid')}
+                >
+                    Off-grid
+                </button>
+            </div>
+        </div>
+    )}
+</div>
                     </div>
+                  
 
                     {/* Right section: Search bar and Add button */}
                     <div className="flex items-center space-x-3">
@@ -195,8 +257,11 @@ export default function SolarProjects() {
             lastPageText="Last"
         />
     </div>
+
 )}
+            </div>
             </div>
             
     );
+
 }

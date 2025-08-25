@@ -19,6 +19,8 @@ export default function NewProjectCustomerDetails() {
   const [customer, setCustomer] = useState({});
   const [customerLoading, setCustomerLoading] = useState(true);
   const [customerFound, setCustomerFound] = useState(false);
+  
+  const [isOtherCompanyProject, setIsOtherCompanyProject] = useState(false);
 
   useEffect(() => {
     if (customerType === "new") {
@@ -75,7 +77,11 @@ export default function NewProjectCustomerDetails() {
 
   const handleonContiuneClick = () => {
     if (customer.id > 0) {
-      navigate("/openProject", { state: { customerId: customer.id } });
+      if (isOtherCompanyProject) {
+        navigate("/openExternalProject", { state: { customerId: customer.id } });
+      } else {
+        navigate("/openProject", { state: { customerId: customer.id } });
+      }
     } else {
       alert("Please search for a customer first.");
     }
@@ -118,9 +124,15 @@ export default function NewProjectCustomerDetails() {
       if (response.status === 201) {
         // Assuming 201 Created for successful registration
         alert("Customer created successfully!");
-        navigate("/openProject", {
-          state: { customerId: response.data.customer.user_id },
-        });
+        if (isOtherCompanyProject) {
+          navigate("/openExternalProject", {
+            state: { customerId: response.data.user_id },
+          });
+        } else {
+          navigate("/openProject", {
+            state: { customerId: response.data.user_id },
+          });
+        }
       } else {
         alert("Failed to create customer. Please try again.");
       }
@@ -161,6 +173,8 @@ export default function NewProjectCustomerDetails() {
           Customer Details
         </h2>
 
+
+
         {!isNewCustomer && (
           <>
             <div className="flex flex-col items-center justify-center w-full gap-4 mb-2 md:flex-row">
@@ -190,6 +204,8 @@ export default function NewProjectCustomerDetails() {
                   ></path>
                 </svg>
               </div>
+
+
               <button
                 className="flex-shrink-0 px-5 py-2 text-white transition-colors duration-200 bg-teal-600 rounded-lg cursor-pointer hover:bg-teal-700"
                 onClick={searchCustomer}
@@ -326,6 +342,20 @@ export default function NewProjectCustomerDetails() {
               </div>
             )}
           </div>
+        </div>
+
+        
+       <div className="flex items-center mb-4 mt-4">
+          <input
+            id="otherCompany"
+            type="checkbox"
+            checked={isOtherCompanyProject}
+            onChange={(e) => setIsOtherCompanyProject(e.target.checked)}
+            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label htmlFor="otherCompany" className="ml-2 text-gray-700">
+            Other Company Project
+          </label>
         </div>
 
         {!isNewCustomer && (
