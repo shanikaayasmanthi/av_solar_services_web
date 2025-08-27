@@ -13,9 +13,7 @@ const AddModel = ({ show, onClose }) => {
     navigate("/CustomerDetails",{state:{customerType:'existing'}});
   };
 
-  const handleExternalDetailsClick = () => {
-  navigate("/ExternalCustomerDetails", { state: { customerType: 'external' } });
-};
+
 
 
   useEffect(() => {
@@ -49,10 +47,7 @@ const AddModel = ({ show, onClose }) => {
         <p className="w-full px-4 py-2 text-center text-black cursor-pointer hover:bg-gray-100 rounded-b-md" onClick={handleDetailsClick1}>
           Existing Customer
         </p>
-                <hr className="w-4/5 my-1 border-t border-black" />
-        <p className="w-full px-4 py-2 text-center text-black cursor-pointer hover:bg-gray-100 rounded-b-md" onClick={handleExternalDetailsClick}>
-          External Customer
-        </p>
+
       </div>
     </div>
   );

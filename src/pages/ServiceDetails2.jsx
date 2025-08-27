@@ -5,6 +5,7 @@ import { useParams,useLocation,useNavigate } from 'react-router-dom';
 import OutdoorWork from '../components/OutdoorWork';
 import MainPanelWork from '../components/MainPanelWork';
 import { useAuth } from '../contexts/AuthContext';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from 'axios';
 
 const ServiceDetails2 = () => {
@@ -48,7 +49,19 @@ const ServiceDetails2 = () => {
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative">
-      <h1 className="text-3xl font-bold mb-3">Project No: {projectNo} - Completed Services</h1>
+      <div className="flex gap-2 items-start">
+  <div
+    className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    onClick={() => navigate(-1)}
+  >
+    <ArrowBackIcon fontSize="medium" />
+  </div>
+  <div>
+         <h1 className="text-3xl font-bold mb-3">Project No: {projectNo} - Completed Services</h1>
+
+
+  </div>
+</div>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
         <h2 className="text-xl font-medium mb-5">

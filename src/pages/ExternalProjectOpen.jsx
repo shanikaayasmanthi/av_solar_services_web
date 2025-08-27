@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext.jsx"; // Ensure this path is correct
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ExternalProjectOpen = () => {
   const { token } = useAuth();
@@ -100,11 +101,24 @@ const ExternalProjectOpen = () => {
   };
 
   return (
+        <div className="origin-top-left scale-[0.8] w-[120%]">
     <>
       {/* Title "New Project" outside the form container, similar to your previous "Customer Details" page */}
-      <h1 className="mb-4 text-3xl font-bold">
-        New Project
-      </h1>
+      <div className="flex gap-1 align-baseline contents-center mb-6">
+
+  <div className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer
+             hover:bg-teal-100 rounded-md transition-colors duration-200'
+  onClick={() => navigate(-1)}
+>
+  <ArrowBackIcon fontSize='medium' />
+</div>
+
+
+        {/* Title "New Project" outside the form container, similar to your previous "Customer Details" page */}
+        <h1 className="mb-4 text-3xl font-bold">
+          New Project
+        </h1>
+        </div>
 
       <div className="w-full max-w-4xl p-6 mx-auto bg-white rounded-lg shadow-xl sm:p-8 md:px-10 md:py-6">
         <h2 className="mb-4 text-2xl font-bold text-center text-gray-800">
@@ -362,6 +376,7 @@ const ExternalProjectOpen = () => {
         </form>
       </div>
       </>
+      </div>
   );
 };
 

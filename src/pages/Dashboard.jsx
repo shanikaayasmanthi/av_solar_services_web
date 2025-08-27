@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import DashboardCard from '../components/DashboardCard'
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import ServiceSummary from '../components/MonthlySummaryReport';
+import AnnualServiceSummary from '../components/AnnualSummaryReport';
 
 export default function Dashboard() {
 
@@ -22,11 +24,10 @@ export default function Dashboard() {
         },
       }
     )
-    // console.log(response.data);
-    if(response.data.status ==='Request was successful.'){
-      setProjectCount(response.data.data.project_count);
-      
-    }else{
+     console.log(response.data);
+if(response.data && response.data.success === true){
+  setProjectCount(response.data.data.project_count);
+}else{
       console.warn("Unexpected response status:", response.status);
     }
     
@@ -74,6 +75,16 @@ export default function Dashboard() {
         <DashboardCard title="First Service Done on" value={firstServiceCount} />
         <DashboardCard title="Second Service Done on" value={secondServiceCount} />
       </div>
+        {/* Add the ServiceSummary component below the cards */}
+        <div className="mt-8">
+          <ServiceSummary />
+        </div>
+
+        <div className="mt-8">
+          <AnnualServiceSummary />
+
+        </div>
+
     </div>
     </div>
   )

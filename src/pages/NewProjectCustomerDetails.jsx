@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeftCircleIcon, XCircleIcon } from "@heroicons/react/16/solid";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function NewProjectCustomerDetails() {
   const navigate = useNavigate();
@@ -158,14 +159,19 @@ export default function NewProjectCustomerDetails() {
   };
 
   return (
-    <div>
-      <div className="flex gap-1 align-baseline contents-center">
-        <ArrowLeftCircleIcon
-          className="w-6 h-6 my-2 text-black cursor-pointer"
-          onClick={() => navigate(-1)}
-        />
 
-        <h1 className="mb-4 text-3xl font-bold">New Project</h1>
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+      <div className="flex gap-1 align-baseline contents-center">
+<div 
+  className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer 
+             hover:bg-teal-100 rounded-md transition-colors duration-200' 
+  onClick={() => navigate(-1)}
+>
+  <ArrowBackIcon fontSize='medium' />
+</div>
+
+
+        <h1 className="flex justify-start mb-4 text-3xl font-bold">New Project</h1>
       </div>
 
       <div className="flex flex-col items-center w-full max-w-xl p-6 mx-auto bg-white rounded-lg shadow-xl sm:p-8 md:p-10">

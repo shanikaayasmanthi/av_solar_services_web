@@ -1,104 +1,276 @@
-import { PencilIcon } from '@heroicons/react/16/solid'
-import React, { useEffect } from 'react'
+import { PencilIcon } from '@heroicons/react/16/solid';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
-import { useState } from 'react'
 
-export default function CustomerCard({projectId}) {
+export default function CustomerCard({ projectId }) {
+  const { token } = useAuth();
 
-  const {token} = useAuth();
-      const [customer, setCustomer] = useState({});
-      const [customerPhone,setCustomerPhone] = useState([]);
-  const [customerLoading, setCustomerLoading] = useState(true);
+  const [customer, setCustomer] = useState({
+    name: '',
+    email: '',
+    address: '',
+    phone_numbers: []
+  });
+  const [tempPhoneNumbers, setTempPhoneNumbers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
 
+  // Fetch customer details
+  const fetchCustomerData = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/get-customer', {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { project_id: projectId }
+      });
 
-  const fetchCustomerData = async() => {
-      try{
-        const customerResponse = await axios.get('http://127.0.0.1:8000/api/get-customer',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            params: {
-              project_id: projectId
-            }
-            }
-        );
-        // Handle both response structures
-        if(customerResponse.data.status === "Request was successful." || customerResponse.data.success === true){
-          const customerResponseData = customerResponse.data.data;
-          setCustomer(customerResponseData.customer);
-          setCustomerPhone(customerResponseData.phone_numbers);
-        } else {
-          console.error("Unexpected response structure:", customerResponse.data);
-        }
-      }catch(error){
-        console.error("Error fetching project data:", error);
-      }finally{
-        setCustomerLoading(false);
+      if (
+        response.data.status === 'Request was successful.' ||
+        response.data.success === true
+      ) {
+        const customerResponseData = response.data.data;
+        setCustomer({
+          name: customerResponseData.customer.name,
+          email: customerResponseData.customer.email,
+          address: customerResponseData.customer.address,
+          phone_numbers: customerResponseData.phone_numbers
+        });
+        setTempPhoneNumbers([...customerResponseData.phone_numbers]);
+      } else {
+        console.error('Unexpected response structure:', response.data);
       }
+    } catch (error) {
+      console.error('Error fetching customer data:', error);
+      setError('Failed to load customer data');
+    } finally {
+      setLoading(false);
     }
+  };
 
-    useEffect(() => {
+  useEffect(() => {
+    if (projectId) {
       fetchCustomerData();
-    },[]);
-  return (
-    <div>
-      {!customerLoading && (
-      <div
-        className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px] h-[400px]"
-      >
-        <div className="flex justify-between items-center mb-2.5">
-          <h3 className="m-0 text-lg font-semibold">Customer Details</h3>
-          {/* <EditIcon className="icon text-[35px]" fontSize='medium'/> */}
-          <PencilIcon className='cursor-pointer w-7 h-7'/>
-          
-        </div>
-        <div className="card-content">
-          <label className="block text-sm mt-2.5 mb-1.5">Name</label>
-          <input
-            disabled
-            value={customer?.name || ''}
-            className="w-[90%] p-2 rounded-lg border border-gray-300 bg-gray-200"
-          />
+    }
+  }, [projectId]);
 
-          <label className="block text-sm mt-2.5 mb-1.5">Tel. No</label>
-          {customerPhone && customerPhone.length > 0 ?(
-            <div className='flex flex-row flex-wrap gap-2'>
-            {customerPhone.map((phone, index) => (
-                
-                    <input key={index}
-            disabled
-            value={phone}
-            className="p-2 rounded-lg border border-gray-300 bg-gray-200"
-          />
-                
-            ))}
-            </div>
-          ):(
-            <input
-            disabled
-            value="No phone numbers provided"
-            className="w-[90%] p-2 rounded-lg border border-gray-300 bg-gray-200"
-          />
-          )}
+  // Toggle edit mode
+  const handleEditToggle = () => {
+    setEditing(!editing);
+    if (!editing) {
+      setTempPhoneNumbers([...customer.phone_numbers]);
+    }
+    setError('');
+    setSuccess('');
+  };
 
-          <label className="block text-sm mt-2.5 mb-1.5">Address</label>
-          <input
-            disabled
-            value={customer?.address?customer.address:"No address provided"}
-            className="w-[90%] p-2 rounded-lg border border-gray-300 bg-gray-200"
-          />
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCustomer((prev) => ({ ...prev, [name]: value }));
+  };
 
-          <label className="block text-sm mt-2.5 mb-1.5">Email</label>
-          <input
-            disabled
-            value={customer?.email}
-            className="w-[90%] p-2 rounded-lg border border-gray-300 bg-gray-200"
-          />
-        </div>
+  const handlePhoneChange = (index, value) => {
+    const updatedPhones = [...tempPhoneNumbers];
+    updatedPhones[index] = value;
+    setTempPhoneNumbers(updatedPhones);
+  };
+
+  const addPhoneNumber = () => {
+    setTempPhoneNumbers([...tempPhoneNumbers, '']);
+  };
+
+  const removePhoneNumber = (index) => {
+    const updatedPhones = tempPhoneNumbers.filter((_, i) => i !== index);
+    setTempPhoneNumbers(updatedPhones);
+  };
+
+  // Save changes
+  const handleSubmit = async () => {
+    try {
+      if (
+        tempPhoneNumbers.length === 0 ||
+        tempPhoneNumbers.some((phone) => !phone.trim())
+      ) {
+        throw new Error('Please provide at least one valid phone number');
+      }
+
+      const response = await axios.put(
+        'http://127.0.0.1:8000/api/customers/update-details',
+        {
+          project_id: projectId,
+          name: customer.name,
+          email: customer.email,
+          address: customer.address,
+          phone_numbers: tempPhoneNumbers.filter((phone) => phone.trim())
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.status === 'success') {
+        setCustomer({
+          ...customer,
+          phone_numbers: response.data.customer.telephone_numbers
+        });
+        setSuccess('Customer details updated successfully');
+        setEditing(false);
+        setTimeout(() => setSuccess(''), 3000);
+      }
+    } catch (err) {
+      console.error('Update error:', err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          'Failed to update customer details'
+      );
+      setTempPhoneNumbers([...customer.phone_numbers]);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
       </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Customer Details</h3>
+        <button
+          onClick={handleEditToggle}
+          className={`px-3 py-1 rounded-md ${editing ? 'bg-red-200 text-gray-800 hover:bg-red-400' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
+        >
+          {editing ? 'Cancel' : 'Edit'}
+        </button>
+      </div>
+
+      {success && (
+        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
+          {success}
+        </div>
       )}
+      {error && (
+        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
+      )}
+
+      <div className="space-y-4">
+        {/* Name */}
+        <div>
+          <label className="block text-sm mb-1">Name</label>
+          <input
+            name="name"
+            value={customer.name || ''}
+            onChange={handleInputChange}
+            disabled={!editing}
+            className={`w-[90%] p-2 rounded-lg border ${
+              editing
+                ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'
+            }`}
+          />
+        </div>
+
+        {/* Phone Numbers */}
+        <div>
+          <label className="block text-sm mb-1">Tel. No</label>
+          {editing ? (
+            <div className="space-y-2">
+              {tempPhoneNumbers.map((phone, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <input
+                    value={phone}
+                    onChange={(e) => handlePhoneChange(index, e.target.value)}
+                    className="flex-1 p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                  <button
+                    onClick={() => removePhoneNumber(index)}
+                    className="p-2 text-red-500 text-xl hover:text-red-800"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={addPhoneNumber}
+                className="mt-2 px-3 py-2 bg-teal-100 rounded-md hover:bg-teal-500"
+              >
+                + Add Phone Number
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {customer.phone_numbers?.length > 0 ? (
+                customer.phone_numbers.map((phone, index) => (
+                  <input
+                    key={index}
+                    value={phone}
+                    disabled
+                    className="p-2 rounded-lg border bg-gray-200 border-gray-300"
+                  />
+                ))
+              ) : (
+                <input
+                  value="No phone numbers provided"
+                  disabled
+                  className="p-2 rounded-lg border bg-gray-200 border-gray-300"
+                />
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Address */}
+        <div>
+          <label className="block text-sm mb-1">Address</label>
+          <input
+            name="address"
+            value={customer.address || 'No address provided'}
+            onChange={handleInputChange}
+            disabled={!editing}
+            className={`w-[90%] p-2 rounded-lg border ${
+              editing
+                ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'
+            }`}
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-sm mb-1">Email</label>
+          <input
+            name="email"
+            value={customer.email || ''}
+            onChange={handleInputChange}
+            disabled={!editing}
+            className={`w-[90%] p-2 rounded-lg border ${
+              editing
+                ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'
+            }`}
+          />
+        </div>
+
+        {/* Save Button */}
+        {editing && (
+          <div className="pt-4 flex justify-end">
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            >
+              Save Changes
+            </button>
+          </div>
+        )}
+      </div>
     </div>
-  )
+  );
 }

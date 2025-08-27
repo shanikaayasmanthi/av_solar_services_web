@@ -23,9 +23,9 @@ export default function PendingInstallationProjectsDetails() {
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto">
-<div className="flex gap-2 items-start">
+<div className="flex gap-1 items-start">
   <div
-    className="text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
     onClick={() => navigate(-1)}
   >
     <ArrowBackIcon fontSize="medium" />

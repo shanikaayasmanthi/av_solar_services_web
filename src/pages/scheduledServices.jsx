@@ -150,7 +150,7 @@ const ServiceBox = ({ service }) => {
 
   return (
     <div>
-      <div className="min-w-[150px] p-5 bg-white rounded-xl md:w-[320px] md:h-[180px] shadow-md hover:shadow-lg transition-shadow duration-300 border-[2px] hover:border-gray-400 hover:scale-105 border-gray-250">
+      <div className="min-w-[150px] p-5 bg-white rounded-xl md:w-[320px] md:h-[180px] shadow-md border-[2px]  border-gray-300">
         <p className="text-base font-semibold text-teal-600">Project No. {service.project_no || 'N/A'}</p>
         <p className="text-sm font-medium text-gray-700">{service.customer_name || 'No customer'}</p>
         <p className="text-sm text-gray-600">

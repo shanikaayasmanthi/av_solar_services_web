@@ -237,7 +237,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           {/* Topic 1 - Header with Print Icon and Title */}
           <div className="flex items-center mb-5 gap-7">
             <div className="text-gray-700">
-              <CalendarDaysIcon className="w-6 h-6" />{" "}
+              <CalendarDaysIcon className="w-7 h-7" />{" "}
             </div>
             <h3 className="m-0 text-xl font-semibold">Schedule Next Service</h3>{" "}
           </div>

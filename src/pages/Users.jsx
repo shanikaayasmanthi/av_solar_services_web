@@ -116,19 +116,39 @@ const Users = () => {
 
       {selectedType && groupedUsers[selectedType] && (
         <div className="mb-10">
+          <div className="flex space-between col-2">
           <h2 className="text-2xl font-semibold text-gray-700 capitalize mb-4">{selectedType}</h2>
-
+            </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {currentUsers.map((user) => (
               <div
                 key={user.id}
-                className="bg-white shadow-md rounded-xl p-5 border border-gray-200 relative transition hover:shadow-lg"
+                className="bg-white shadow-md rounded-xl p-5 border border-gray-200 relative "
               >
+                 <div className="flex justify-between items-start mb-1">
                 <h3 className="text-lg font-bold text-gray-800 mb-1">{user.name}</h3>
-                <p className="text-sm text-gray-600 mb-1">
-                  <span className="font-medium">Email:</span> {user.email}
-                </p>
-                <p className="text-sm">
+                {/* <p className="text-sm">
+                  <span className="font-medium">Status:</span>{' '} */}
+                  <span
+                    className={
+                      user.is_active
+                        ? 'text-green-700 font-bold'
+                        : 'text-red-700 font-bold'
+                    }
+                  >
+                    {user.is_active ? 'Active' : 'Inactive'}
+                  </span>
+                {/* </p> */}
+                </div>
+                  <p className="text-sm text-gray-600 mb-1">
+                    <span className="font-medium">Email:</span> {user.email}
+                  </p>
+                  {user.phones && user.phones.length > 0 && (
+                    <p className="text-sm text-gray-600 mb-1">
+                      <span className="font-medium">Phone:</span> {user.phones.join(', ')}
+                    </p>
+                  )}
+                {/* <p className="text-sm">
                   <span className="font-medium">Status:</span>{' '}
                   <span
                     className={
@@ -139,7 +159,39 @@ const Users = () => {
                   >
                     {user.is_active ? 'Active' : 'Inactive'}
                   </span>
-                </p>
+                </p> */}
+                  <div className="absolute bottom-3 right-3">
+    <button
+      onClick={async () => {
+        try {
+          await axios.patch(
+            `http://localhost:8000/api/users/${user.id}/toggle-status`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          // Refresh users after toggle
+          const res = await axios.get('http://localhost:8000/api/users', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const usersData = res.data.data.users;
+          const grouped = usersData.reduce((acc, u) => {
+            const type = u.user_type;
+            if (!acc[type]) acc[type] = [];
+            acc[type].push(u);
+            return acc;
+          }, {});
+          setGroupedUsers(grouped);
+        } catch (err) {
+          console.error('Failed to update status:', err);
+        }
+      }}
+      className={`px-3 py-1 rounded-md text-white text-sm shadow-md transition hover:scale-105  ${
+        user.is_active ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600 '
+      }`}
+    >
+      {user.is_active ? 'Deactivate' : 'Activate'}
+    </button>
+  </div>
               </div>
             ))}
           </div>

@@ -59,7 +59,7 @@ const InverterDetails = ({ projectId }) => {
         {noOfInvertersAllowed !== undefined && `, Allowed: ${noOfInvertersAllowed}`}
       </div>
       <div className="md:min-w-[600px] flex justify-center mb-5">
-        <table className="w-[95%] border-collapse text-sm shadow-md rounded overflow-hidden">
+        <table className="w-[95%] border-collapse text-sm  rounded overflow-hidden">
           <thead>
             <tr className="bg-gray-100 text-gray-700">
               <th className="border px-4 py-2 text-left">Brand</th>

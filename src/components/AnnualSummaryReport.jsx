@@ -1,0 +1,279 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
+
+const AnnualServiceSummary = () => {
+  const { token } = useAuth();
+  const [summaryData, setSummaryData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const now = new Date();
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+
+  useEffect(() => {
+    fetchAnnualServiceSummary(selectedYear);
+  }, [selectedYear]);
+
+  const fetchAnnualServiceSummary = async (year) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://127.0.0.1:8000/api/service-summary/annual?year=${year}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+      });
+      setSummaryData(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch annual service summary');
+      setLoading(false);
+      console.error("Error fetching annual service summary:", err);
+    }
+  };
+
+    const years = Array.from({ length: 11 }, (_, i) => now.getFullYear() - i);
+
+  if (loading) return <div style={styles.loading}>Loading annual service summary...</div>;
+  if (error) return <div style={styles.error}>{error}</div>;
+
+  // Process data to match the table structure
+  const processServiceData = () => {
+    if (!summaryData) return { onGrid: [], offGrid: [] };
+    
+    // Create arrays for on-grid and off-grid services
+    const onGridServices = summaryData.summary.on_grid || [];
+    const offGridServices = summaryData.summary.off_grid || [];
+    
+        // Sort services: free services first (ascending order), then paid services
+    const sortServices = (services) => {
+      const freeServices = services
+        .filter(service => !service.service_round.includes('Paid') && !service.service_round.includes('Out Side Paid'))
+        .sort((a, b) => {
+          // Extract numeric part for sorting
+          const aNum = parseInt(a.service_round.replace(/\D/g, '')) || 0;
+          const bNum = parseInt(b.service_round.replace(/\D/g, '')) || 0;
+          return aNum - bNum;
+        });
+      
+      const paidServices = services
+        .filter(service => service.service_round.includes('Paid Service') || service.service_round.includes('Out Side Paid'))
+        .sort((a, b) => {
+          // Extract numeric part for sorting
+          const aNum = parseInt(a.service_round.replace(/\D/g, '')) || 0;
+          const bNum = parseInt(b.service_round.replace(/\D/g, '')) || 0;
+          return aNum - bNum;
+        });
+      
+      return [...freeServices, ...paidServices];
+    };
+    
+    const sortedOnGridServices = sortServices(onGridServices);
+    const sortedOffGridServices = sortServices(offGridServices);
+    
+
+    // Calculate totals
+    const totalOnGridSites = sortedOnGridServices.reduce((sum, service) => sum + service.no_of_sites, 0);
+    const totalOnGridCapacity = sortedOnGridServices.reduce((sum, service) => sum + service.capacity, 0);
+
+    const totalOffGridSites = sortedOffGridServices.reduce((sum, service) => sum + service.no_of_sites, 0);
+    const totalOffGridCapacity = sortedOffGridServices.reduce((sum, service) => sum + service.capacity, 0);
+
+    // Calculate paid services
+    const onGridPaidServices = sortedOnGridServices
+      .filter(service => service.service_round.includes('Paid Service') || service.service_round.includes('Out Side Paid'))
+      .reduce((sum, service) => sum + service.no_of_sites, 0);
+      
+    const offGridPaidServices = sortedOffGridServices
+      .filter(service => service.service_round.includes('Paid Service') || service.service_round.includes('Out Side Paid'))
+      .reduce((sum, service) => sum + service.no_of_sites, 0);
+
+    const totalPaidServices = onGridPaidServices + offGridPaidServices;
+
+    return {
+      onGrid: sortedOnGridServices,
+      offGrid: sortedOffGridServices,
+      totalOnGridSites,
+      totalOnGridCapacity,
+      totalOffGridSites,
+      totalOffGridCapacity,
+      totalSites: totalOnGridSites + totalOffGridSites,
+      totalCapacity: totalOnGridCapacity + totalOffGridCapacity,
+      totalPaidServices
+    };
+  };
+
+  const {
+    onGrid,
+    offGrid,
+    totalOnGridSites,
+    totalOnGridCapacity,
+    totalOffGridSites,
+    totalOffGridCapacity,
+    totalSites,
+    totalCapacity,
+    totalPaidServices
+  } = processServiceData();
+
+  // Format service round names to match the example
+  const formatServiceRound = (round) => {
+    if (round.includes('Paid Service')) {
+      return round.replace('Paid Service', 'Paid Service');
+    }
+    return round.replace('Service', 'Service');
+  };
+
+  return (
+    <div style={styles.container}>
+            <div style={{ marginBottom: "20px" }}>
+        <label style={{ fontSize: "17px", fontWeight: "bold" }}>
+          Year: 
+          <select 
+            value={selectedYear} 
+            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+            style={{ marginLeft: "10px" }}
+          >
+            {years.map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <h1 style={{ fontSize: "22px", fontWeight: "bold", marginBottom: "20px" }}>Annual Service Summary - {summaryData?.year}</h1>
+      <div className='flex justify-center overflow-x-auto mt-6'>
+      <table style={styles.table}>
+        <thead>
+          <tr>
+            <th style={styles.th}></th>
+            <th style={{...styles.th, width:'30%'}}>Service Round</th>
+            <th style={{...styles.th, width:'20%'}}>Number of Sites</th>
+            <th style={{...styles.th, width:'35%'}}>Serviced Solar Panel Capacity (kW)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* On-grid services */}
+          <tr style={styles.gridHeader}>
+            <td style={{...styles.td, ...styles.gridType}} rowSpan={onGrid.length + 1}>On-grid</td>
+          </tr>
+          {onGrid.map((service, index) => (
+            <tr key={`on-grid-${index}`}>
+              <td style={styles.td}>{formatServiceRound(service.service_round)}</td>
+              <td style={styles.td}>{service.no_of_sites}</td>
+              <td style={styles.td}>{service.capacity.toFixed(2)}</td>
+            </tr>
+          ))}
+          <tr style={styles.totalRow}>
+            <td style={styles.td}></td> 
+            <td style={styles.td}><strong>Total On-grid</strong></td>
+            <td style={styles.td}><strong>{totalOnGridSites}</strong></td>
+            <td style={styles.td}><strong>{totalOnGridCapacity.toFixed(2)}</strong></td>
+          </tr>
+          
+          {/* Off-grid services */}
+          <tr style={styles.gridHeader}>
+            <td style={{...styles.td, ...styles.gridType}} rowSpan={offGrid.length + 1}>Off-grid</td>
+          </tr>
+          {offGrid.map((service, index) => (
+            <tr key={`off-grid-${index}`}>
+              <td style={styles.td}>{formatServiceRound(service.service_round)}</td>
+              <td style={styles.td}>{service.no_of_sites}</td>
+              <td style={styles.td}>{service.capacity.toFixed(2)}</td>
+            </tr>
+          ))}
+          <tr style={styles.totalRow}>
+            <td style={styles.td}></td> 
+            <td style={styles.td}><strong>Total Off-grid</strong></td>
+            <td style={styles.td}><strong>{totalOffGridSites}</strong></td>
+            <td style={styles.td}><strong>{totalOffGridCapacity.toFixed(2)}</strong></td>
+          </tr>
+          
+          {/* Overall totals */}
+          <tr style={styles.grandTotalRow}>
+            <td style={styles.td} colSpan="2"><strong>Number of Sites Serviced in {summaryData?.year}</strong></td>
+            <td style={styles.td} colSpan="2"><strong>{totalSites}</strong></td>
+          </tr>
+          <tr style={styles.grandTotalRow}>
+            <td style={styles.td} colSpan="2"><strong>Total Capacity Serviced</strong></td>
+            <td style={styles.td} colSpan="2"><strong>{totalCapacity.toFixed(2)}</strong></td>
+          </tr>
+          <tr style={styles.grandTotalRow}>
+            <td style={styles.td} colSpan="2"><strong>Total Paid Services</strong></td>
+            <td style={styles.td} colSpan="2"><strong>{totalPaidServices}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  );
+};
+
+const styles = {
+  container: {
+    padding: '20px',
+    fontFamily: 'Arial, sans-serif',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    margin: '20px 0'
+  },
+  title: {
+    marginBottom: '20px',
+    color: '#333',
+    borderBottom: '2px solid #f0f0f0',
+    paddingBottom: '10px'
+  },
+  table: {
+    width: '80%',
+    borderCollapse: 'collapse',
+    marginBottom: '20px',
+    
+    
+  },
+  th: {
+    border: '1px solid #B6B6B6',
+    padding: '8px',
+    textAlign: 'left',
+    backgroundColor: '#f2f2f2',
+    fontWeight: 'bold',
+  },
+  td: {
+    border: '1px solid #B6B6B6',
+    padding: '8px',
+    textAlign: 'left',
+  },
+  gridType: {
+    fontWeight: 'bold',
+    backgroundColor: '#B8EBFF',
+    verticalAlign: 'top',
+  },
+  gridHeader: {
+    backgroundColor: '#f8f9fa',
+  },
+  totalRow: {
+    backgroundColor: '#f0f0f0',
+  },
+  grandTotalRow: {
+    backgroundColor: '#DAFFBF',
+  },
+  loading: {
+    textAlign: 'center',
+    padding: '20px',
+    fontSize: '18px',
+  },
+  error: {
+    color: '#dc3545',
+    textAlign: 'center',
+    padding: '20px',
+    fontSize: '18px',
+  },
+  paidServicesNote: {
+    marginTop: '20px',
+    padding: '10px',
+    backgroundColor: '#f8f9fa',
+    borderLeft: '4px solid #95EBF4',
+  }
+};
+
+export default AnnualServiceSummary;

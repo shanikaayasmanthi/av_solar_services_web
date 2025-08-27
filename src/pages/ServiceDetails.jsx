@@ -139,7 +139,7 @@ const formatTime = (dateString) => {
     <div className="relative mx-auto">
       <div className="flex gap-2 items-start">
   <div
-    className="text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
     onClick={() => navigate(-1)}
   >
     <ArrowBackIcon fontSize="medium" />
@@ -188,7 +188,7 @@ const formatTime = (dateString) => {
             { label: "Longitude", value: locationData.longitude || 'Loading...' },
             { label: "Latitude", value: locationData.latitude || 'Loading...' }
           ].map((item, idx) => (
-            <div key={idx} className="bg-white rounded-lg shadow-sm p-3 border border-gray-300 hover:scale-105 transition-transform duration-200">
+            <div key={idx} className="bg-white rounded-lg shadow-sm p-3 border border-gray-300 ">
               <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{item.label}</p>
               <p className="text-md font-semibold mt-1">{item.value}</p>
             </div>

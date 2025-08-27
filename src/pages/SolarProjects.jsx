@@ -10,7 +10,7 @@ export default function SolarProjects() {
     const [externalSubTab, setExternalSubTab] = useState('All'); // sub-tabs for external
     const [projects, setProjects] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
     const [totalItems, setTotalItems] = useState(0);
     const { token } = useAuth(); // Destructuring token from useAuth
     const [showAddModel, setShowAddModel] = useState(false);
@@ -25,6 +25,7 @@ export default function SolarProjects() {
         let params = {
             page: pageNumber,
             query: searchQuery,
+            per_page: itemsPerPage,
         };
 
         // Determine which API endpoint to call
@@ -222,7 +223,7 @@ export default function SolarProjects() {
             </div>
 
             {/* here i want to show the project rows */}
-            <div className="grid grid-cols-1 gap-4 pl-10 mt-6">
+            <div className="grid grid-cols-2 gap-6 pl-10 mt-10">
                 {projects.length > 0 ? (
                     projects.map((project) => (
                         <SolarProjectRow
@@ -241,7 +242,7 @@ export default function SolarProjects() {
 
             {/* Pagination Controls */}
                {totalItems > itemsPerPage && (
-    <div className="flex justify-end mt-6  right-20">
+    <div className="flex justify-end mt-10 right-20">
         <Pagination
             activePage={currentPage}
             itemsCountPerPage={itemsPerPage}

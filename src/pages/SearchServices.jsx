@@ -58,8 +58,8 @@ const SearchServices = () => {
       <div className="origin-top-left scale-[0.75] w-[133.33%]">
       <div className="relative">
         <div className="flex items-center justify-between mb-10 mr-10">
-          <div className='flex gap-2 align-middle contents-center'>
-            <div className=' text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200' onClick={() => navigate(-1)}>
+          <div className='flex gap-1 align-middle contents-center'>
+            <div className=' text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200' onClick={() => navigate(-1)}>
               <ArrowBackIcon fontSize='medium' />
             </div>
             <h1 className="text-3xl font-bold">Completed Services</h1>
@@ -87,7 +87,7 @@ const SearchServices = () => {
             <ProjectCard filteredProjects={filteredProjects} handleDetailsClick={handleDetailsClick} />
           )}
         </div>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-6">
   <button
     onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
     disabled={currentPage === 1}
@@ -117,7 +117,7 @@ const ProjectCard = ({ filteredProjects, handleDetailsClick }) => {
       {filteredProjects.map((project, index) => (
         <div
           key={index}
-          className="w-full max-w-sm p-6 border border-gray-300 bg-white rounded-xl shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+               className="w-full max-w-sm p-6 border border-gray-300 bg-white rounded-xl shadow-sm hover:shadow-lg  hover:-translate-y-1 hover:border-lg border-2  hover:border-teal-500 transform duration-300 cursor-pointer"
           onClick={() => handleDetailsClick(project)}
         >
           <div className="flex items-center justify-end mb-4">

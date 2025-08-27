@@ -18,7 +18,7 @@ export default function ServiceSummaryCard({ service, project_id, project_no}) {
   return (
     <div>
       <div
-        className={`p-[10px_15px] rounded-lg min-w-[140px] text-center ${service.service_type === 'free' ? 'bg-[#d5f7e9]' : 'bg-[#f7f7d5]'}`}
+        className={`p-[10px_15px] rounded-lg min-w-[140px] text-center ${service.service_type === 'free' ? 'bg-[#d5f7e9]' : 'bg-[#f7f7d5]'} hover:transform hover:scale-105 transition-transform duration-200`}
       >
      <Link
   to={`/servicedetails/${service.service_id}/${project_id}`} 

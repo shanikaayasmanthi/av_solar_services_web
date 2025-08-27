@@ -79,9 +79,9 @@ const CompletedServices = () => {
 <div className="origin-top-left scale-[0.75] w-[133.33%]">
       <div className="relative mx-auto">
         
-<div className="flex gap-2 items-start">
+<div className="flex gap-1 items-start">
   <div
-    className="text-black cursor-pointer bg-gray-200 px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
     onClick={() => navigate(-1)}
   >
     <ArrowBackIcon fontSize="medium" />
@@ -104,7 +104,7 @@ const CompletedServices = () => {
               return (
                 <div
                   key={index}
-                  className="flex flex-row items-center justify-between border border-gray-200 p-4 rounded-lg bg-white shadow-md hover:shadow-lg  hover:-translate-y-1 transition-shadow duration-300 max-w-lg w-full sm:max-w-xl mt-4"
+                  className="flex flex-row items-center justify-between border border-gray-300 border-2 p-4 rounded-lg bg-white shadow-md transition-shadow duration-300 max-w-lg w-full sm:max-w-xl mt-4"
                 >
                   <span className="font-semibold text-gray-700 text-lg">
                     {getOrdinal(service.service_round)} Round Service - {service.service_date}
