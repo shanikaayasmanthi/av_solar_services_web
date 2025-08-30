@@ -146,7 +146,7 @@ export default function CustomerCard({ projectId }) {
         <h3 className="text-lg font-semibold">Customer Details</h3>
         <button
           onClick={handleEditToggle}
-          className={`px-3 py-1 rounded-md ${editing ? 'bg-red-200 text-gray-800 hover:bg-red-400' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
+          className={`px-3 py-1 rounded-md ${editing ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
         >
           {editing ? 'Cancel' : 'Edit'}
         </button>
@@ -172,7 +172,7 @@ export default function CustomerCard({ projectId }) {
             disabled={!editing}
             className={`w-[90%] p-2 rounded-lg border ${
               editing
-                ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+                ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
                 : 'bg-gray-200 border-gray-300'
             }`}
           />
@@ -188,7 +188,7 @@ export default function CustomerCard({ projectId }) {
                   <input
                     value={phone}
                     onChange={(e) => handlePhoneChange(index, e.target.value)}
-                    className="flex-1 p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="flex-1 p-2 rounded-lg border border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                   <button
                     onClick={() => removePhoneNumber(index)}
@@ -237,7 +237,7 @@ export default function CustomerCard({ projectId }) {
             disabled={!editing}
             className={`w-[90%] p-2 rounded-lg border ${
               editing
-                ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+                ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
                 : 'bg-gray-200 border-gray-300'
             }`}
           />
@@ -253,7 +253,7 @@ export default function CustomerCard({ projectId }) {
             disabled={!editing}
             className={`w-[90%] p-2 rounded-lg border ${
               editing
-                ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+                ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
                 : 'bg-gray-200 border-gray-300'
             }`}
           />

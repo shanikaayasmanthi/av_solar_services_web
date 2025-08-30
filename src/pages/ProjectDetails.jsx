@@ -100,8 +100,8 @@ const ProjectDetails = () => {
 
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
-      {/* <div> */}
-      {!projectLoading &&
+      {/* <div> */} 
+      {!projectLoading &&  project?.type &&
       (
         <>
             <div className='flex gap-1 align-baseline contents-center'>
@@ -115,7 +115,7 @@ const ProjectDetails = () => {
 
 
               {/* <ArrowLeftCircleIcon className='w-6 h-6 my-2 text-black cursor-pointer' onClick={() => navigate(-1)}/> */}
-              <h1 className="mb-6 text-3xl font-bold">Project No :{project.type=='ongrid'?onGrid.on_grid_project_id:offGrid.off_grid_hybrid_project_id}({project?.type})</h1>
+              <h1 className="mb-6 text-3xl font-bold">Project No :{project.type=='ongrid'?onGrid.on_grid_project_id:offGrid.off_grid_hybrid_project_id}({project.type})</h1>
 
             </div>
 
@@ -165,9 +165,31 @@ const ProjectDetails = () => {
     <div
       className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]"
     >
-    {      project.type == 'ongrid'?
-    (<OngridProjectDataCard project={project} onGrid={onGrid}/>)
-    :(<OffgridProjectDataCard project={project} offGrid={offGrid}/>)}
+{ project.type == 'ongrid'
+  ? (
+      <OngridProjectDataCard 
+        project={project}
+        onGrid={onGrid}
+        offGrid={offGrid}
+        setProject={setProject}
+        setOnGrid={setOnGrid}
+        setOffGrid={setOffGrid}
+
+      />
+    )
+  : (
+      <OffgridProjectDataCard 
+        project={project}
+        onGrid={onGrid}
+        offGrid={offGrid}
+        setProject={setProject}
+        setOnGrid={setOnGrid}
+        setOffGrid={setOffGrid}
+
+      />
+    )
+}
+
       
     </div>
   </div>
@@ -181,6 +203,8 @@ const ProjectDetails = () => {
     
 
   )
+  
+
 }
 
 export default ProjectDetails

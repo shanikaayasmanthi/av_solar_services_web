@@ -4,138 +4,262 @@ import SolarPanelDetailsModel from './SolarPanelDetailsModel';
 import InverterDetailsModel from './InverterDetailsModel';
 import BatteryDetailsModel from './BatteryDetailsModel';
 import WifiDetailsModel from './wifiDetailsModel';
+import axios from 'axios';   
+import { useParams } from 'react-router-dom'; 
+import { useAuth } from '../contexts/AuthContext'; 
 
-export default function OffgridProjectDataCard({project, offGrid}) {
-
+export default function OffgridProjectDataCard({project, onGrid, offGrid, setProject, setOffGrid, setOnGrid}) {
+  const { id: projectId } = useParams(); 
+  const { token } = useAuth();
   const [showSolarPanelModal, setShowSolarPanelModal] = useState(false);
   const [showInverterModal, setShowInverterModal] = useState(false);
   const [showWifiModal, setShowWifiModal] = useState(false);
   const [showBatteryModal, setShowBatteryModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+
+    // helper function to format datetime
+  const formatDateForMysql = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    return d.toISOString().slice(0, 19).replace("T", " ");
+  };
+
+  
+const handleSave = async () => {
+  try {
+    const response = await axios.post(
+      `http://127.0.0.1:8000/api/update-project`,
+      {
+        project_id: projectId,
+        project: {
+            ...project,
+            project_installation_date: formatDateForMysql(project.project_installation_date),
+            system_on: formatDateForMysql(project.system_on),
+            service_rounds_in_agreement: project.service_rounds_in_agreement || 0,
+            service_years_in_agreement: project.service_years_in_agreement || 0,
+           remarks: project.remarks || "",
+          },
+          off_grid_hybrid: {
+            ...offGrid,
+            remarks: offGrid.remarks || "",
+          }
+        },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+
+    if (response.status === 200) {
+      alert("Project updated successfully!");
+      setProject(response.data.data.project);
+      setOnGrid(response.data.data.on_grid || {});
+      setOffGrid(response.data.data.off_grid_hybrid || {});
+      setEditMode(false);
+    }
+  } catch (error) {
+    console.error("Error updating project:", error);
+    alert("Failed to update project");
+  }
+};
+
   
   return (
     <div>
-      <div class="flex justify-between items-center mb-2.5">
-        <h3 class="m-0 text-lg font-semibold">Project Details</h3>
-        <InformationCircleIcon className='h-7 w-7'/>
+      <div className="flex justify-between items-center mb-2.5">
+        <h3 className="m-0 text-lg font-semibold">Project Details</h3>
+        <button
+         className={`px-3 py-1 rounded-md ${editMode ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
+          onClick={() => setEditMode(!editMode)}
+        >
+          {editMode ? "Cancel" : "Edit"}
+        </button>
+
       </div>
-      <div class="card-content">
-        <label class="block text-sm mt-2.5 mb-1.5">Site address</label>
+      <div className="card-content">
+        <label className="block text-sm mt-2.5 mb-1.5">Site address</label>
         <input
-          disabled
+          disabled={!editMode}
           value={project?.project_address || ''}
-          class="w-[90%] p-2 rounded-lg border border-gray-300 bg-gray-200"
+          onChange={(e) => setProject({ ...project, project_address: e.target.value })}
+              className={`w-[90%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border`}
         />
 
-        <div class="flex flex-row flex-wrap">
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">Connection type</label>
+        <div className="flex flex-row flex-wrap">
+          <div className="flex flex-col w-1/2">
+            <label className="block text-sm mt-2.5 mb-1.5">Connection type</label>
             <input
-              disabled
-              value={offGrid?.connection_type || '-'}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
+              disabled={!editMode}
+              value={offGrid?.connection_type || ''}
+              onChange={(e) => setOffGrid({ ...offGrid, connection_type: e.target.value })}
+                                           className={`w-[70%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[4%]`}
             />
           </div>
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">Service Years & Rounds</label>
-            <input
-              disabled
-              value={`${project?.service_rounds_in_agreement || '0'} rounds for ${project?.service_years_in_agreement || '0'} years`}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
-            />
+ <div className="flex flex-col w-1/2 pr-2">
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-col w-1/2">
+                <label className="block text-sm mt-2.5 mb-1.5">Service Years</label>
+                <input
+                  type="number"
+                  disabled={!editMode}
+                  value={project?.service_years_in_agreement || 0}
+                  onChange={(e) => setProject({ ...project, service_years_in_agreement: e.target.value })}
+                                className={`w-[50%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[1%]`}
+                />
+              </div>
+              <div className="flex flex-col w-1/2">
+                <label className="block text-sm mt-2.5 mb-1.5">Service Rounds</label>
+                <input
+                  type="number"
+                  disabled={!editMode}
+                  value={project?.service_rounds_in_agreement || 0}
+                  onChange={(e) => setProject({ ...project, service_rounds_in_agreement: e.target.value })}
+                                 className={`w-[50%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[1%]`}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="flex flex-row justify-between">
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">Nearest town</label>
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-col w-1/2">
+            <label className="block text-sm mt-2.5 mb-1.5">Nearest town</label>
             <input
-              disabled
+              disabled={!editMode}
               value={project?.neatest_town || '-'}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
+              onChange={(e) => setProject({ ...project, neatest_town: e.target.value })}
+                                           className={`w-[70%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[4%]`}
             />
           </div>
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">No. of panels</label>
+          <div className="flex flex-col w-1/2">
+            <label className="block text-sm mt-2.5 mb-1.5">No. of panels</label>
             <input
-              disabled
+              disabled={!editMode}
               value={project?.no_of_panels || '0'}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
+              onChange={(e) => setProject({ ...project, no_of_panels: e.target.value })}
+                                            className={`w-[70%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[4%]`}
             />
           </div>
         </div>
-        <div class="flex flex-row justify-between">
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">
-              Project installation on
-            </label>
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-col w-1/2">
+            <label className="block text-sm mt-2.5 mb-1.5">Project installation on</label>
             <input
-              disabled
-              value={project?.project_installation_date || 'Not installed yet'}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
+              type="date"
+              disabled={!editMode}
+              value={project?.project_installation_date ? project.project_installation_date.split(" ")[0] : ""}
+              onChange={(e) => setProject({ ...project, project_installation_date: e.target.value })}
+                                         className={`w-[70%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[4%]`}
             />
           </div>
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">System on</label>
+          <div className="flex flex-col w-1/2">
+          
+            <label className="block text-sm mt-2.5 mb-1.5">System on</label>
             <input
-              disabled
-              value={project?.system_on || 'Not started'}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
+              type="date"
+              disabled={!editMode}
+              value={project?.system_on ? project.system_on.split(" ")[0] : ""}
+              onChange={(e) => setProject({ ...project, system_on: e.target.value })}
+                                            className={`w-[70%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[4%]`}
             />
           </div>
         </div>
-        <label class="block text-sm mt-2.5 mb-1.5">Special Note</label>
+       
+        {/* General Remarks (from projects table) */}
+        <label className="block text-sm mt-2.5 mb-1.5">General Remarks</label>
         <textarea
-          disabled
-          value={`${project?.remarks|| offGrid?.remarks ||'No special notes'}`}
-          class="w-[90%] p-2 rounded-lg border border-gray-300 bg-gray-200"
+          disabled={!editMode}
+          value={project?.remarks || ''}
+          onChange={(e) => setProject({ ...project, remarks: e.target.value })}
+              className={`w-[90%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border`}
+          placeholder="General project remarks"
+          rows="1" 
         />
 
-        <div class="flex flex-row justify-between">
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">Longitude</label>
+        {/* System Remarks (from off_grid_hybrids table) */}
+        <label className="block text-sm mt-2.5 mb-1.5">System Remarks</label>
+        <textarea
+          disabled={!editMode}
+          value={offGrid?.remarks || ''}
+          onChange={(e) => setOffGrid({ ...offGrid, remarks: e.target.value })}
+              className={`w-[90%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border`}
+          placeholder="System-specific remarks"
+           rows="1" 
+        />
+
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-col w-1/2">
+            <label className="block text-sm mt-2.5 mb-1.5">Longitude</label>
             <input
-              disabled
+              disabled={!editMode}
               value={project?.longitude || ''}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
+              onChange={(e) => setProject({ ...project, longitude: e.target.value })}
+                                           className={`w-[70%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[4%]`}
             />
           </div>
-          <div class="flex flex-col w-1/2">
-            <label class="block text-sm mt-2.5 mb-1.5">Latitude</label>
+          <div className="flex flex-col w-1/2">
+            <label className="block text-sm mt-2.5 mb-1.5">Latitude</label>
             <input
-              disabled
+              disabled={!editMode}
               value={project?.lattitude || ''}
-              class="w-[70%] p-2 rounded-lg border border-gray-300 bg-gray-200 mr-[4%]"
+              onChange={(e) => setProject({ ...project, lattitude: e.target.value })}
+                                         className={`w-[70%] p-2 rounded-lg ${editMode ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
+                : 'bg-gray-200 border-gray-300'} border mr-[4%]`}
             />
           </div>
         </div>
-        <div class="mt-4 flex gap-2.5 flex-wrap">
+
+
+        <div className="mt-4 flex gap-2.5 flex-wrap">
           <button
-            class="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
+            className="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
             onClick={() => setShowSolarPanelModal(true)}
           >
             Solar Panel Details
           </button>
           {/* <SolarPanelModal show={showModal} onClose={() => setShowModal(false)} /> */}
           <button
-            class="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
+            className="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
             onClick={() => setShowInverterModal(true)}
           >
             Invertor Details
           </button>
           <button
-            class="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
+            className="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
             onClick={() => setShowBatteryModal(true)}
           >
             Battery Details
           </button>
           <button
-            class="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
+            className="bg-[#00a68b] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer hover:bg-[#008f76]"
             onClick={() => setShowWifiModal(true)}
           >
             Wifi Details
           </button>
            
         </div>
+
+                {editMode && (
+          <div className="pt-4 flex justify-end">
+          <button
+            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            onClick={handleSave}
+          >
+            Save Changes
+          </button>
+          </div>
+)}
       </div>
 
       {showSolarPanelModal && (

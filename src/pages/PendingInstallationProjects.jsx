@@ -102,7 +102,7 @@ export default function PendingInstallationProjects() {
     return (
         <div className="origin-top-left scale-[0.75] w-[133.33%]">
         <div className="relative mx-auto">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-10">
                 <h1 className="text-3xl font-bold">Pending Installation Projects</h1>
                 
                 <div className="relative">
@@ -136,7 +136,7 @@ export default function PendingInstallationProjects() {
                 </div>
             ) : currentProjects.length > 0 ? (
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
                         {currentProjects.map((project) => (
                             <div key={project.project_id} className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden ">
                                 <div className="p-6">

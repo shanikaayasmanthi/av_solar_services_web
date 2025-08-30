@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext.jsx";
 // import Logo from "../images/AVlogo.jpeg"; // assuming this path is correct
 
+
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -41,7 +43,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-white">
+    <div className="flex items-center justify-center min-h-screen px-4 bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: "url('/LoginBg.jpg')", 
+        backgroundImage: "linear-gradient(rgba(228, 228, 228, 0), rgba(20, 46, 101, 0.5)), url('/LoginBg.jpg')"
+      }}
+    >
+
       <div className="w-full max-w-md p-6 bg-white shadow-xl rounded-xl">
         <img src="/AVlogo.jpeg" alt="Login Logo" className="w-32 mx-auto mb-4" />
 

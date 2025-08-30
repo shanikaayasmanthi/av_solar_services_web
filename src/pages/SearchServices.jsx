@@ -80,7 +80,7 @@ const SearchServices = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {filteredProjects.length === 0 ? (
             <div className="text-gray-500">No matching projects found.</div>
           ) : (
@@ -113,7 +113,7 @@ const SearchServices = () => {
 
 const ProjectCard = ({ filteredProjects, handleDetailsClick }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 p-6">
       {filteredProjects.map((project, index) => (
         <div
           key={index}
