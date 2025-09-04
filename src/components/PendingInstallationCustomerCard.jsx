@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import EditDocumentIcon from '@mui/icons-material/EditDocument';
+import CloseIcon from '@mui/icons-material/Close';
 
 const PendingInstallationCustomerCard = ({ projectId }) => {
   const { token } = useAuth();
@@ -137,9 +139,9 @@ const PendingInstallationCustomerCard = ({ projectId }) => {
         <h3 className="text-lg font-semibold">Customer Details</h3>
         <button
           onClick={handleEditToggle}
-          className={`px-3 py-1 rounded-md ${editing ? 'bg-red-200 text-gray-800 hover:bg-red-400' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
+          className={`px-2 py-2 rounded-md ${editing ? 'bg-red-400 text-white hover:bg-red-600' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
         >
-          {editing ? 'Cancel' : 'Edit'}
+          {editing ?  <CloseIcon fontSize="medium" /> : <EditDocumentIcon fontSize="medium" />}
         </button>
       </div>
 

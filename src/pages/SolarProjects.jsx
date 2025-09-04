@@ -202,7 +202,7 @@ export default function SolarProjects() {
                             </svg>
                         </div>
                         <div className="relative">
-                            <button className="flex items-center justify-center w-10 h-10 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                            <button className="flex items-center justify-center w-10 h-10 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 hover:transform hover:scale-105 transition-transform duration-200"
                         onClick={()=>{setShowAddModel(true)}}>
                             <svg
                                 className="w-6 h-6"

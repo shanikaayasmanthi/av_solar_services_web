@@ -100,12 +100,13 @@
 // src/components/Header.jsx
 // src/components/Header.jsx
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import axios from "axios";
+
 
 const Header = () => {
   const navigate = useNavigate();
@@ -113,6 +114,9 @@ const Header = () => {
   const { user, token, logout } = useAuth();
 
   const handleClick = () => {
+    const currentNotificationIds = notifications.map(n => n.project_id).join(',');
+    localStorage.setItem('seenNotificationIds', currentNotificationIds);
+    setUnseenNotificationCount(0);
     navigate("/dueservice");
   };
 
@@ -155,6 +159,48 @@ const Header = () => {
     }
   };
 
+  const [notifications, setNotifications] = useState([]);
+  const [unseenNotificationCount, setUnseenNotificationCount] = useState(0);
+
+  useEffect(() => {
+  const fetchNotificationCount = async () => {
+    try {
+      const response = await axios.get(
+        'http://127.0.0.1:8000/api/services/notifications',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+        if (response.data.status === 'success') {
+          const newNotifications = response.data.notifications;
+          setNotifications(newNotifications);
+           // Get the seen notification IDs from localStorage
+          const seenIdsStr = localStorage.getItem('seenNotificationIds') || '';
+          const seenIds = seenIdsStr.split(',').filter(id => id !== '');
+          
+          // Calculate unseen notifications (those not in the seen list)
+          const unseenNotifications = newNotifications.filter(
+            notification => !seenIds.includes(notification.project_id.toString())
+          );
+          
+          setUnseenNotificationCount(unseenNotifications.length);
+        }
+      } catch (err) {
+        console.error('Error fetching notifications:', err);
+      }
+    };
+
+  fetchNotificationCount();
+  
+  // Set up interval for refreshing count
+  const interval = setInterval(fetchNotificationCount, 300000);
+  
+  return () => clearInterval(interval);
+}, [token]);
+
   const handleLogout = async() => {
     const logoutResponse = await logoutUser();
     if(logoutResponse==true){
@@ -176,12 +222,15 @@ const Header = () => {
         <div 
           className="relative p-2 text-teal-600 cursor-pointer rounded-full transition-all duration-300 hover:bg-teal-50 hover:text-teal-700 hover:scale-110"
           onClick={handleClick}
+          
         >
-          <NotificationsActiveIcon fontSize="medium" className="md:text-2xl" />
-          {/* Notification badge */}
-          {/* <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-            3
-          </span> */}
+          {/* <Notification /> */}
+  <NotificationsActiveIcon fontSize="medium" className="md:text-2xl" />
+ {unseenNotificationCount > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+              {unseenNotificationCount}
+            </span>
+          )}
         </div>
 
         <span className="hidden text-base font-medium text-gray-700 md:inline lg:text-md">

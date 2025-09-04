@@ -146,7 +146,7 @@ export default function PendingInstallationProjects() {
                                             <p className="text-m font-semibold text-gray-800">#{project.project_no}</p>
                                         </div>
                                         <span className={`px-2 py-1 text-s font-semibold rounded-md
-                                            ${project.type === 'ongrid' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
+                                            ${project.type === 'ongrid' ? ' text-green-700' : ' text-blue-700'}`}>
                                             {project.type === 'ongrid' ? 'On-Grid' : 'Off-Grid'}
                                         </span>
                                     </div>
@@ -170,7 +170,7 @@ export default function PendingInstallationProjects() {
                                     <div className="mt-6 flex justify-end">
                                         <button 
                                             onClick={() => handleViewDetails(project)}
-                                            className="px-3 py-1 text-sm text-white bg-teal-600 hover:bg-teal-700 font-medium rounded-md border border-teal-500 hover:border-teal-800 hover:transform hover:scale-105 transition-transform duration-200"
+                                            className="px-3 py-1 text-sm text-white bg-teal-500 hover:bg-teal-700 font-medium rounded-md border border-teal-500 hover:border-teal-800 hover:transform hover:scale-105 transition-transform duration-200"
                                         >
                                             Installation Details
                                         </button>

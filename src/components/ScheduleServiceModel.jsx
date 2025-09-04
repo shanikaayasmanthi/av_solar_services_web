@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { PrinterIcon } from "@heroicons/react/24/outline";
-import { CalendarDaysIcon } from "@heroicons/react/16/solid";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 
@@ -237,7 +237,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           {/* Topic 1 - Header with Print Icon and Title */}
           <div className="flex items-center mb-5 gap-7">
             <div className="text-gray-700">
-              <CalendarDaysIcon className="w-7 h-7" />{" "}
+              <CalendarMonthIcon fontSize='medium' />{" "}
             </div>
             <h3 className="m-0 text-xl font-semibold">Schedule Next Service</h3>{" "}
           </div>

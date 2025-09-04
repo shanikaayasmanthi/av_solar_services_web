@@ -7,6 +7,9 @@ import WifiDetailsModel from './wifiDetailsModel';
 import axios from 'axios';   
 import { useParams } from 'react-router-dom'; 
 import { useAuth } from '../contexts/AuthContext'; 
+import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
+import EditDocumentIcon from '@mui/icons-material/EditDocument';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function OffgridProjectDataCard({project, onGrid, offGrid, setProject, setOffGrid, setOnGrid}) {
   const { id: projectId } = useParams(); 
@@ -63,20 +66,228 @@ const handleSave = async () => {
   }
 };
 
+  const handlePrint = () => {
+  const printContent = document.getElementById("printable-project").outerHTML;
+  const printWindow = window.open("", "_blank", "width=900,height=700");
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Project Report - ${project?.id || ""}</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          h1, h2, h3 { margin-bottom: 10px; }
+          label { font-weight: bold; display: block; margin-top: 10px; }
+          p, span { margin: 4px 0; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+          th { background: #f4f4f4; }
+          .section { margin-top: 20px; }
+        </style>
+      </head>
+      <body>
+        <h1>Project Report</h1>
+        <h2>Project No: ${offGrid?.off_grid_hybrid_project_id || ""}</h2>
+
+        ${printContent}
+
+        <div class="section">
+          <h2>Inverter Details</h2>
+          <div id="inverter-details"></div>
+        </div>
+
+        <div class="section">
+          <h2>Solar Panel Details</h2>
+          <div id="solar-details"></div>
+        </div>
+
+        <div class="section">
+          <h2>Wifi Details</h2>
+          <div id="wifi-details"></div>
+        </div>
+
+        <div class="section">
+          <h2>Battery Details</h2>
+          <div id="battery-details"></div>
+        </div>
+
+
+        <footer style="margin-top:40px; font-size:12px; text-align:center;">
+          Generated on ${new Date().toLocaleString()}
+        </footer>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+
+    fetchAndInsertDetails(printWindow, projectId, { 
+    username: offGrid?.wifi_username, 
+    password: offGrid?.wifi_passowrd 
+  });
+
+  // fetch and inject extra details dynamically
+  // fetchAndInsertDetails(printWindow, projectId);
+};
+
+const fetchAndInsertDetails = async (printWindow, projectId, wifiDetails) => {
+  
+  try {
+    // Inverter details
+    const inverterRes = await axios.get("http://127.0.0.1:8000/api/get-inverters", {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { project_id: projectId }
+    });
+    const inverters = inverterRes.data.data.inverters || [];
+
+    const inverterTable = inverters.length > 0 ? `
+      <table>
+        <thead>
+          <tr>
+            <th>Brand</th>
+            <th>Model No</th>
+            <th>Check Code</th>
+            <th>Serial No</th>
+            <th>Capacity</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${inverters.map(inv => `
+            <tr>
+              <td>${inv.brand}</td>
+              <td>${inv.invertor_model_no}</td>
+              <td>${inv.invertor_check_code}</td>
+              <td>${inv.invertor_serial_no}</td>
+              <td>${inv.invertor_capacity}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    ` : "<p>No inverter data available.</p>";
+
+    printWindow.document.getElementById("inverter-details").innerHTML = inverterTable;
+
+
+
+    // Solar Panel details
+const solarRes = await axios.get("http://127.0.0.1:8000/api/get-solar-panel", {
+  headers: { Authorization: `Bearer ${token}` },
+  params: { project_id: projectId }
+});
+const panels = solarRes.data.data.solar_panels || [];
+
+const solarTable = panels.length > 0 ? `
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Model Code</th>
+        <th>Type</th>
+        <th>Wattage</th>
+        <th>No. of Panels</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${panels.map(panel => `
+        <tr>
+          <td>${panel.solar_panel_model || "-"}</td>
+          <td>${panel.panel_model_code || "-"}</td>
+          <td>${panel.panel_type || "-"}</td>
+          <td>${panel.wattage_of_pannel || "-"}</td>
+          <td>${panel.no_of_panels || "-"}</td>
+        </tr>
+      `).join("")}
+    </tbody>
+  </table>
+` : "<p>No solar panel data available.</p>";
+
+printWindow.document.getElementById("solar-details").innerHTML = solarTable;
+
+
+       //  Wifi details (no API, just props passed in)
+    const wifiTable = wifiDetails
+      ? `
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Password</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${wifiDetails.username || "Not set"}</td>
+              <td>${wifiDetails.password || "Not set"}</td>
+            </tr>
+          </tbody>
+        </table>
+      `
+      : "<p>No WiFi details available.</p>";
+
+    printWindow.document.getElementById("wifi-details").innerHTML = wifiTable;
+
+  // 🔹 Battery details 
+    const batteryRes = await axios.get("http://127.0.0.1:8000/api/get-batteries", {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { off_grid_hybrid_project_id: offGrid?.off_grid_hybrid_project_id }
+    });
+    const batteries = batteryRes.data.data.batteries || [];
+    const batteryTable = batteries.length > 0 ? `
+      <table>
+        <thead>
+          <tr>
+            <th>Brand</th>
+            <th>Battery Model</th>
+            <th>Serial No</th>
+            <th>Capacity</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${batteries.map(bat => `
+            <tr>
+              <td>${bat.battery_brand || "-"}</td>
+              <td>${bat.battery_model || "-"}</td>
+              <td>${bat.battery_serial_no || "-"}</td>
+              <td>${bat.battery_capacity || "-"}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    ` : "<p>No battery data available.</p>";
+    printWindow.document.getElementById("battery-details").innerHTML = batteryTable;
+
+  } catch (err) {
+    console.error("Error fetching details for print:", err);
+  } finally {
+    printWindow.print();
+  }
+};
+
   
   return (
     <div>
       <div className="flex justify-between items-center mb-2.5">
         <h3 className="m-0 text-lg font-semibold">Project Details</h3>
+         <div className ="flex justify-end space-x-4">
         <button
-         className={`px-3 py-1 rounded-md ${editMode ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
+         className={`px-2 py-2 rounded-md ${editMode ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '} hover:transform hover:scale-105 transition-transform duration-200`}
           onClick={() => setEditMode(!editMode)}
         >
-          {editMode ? "Cancel" : "Edit"}
+          {editMode ?  <CloseIcon fontSize="medium" /> : <EditDocumentIcon fontSize="medium" />}
         </button>
-
+                {!editMode && (
+  <button
+    onClick={handlePrint}
+    className="bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-md shadow-md hover:transform hover:scale-105 transition-transform duration-200"
+  >
+     <LocalPrintshopSharpIcon fontSize="medium" />
+  </button>
+)}
+</div>
       </div>
       <div className="card-content">
+        <div id="printable-project">
         <label className="block text-sm mt-2.5 mb-1.5">Site address</label>
         <input
           disabled={!editMode}
@@ -219,6 +430,7 @@ const handleSave = async () => {
             />
           </div>
         </div>
+        </div>
 
 
         <div className="mt-4 flex gap-2.5 flex-wrap">
@@ -272,7 +484,7 @@ const handleSave = async () => {
         <BatteryDetailsModel show={showBatteryModal} onClose={()=>setShowBatteryModal(false)} offgridProjectId={offGrid.off_grid_hybrid_project_id}/>
       )}
         {showWifiModal && (
-            <WifiDetailsModel username={offGrid.wifi_username} password={offGrid.wifi_password} show={showWifiModal} onClose={()=>setShowWifiModal(false)}/>
+            <WifiDetailsModel username={offGrid.wifi_username} password={offGrid.wifi_passowrd} show={showWifiModal} onClose={()=>setShowWifiModal(false)}/>
         )}
     </div>
   )

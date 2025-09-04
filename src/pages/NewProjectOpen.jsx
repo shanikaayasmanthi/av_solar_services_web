@@ -16,13 +16,13 @@ const NewProjectOpen = () => {
     project_address: "",
     no_of_panels: "",
     project_no:null,
-    type: "", // 'on_grids' or 'offgridhybrids'
-    system_capacity: "", // Added for panel capacity
+    type: "", 
+    system_capacity: "",
     project_installation_date: "",
-    nearest_town: "", // Corrected typo from 'neatest_town' to 'nearest_town'
+    nearest_town: "", 
     service_years_in_agreement: "",
     service_rounds_in_agreement: "",
-    customer_id: customer_id || null, // Important!
+    customer_id: customer_id || null, 
   });
 
   // Log customer_id to ensure it's being received
@@ -42,7 +42,12 @@ const NewProjectOpen = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault(); 
+
+    if (!formData.service_years_in_agreement || !formData.service_rounds_in_agreement) {
+    alert("Please fill in both Service Years and Service Rounds fields");
+    return;
+  }
 
     try {
       const response = await axios.post(
@@ -61,7 +66,7 @@ const NewProjectOpen = () => {
         console.log("Project created:", response.data);
       alert("Project opened successfully!");
       // Optionally, navigate to another page or clear form
-      setFormData({ // Clear form after successful submission
+      setFormData({ // Clear form after succn;essful submission
         project_address: "",
         no_of_panels: "",
         type: "",
@@ -170,6 +175,19 @@ const NewProjectOpen = () => {
                 <option value="on_grid">On-grid</option>
                 <option value="off_grid&hybrid">Off-grid & Hybrid</option>
               </select>
+
+               <label htmlFor="longitude" className="block mt-2 text-sm font-medium text-gray-700">
+               Longitude
+              </label>
+              <input
+                id="longitude"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleChange}
+                type="double"
+                placeholder="longitude"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+              />
             </div>
 
             {/* Right Side */}
@@ -244,6 +262,7 @@ const NewProjectOpen = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="years"
+                    required
                     className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                   />
                 </div>
@@ -260,15 +279,30 @@ const NewProjectOpen = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="rounds"
+                    required
                     className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                   />
                 </div>
               </div>
+
+             <label htmlFor="lattitude" className="block mt-2 text-sm font-medium text-gray-700">
+               Latitude
+              </label>
+              <input
+                id="lattitude"
+                name="lattitude"
+                value={formData.lattitude}
+                onChange={handleChange}
+                type="double"
+                placeholder="latitude"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+              />
+
             </div>
           </div>
 
           <button
-            type="submit" // Important: set type="submit" for form button
+            type="submit" 
             className="self-center px-10 py-2 mt-2 font-semibold text-white transition-colors duration-200 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700"
           >
             Open Project

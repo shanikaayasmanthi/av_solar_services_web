@@ -9,6 +9,7 @@ import ServiceSummaryCard from '../components/ServiceSummaryCard';
 import OffgridProjectDataCard from '../components/OffgridProjectDetails';
 import ScheduleServiceModel from '../components/ScheduleServiceModel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const ProjectDetails = () => {
     const [schedule, setSchedule] = useState(false);
@@ -65,7 +66,7 @@ const ProjectDetails = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          params: {
+          params: { 
             project_id: projectId
           }
         }
@@ -132,9 +133,11 @@ const ProjectDetails = () => {
             className="rounded-full bg-[#00a68b] p-1.5 cursor-pointer" fontSize='medium'
             onClick={() => setSchedule(true)}
           /> */}
-          <CalendarDateRangeIcon className="icon h-8 w-8 bg-teal-600 text-white rounded-md p-1 cursor-pointer hover:bg-teal-700 hover:transform hover:scale-105 transition-transform duration-200" 
+          <div className="icon bg-teal-600 text-white rounded-md px-2 py-2 cursor-pointer hover:bg-teal-700 hover:transform hover:scale-105 transition-transform duration-200" 
             onClick={() => setSchedule(true)}
-          />
+          >
+            <CalendarMonthIcon fontSize='medium' />
+          </div>
           {/* <ScheduleService show={schedule} onClose={() => setSchedule(false)} /> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2.5">

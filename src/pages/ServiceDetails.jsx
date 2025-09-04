@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useAuth } from "../contexts/AuthContext";
 import InverterDetails from '../components/InverterDetails';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
 
 
 
@@ -134,9 +135,51 @@ const formatTime = (dateString) => {
     }
   };
 
+  const handlePrint = () => {
+  const printContent = document.getElementById("printable-content").outerHTML;
+  const printWindow = window.open("", "_blank", "width=900,height=700");
+  
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Service Detail - ${serviceDetails.project_no}</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          h1, h2, h3, p { margin: 0 0 10px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+          th { background-color: #f2f2f2; }
+          .card { border: 1px solid #ddd; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+          .section-title { font-size: 18px; font-weight: bold; margin-top: 20px; }
+        </style>
+      </head>
+      <body>
+        <h1>Service Report</h1>
+        <h2>Project No: ${serviceDetails.project_no}</h2>
+        <p>Customer: ${serviceDetails.customer_name} - ${serviceDetails.nearest_town}</p>
+        <p>Service Round: ${serviceDetails.service_round}</p>
+        <p>Service Date: ${formatDate(serviceDetails.service_date)} | Time: ${serviceDetails.service_time}</p>
+        <p>Supervisor: ${serviceDetails.supervisor_name}</p>
+        
+        ${printContent}
+
+        <footer style="margin-top: 40px; font-size: 12px; text-align: center;">
+          Generated on ${new Date().toLocaleString()}
+        </footer>
+      </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+};
+
+
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div className="relative mx-auto">
+        
       <div className="flex gap-2 items-start">
   <div
     className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
@@ -145,6 +188,9 @@ const formatTime = (dateString) => {
     <ArrowBackIcon fontSize="medium" />
   </div>
   <div>
+
+    
+    
            <h1 className="text-3xl font-bold text-gray-800">
           Project No: {serviceDetails.project_no} - Completed Services
         </h1>
@@ -169,12 +215,20 @@ const formatTime = (dateString) => {
               Supervisor: {serviceDetails.supervisor_name}
             </p>
           </div>
-
+<div className="flex justify-between space-x-5 mb-5">
           <div className="mt-3 md:mt-0 bg-teal-500 hover:bg-teal-600 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer">
             <ImageIcon fontSize="medium" />
           </div>
+                  <div
+          className="mt-3 md:mt-0 bg-teal-500 hover:bg-teal-600 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer"
+          onClick={handlePrint}
+        >
+          <LocalPrintshopSharpIcon fontSize="medium" />
+        </div>
+          </div>
         </div>
       </div>
+      <div id="printable-content">
 
       {/* System Information Cards */}
       <div className="mb-10">
@@ -211,8 +265,12 @@ const formatTime = (dateString) => {
         <ACDetails serviceId={service_id} />
       </div>
 
+      </div>
+      </div>
+
       {/* Navigation */}
       <div className="flex justify-end">
+        
         <button
           onClick={handleDetailsClick}
           className="bg-teal-600 hover:bg-teal-700 text-white px-10 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105"
@@ -221,7 +279,7 @@ const formatTime = (dateString) => {
         </button>
       </div>
     </div>
-    </div>
+    
   );
 };
 

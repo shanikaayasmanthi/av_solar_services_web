@@ -25,7 +25,7 @@ const ExternalProjectOpen = () => {
     customer_id: customer_id || null, // Important!
     company_name: "",
     installation_completed: false,
-    installation_date: "",
+    project_installation_date: "",
     system_turned_on: false,
     system_on_date: "",
   });
@@ -80,7 +80,7 @@ const ExternalProjectOpen = () => {
         project_no:null,
         company_name: "",
         installation_completed: false,
-        installation_date: "",
+        project_installation_date: "",
         system_turned_on: false,
         system_on_date: "",
       });
@@ -194,6 +194,33 @@ const ExternalProjectOpen = () => {
                 type="text"
                 placeholder="Company Name"
                 className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"/>
+<div className="flex flex-col gap-4 mt-2 sm:flex-row">
+                
+               <label htmlFor="longitude" className="block mt-2 text-sm font-medium text-gray-700">
+               Longitude
+              </label>
+              <input
+                id="longitude"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleChange}
+                type="double"
+                placeholder="longitude"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+              />
+                                         <label htmlFor="lattitude" className="block mt-2 text-sm font-medium text-gray-700">
+               Latitude
+              </label>
+              <input
+                id="lattitude"
+                name="lattitude"
+                value={formData.lattitude}
+                onChange={handleChange}
+                type="double"
+                placeholder="latitude"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+              />
+              </div>
                 
             </div>
 
@@ -231,8 +258,8 @@ const ExternalProjectOpen = () => {
                 </div>
               </div>
             
-              <label htmlFor="project_installation_date" className="block text-sm font-medium text-gray-700">
-                Date to Start Project
+              {/* <label htmlFor="project_installation_date" className="block text-sm font-medium text-gray-700">
+                Date to Start First Service
               </label>
               <input
                 id="project_installation_date"
@@ -241,7 +268,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="date"
                 className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
-              />
+              /> */}
 
               <label htmlFor="nearest_town" className="block mt-2 text-sm font-medium text-gray-700">
                 Nearest Town
@@ -290,7 +317,7 @@ const ExternalProjectOpen = () => {
                 </div>
                 
               </div>
- <div className="flex flex-col gap-4 mt-2 sm:flex-row">
+ {/* <div className="flex flex-col gap-4 mt-2 sm:flex-row"> */}
 
 
                 {/* Installation Completed Checkbox */}
@@ -312,13 +339,13 @@ const ExternalProjectOpen = () => {
 
                 {formData.installation_completed && (
                 <div className="mt-2">
-                    <label htmlFor="installation_date" className="block text-sm font-medium text-gray-700">
-                    Installation Date
+                    <label htmlFor="project_installation_date" className="block text-sm font-medium text-gray-700">
+                    Installation Date (The date one year prior to the first service, assuming one service per year)
                     </label>
                     <input
-                    id="installation_date"
-                    name="installation_date"
-                    value={formData.installation_date}
+                    id="project_installation_date"
+                    name="project_installation_date"
+                    value={formData.project_installation_date}
                     onChange={handleChange}
                     type="date"
                     className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
@@ -359,7 +386,8 @@ const ExternalProjectOpen = () => {
                 </div>
                 )}
 
-              </div>
+              {/* </div> */}
+
 
              
             </div>

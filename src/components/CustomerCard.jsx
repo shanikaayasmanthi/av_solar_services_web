@@ -2,6 +2,8 @@ import { PencilIcon } from '@heroicons/react/16/solid';
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import EditDocumentIcon from '@mui/icons-material/EditDocument';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function CustomerCard({ projectId }) {
   const { token } = useAuth();
@@ -146,9 +148,9 @@ export default function CustomerCard({ projectId }) {
         <h3 className="text-lg font-semibold">Customer Details</h3>
         <button
           onClick={handleEditToggle}
-          className={`px-3 py-1 rounded-md ${editing ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
+          className={`px-2 py-2 rounded-md ${editing ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '}hover:transform hover:scale-105 transition-transform duration-200`}
         >
-          {editing ? 'Cancel' : 'Edit'}
+          {editing ? <CloseIcon fontSize="medium" /> : <EditDocumentIcon fontSize="medium" />}
         </button>
       </div>
 

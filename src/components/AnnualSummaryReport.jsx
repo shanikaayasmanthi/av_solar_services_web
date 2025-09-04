@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import FileDownloadSharpIcon from '@mui/icons-material/FileDownloadSharp';
+import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
 
 const AnnualServiceSummary = () => {
   const { token } = useAuth();
@@ -125,9 +127,92 @@ const AnnualServiceSummary = () => {
     return round.replace('Service', 'Service');
   };
 
+  // Function to export data as CSV
+const exportToCSV = () => {
+  const {
+    onGrid,
+    offGrid,
+    totalOnGridSites,
+    totalOnGridCapacity,
+    totalOffGridSites,
+    totalOffGridCapacity,
+    totalSites,
+    totalCapacity,
+    totalPaidServices
+  } = processServiceData();
+
+  let csvContent = "data:text/csv;charset=utf-8,";
+
+  // Header
+  csvContent += "Type,Service Round,Number of Sites,Capacity (kW)\n";
+
+  // On-grid data
+  onGrid.forEach(service => {
+    csvContent += `On-grid,${formatServiceRound(service.service_round)},${service.no_of_sites},${service.capacity}\n`;
+  });
+  csvContent += `On-grid,Total On-grid,${totalOnGridSites},${totalOnGridCapacity}\n`;
+
+  // Off-grid data
+  offGrid.forEach(service => {
+    csvContent += `Off-grid,${formatServiceRound(service.service_round)},${service.no_of_sites},${service.capacity}\n`;
+  });
+  csvContent += `Off-grid,Total Off-grid,${totalOffGridSites},${totalOffGridCapacity}\n`;
+
+  // Totals
+  csvContent += `Overall,Number of Sites Serviced in ${selectedYear},${totalSites},\n`;
+  csvContent += `Overall,Total Capacity Serviced,,${totalCapacity}\n`;
+  csvContent += `Overall,Total Paid Services,${totalPaidServices},\n`;
+
+  // Encode and trigger download
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `service_summary_${selectedYear}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+
+// Function to print the service summary
+const handlePrint = () => {
+  const printContent = document.getElementById("service-summary-table")?.outerHTML;
+  const printWindow = window.open("", "_blank", "width=900,height=700");
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Annual Service Summary - ${selectedYear}</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #B6B6B6; padding: 8px; text-align: left; }
+          th { background-color: #f2f2f2; }
+          .gridType { background-color: #B8EBFF; font-weight: bold; }
+          .totalRow { background-color: #f0f0f0; }
+          .grandTotalRow { background-color: #DAFFBF; font-weight: bold; }
+          h1 { text-align: center; margin-bottom: 20px; }
+        </style>
+      </head>
+      <body>
+        <h1>Annual Service Summary - ${selectedYear}</h1>
+        ${printContent}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+};
+
+
+
+
   return (
     <div style={styles.container}>
             <div style={{ marginBottom: "20px" }}>
+              <div className="flex justify-between mb-5">
         <label style={{ fontSize: "17px", fontWeight: "bold" }}>
           Year: 
           <select 
@@ -140,10 +225,30 @@ const AnnualServiceSummary = () => {
             ))}
           </select>
         </label>
+                       <div className="flex justify-end">
+        <div className ="flex justify-between space-x-4">
+      <button 
+  onClick={exportToCSV} 
+  className="bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105 "
+        >
+
+  < FileDownloadSharpIcon fontSize='medium'/>
+</button>
+      <button 
+  onClick={handlePrint} 
+  className="bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105 "
+        >
+
+  < LocalPrintshopSharpIcon fontSize='medium'/>
+</button>
+</div>
+
+      </div>
+        </div>
       </div>
       <h1 style={{ fontSize: "22px", fontWeight: "bold", marginBottom: "20px" }}>Annual Service Summary - {summaryData?.year}</h1>
       <div className='flex justify-center overflow-x-auto mt-6'>
-      <table style={styles.table}>
+      <table id="service-summary-table" style={styles.table}>
         <thead>
           <tr>
             <th style={styles.th}></th>
