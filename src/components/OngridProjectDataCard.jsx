@@ -382,6 +382,24 @@ printWindow.document.getElementById("solar-details").innerHTML = solarTable;
             />
           </div>
         </div>
+        {project["External/Internal"] === "External" && (
+  <div className="mt-4">
+    <label className="block text-sm mt-2.5 mb-1.5">Company Name</label>
+    <input
+      disabled={!editMode}
+      value={project?.company_name || ""}
+      onChange={(e) =>
+        setProject({ ...project, company_name: e.target.value })
+      }
+      className={`w-[90%] p-2 rounded-lg ${
+        editMode
+          ? "bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          : "bg-gray-200 border-gray-300"
+      } border`}
+    />
+  </div>
+)}
+
         </div>
 
         <div className="mt-4 flex gap-2.5 flex-wrap">

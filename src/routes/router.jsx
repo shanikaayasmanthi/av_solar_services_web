@@ -23,6 +23,7 @@ import PendingInstallationProjectsDetails from "../pages/PendingInstallationProj
 import ExternalCustomerDetails from "../pages/ExternalCustomerDetails";
 import ExternalProjectOpen from "../pages/ExternalProjectOpen";
 import DueService from "../pages/DueService";
+import HoldProjects from "../pages/HoldProjects";
 
 
 
@@ -65,6 +66,7 @@ const router = createBrowserRouter([
       {path: "externalCustomerDetails", element: <ExternalCustomerDetails />},
       {path: "openExternalProject", element: <ExternalProjectOpen />},
       {path: "dueservice", element: <DueService />},
+      {path: "holdprojects", element: <HoldProjects />},
     {path:"*",element:<div>404 not found</div>}
     ],
   },

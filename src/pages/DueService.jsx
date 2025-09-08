@@ -6,6 +6,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ScheduleServiceModel from '../components/ScheduleServiceModel';
+import ProjectDetails from './ProjectDetails.jsx';
 
 const DueService = () => {
   const [notifications, setNotifications] = useState([]);
@@ -36,7 +37,7 @@ const DueService = () => {
       if (response.data.status === 'success') {
         const allNotifications = response.data.notifications;
         setNotifications(allNotifications);
-        setTotalPages(Math.ceil(allNotifications.length / 6)); // 6 per page
+        setTotalPages(Math.ceil(allNotifications.length / 8)); // 8 per page
         setCurrentPage(1);
       } else {
         setError('Failed to fetch notifications');
@@ -65,7 +66,14 @@ const DueService = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const handleScheduleClick = (projectId) => {
+  const handleCardClick = (projectId) => {
+    // Navigate to project details page
+    navigate(`/projectDetails/${projectId}`);
+  };
+
+  const handleScheduleClick = (projectId, e) => {
+    // Stop event propagation to prevent card click from triggering
+    e.stopPropagation();
     setSelectedProjectId(projectId);
     setScheduleModal(true);
   };
@@ -78,14 +86,14 @@ const DueService = () => {
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
       <div className="origin-top-left w-full">
-        <div className="relative mx-auto">
+        <div className="relative max-h-[calc(100vh-60px)]">
           {/* Header Section */}
           <div className="flex gap-2 items-start mb-6">
             <div className="flex justify-between items-center w-full">
               <h1 className="text-3xl font-bold text-gray-800">
                 Due Service Notifications
               </h1>
-                            <div
+              <div
                 className="bg-teal-600 hover:bg-teal-700 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer"
                 onClick={fetchNotifications}
                 disabled={loading}
@@ -96,7 +104,6 @@ const DueService = () => {
           </div>
 
           {/* Content Section */}
-        
           {loading ? (
             <div className="flex justify-center p-8">
               <div className="animate-spin rounded-full h-12 w-12 border-4 border-teal-500 border-t-transparent"></div>
@@ -123,49 +130,57 @@ const DueService = () => {
                 </h2>
               </div>
 
-              <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-                {notifications
-                  .slice((currentPage - 1) * 6, currentPage * 6) // show only 6 per page
-                  .map((notification, index) => (
+    <div className="grid gap-5 sm:grid-cols-1 lg:grid-cols-2">
+      {notifications
+        .slice((currentPage - 1) * 8, currentPage * 8) // show only 6 per page
+        .map((notification, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between border border-gray-200 rounded-xl p-4 bg-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200"
+            onClick={() => handleCardClick(notification.project_id)}
+          >
+            {/* Left side - Project Info */}
+            <div className="flex-grow">
+              <div className="flex items-center gap-6">
+                <div className="min-w-[200px]">
+                  <p className="text-md font-semibold text-gray-600 mt-1">
+                    Project No: {notification.project_no}
+                  </p>
+                  <h3 className="text-lg font-semibold text-gray-900 truncate">
+                    {notification.project_name}
+                  </h3>
 
-                  <div
-                    key={index}
-                    className="border border-gray-200 rounded-xl p-4 bg-white shadow-lg "
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-grow">
-                        <h3 className="text-xl font-semibold text-gray-900">
-                          {notification.project_name}
-                        </h3>
-                        <div className="mt-3 space-y-2">
-                          <p className="text-md font-semibold text-gray-700">
-                            <span className="font-medium font-bold text-gray-900">Project No:</span> {notification.project_no}
-                          </p>
-                          <p className="text-md text-red-600 font-medium">
-                            <span className="font-medium text-gray-900">Due Date:</span> {formatDate(notification.due_date)}
-                          </p>
-                          <p className="text-md font-semibold text-gray-700">
-                            <span className="font-medium text-gray-900">Due Service Round:</span> {notification.due_service_round}
-                          </p>
-                        </div>
-                      </div>
+                </div>
 
-                      <div 
-                        className="bg-teal-500 text-white rounded-lg px-3 py-2 cursor-pointer hover:bg-teal-600 hover:scale-105 transition-all duration-200 ml-4 focus:outline-none focus:ring-2 focus:ring-teal-400" 
-                        onClick={() => handleScheduleClick(notification.project_id)}
-                      >
-                        <CalendarMonthIcon fontSize='medium' />
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                <div className="min-w-[150px]">
+                  <p className="text-md font-medium text-gray-700">
+                    Due Service Round: {notification.due_service_round}
+                  </p>
+                </div>
+
+                <div className="min-w-[150px]">
+                  <p className="text-md font-medium text-red-600">
+                    Due Date: {formatDate(notification.due_date)}
+                  </p>
+                </div>
               </div>
-            </>
-          )}
+            </div>
 
-
+            {/* Right side - Calendar Icon */}
+            <div
+              className="bg-teal-500 text-white rounded-lg px-3 py-2 cursor-pointer hover:bg-teal-600 hover:scale-105 transition-all duration-200 ml-4 focus:outline-none focus:ring-2 focus:ring-teal-400"
+              onClick={(e) => handleScheduleClick(notification.project_id, e)}
+            >
+              <CalendarMonthIcon fontSize='medium' />
+            </div>
+          </div>
+        ))}
+    </div>
+  </>
+)}
         </div>
-                          {/* Pagination */}
+
+        {/* Pagination */}
         <div className="flex justify-end mt-10">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

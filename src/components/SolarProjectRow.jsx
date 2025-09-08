@@ -1,9 +1,15 @@
 import React from 'react';
-import PriorityHighOutlinedIcon from '@mui/icons-material/PriorityHighOutlined';
+import StopIcon from '@mui/icons-material/Stop';
 import { Navigate, useNavigate } from 'react-router-dom';
+import HoldConfirmationModal from "./HoldConfirmationModal";
+import RestoreIcon from "@mui/icons-material/Restore";
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
-const SolarProjectRow = ({project}) => {
+const SolarProjectRow = ({project,onStatusChange}) => {
+  const { token } = useAuth();
   const Navigate = useNavigate();
+  const [showModal, setShowModal] = React.useState(false);
   const formatType = (type) => {
     if (!type) return "N/A";
     return type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' ');
@@ -12,6 +18,29 @@ const SolarProjectRow = ({project}) => {
   const handleOnClick = (id) => {
     Navigate(`/projectDetails/${id}`);
   }
+
+    const handleConfirm = async (remarks) => {
+    const actionType = project.is_hold ? "release" : "hold";
+    try {
+      await axios.post(
+        `http://127.0.0.1:8000/api/projects/${project.id}/${actionType}`,
+        { remarks },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      if (onStatusChange) {
+        onStatusChange();
+        if (actionType === "hold") {
+          Navigate("/holdprojects");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating project status:", error);
+    } finally {
+      setShowModal(false);
+    }
+  };
 
   // Get project number based on available fields
   const getProjectNumber = () => {
@@ -52,61 +81,66 @@ const SolarProjectRow = ({project}) => {
     return primaryName;
   };
 
-  return (
-   <div
-  key={project.id}
-  className="
-    flex flex-col md:grid
-    md:grid-cols-[1fr_4fr_2fr_2fr_auto]
-    items-center gap-x-6 gap-y-3
-    w-[90%] md:w-full lg:w-[90%] xl:w-[80%]
-    p-5 md:p-4 lg:p-5
-    bg-gradient-to-r from-gray-50 via-white to-gray-50
-    border border-gray-200 rounded-2xl
-    shadow-md hover:shadow-xl
-    text-black text-lg font-medium cursor-pointer
-    transition-all duration-300 ease-in-out
-    transform hover:-translate-y-1
-  "
-  onClick={() => handleOnClick(project.id)}
->
-  {/* Project ID */}
-  <span className="mb-1 text-sm font-semibold text-blue-700 md:text-base md:mb-0">
-    #{getProjectNumber()}
-  </span>
+return (
+  <>
+    <div
+      key={project.id}
+      className="
+        flex flex-col md:grid
+        md:grid-cols-[1fr_4fr_2fr_2fr_auto]
+        items-center gap-x-6 gap-y-3
+        w-[90%] md:w-full lg:w-[90%] xl:w-[80%]
+        p-5 md:p-4 lg:p-5
+        bg-gradient-to-r from-gray-50 via-white to-gray-50
+        border border-gray-200 rounded-2xl
+        shadow-md hover:shadow-xl
+        text-black text-lg font-medium cursor-pointer
+        transition-all duration-300 ease-in-out
+        transform hover:-translate-y-1
+      "
+      onClick={() => handleOnClick(project.id)}
+    >
+      {/* Project ID */}
+      <span className="mb-1 text-sm font-semibold text-blue-700 md:text-base md:mb-0">
+        #{getProjectNumber()}
+      </span>
 
-  {/* Project Name */}
-  <span 
-    className="mb-1 text-base font-semibold text-center text-gray-900 truncate md:text-lg md:mb-0 md:text-left"
-    title={project.company_name ? `Company: ${project.company_name}` : ''}
-  >
-    {getDisplayName()}
-  </span>
+      {/* Project Name */}
+      <span 
+        className="mb-1 text-base font-semibold text-center text-gray-900 truncate md:text-lg md:mb-0 md:text-left"
+        title={project.company_name ? `Company: ${project.company_name}` : ''}
+      >
+        {getDisplayName()}
+      </span>
 
-  {/* Nearest Town */}
-  <span className="mb-1 text-sm text-center text-gray-600 truncate md:text-base md:mb-0 md:text-left">
-    {getNearestTown()}
-  </span>
+      {/* Nearest Town */}
+      <span className="mb-1 text-sm text-center text-gray-600 truncate md:text-base md:mb-0 md:text-left">
+        {getNearestTown()}
+      </span>
 
-  {/* Type */}
-  <span className="mb-1 text-sm font-medium text-center text-gray-800 md:text-base md:mb-0 md:text-left">
-    {formatType(project.type)}
-  </span>
+      {/* Type */}
+      <span className="mb-1 text-sm font-medium text-center text-gray-800 md:text-base md:mb-0 md:text-left">
+        {formatType(project.type)}
+      </span>
 
-  {/* Priority Icon */}
-  <div
-    className="
-      w-9 h-9 flex items-center justify-center
-      bg-blue-100 rounded-xl text-blue-600
-      hover:bg-blue-200 transition-colors duration-200
-      mt-2 md:mt-0
-      shadow-sm
-    "
-  >
-    <PriorityHighOutlinedIcon className="w-5 h-5" />
-  </div>
-</div>
-  );
+      <div
+        className="w-9 h-9 flex items-center justify-center bg-blue-100 rounded-xl text-blue-600 hover:bg-blue-200"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowModal(true);
+        }}
+      >
+        {project.is_hold ? <RestoreIcon /> : <StopIcon />}
+      </div>
+    </div>
+    <HoldConfirmationModal
+      show={showModal}
+      onClose={() => setShowModal(false)}
+      onConfirm={handleConfirm}
+      actionType={project.is_hold ? "release" : "hold"}
+    />
+  </>
+);
 };
 
 export default SolarProjectRow;

@@ -10,6 +10,7 @@ import OffgridProjectDataCard from '../components/OffgridProjectDetails';
 import ScheduleServiceModel from '../components/ScheduleServiceModel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PaymentStatusCard from '../components/PaymentStatusCard';
 
 const ProjectDetails = () => {
     const [schedule, setSchedule] = useState(false);
@@ -101,7 +102,7 @@ const ProjectDetails = () => {
 
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
-      {/* <div> */} 
+       <div className='max-h-[calc(140vh-70px)]'> 
       {!projectLoading &&  project?.type &&
       (
         <>
@@ -119,6 +120,8 @@ const ProjectDetails = () => {
               <h1 className="mb-6 text-3xl font-bold">Project No :{project.type=='ongrid'?onGrid.on_grid_project_id:offGrid.off_grid_hybrid_project_id}({project.type})</h1>
 
             </div>
+
+  <div className="grid grid-cols-1 gap-5 ">
 
   <div className="flex flex-col flex-wrap gap-5 md:flex-row justify-center">
     <div className="flex flex-col gap-5">
@@ -163,7 +166,9 @@ const ProjectDetails = () => {
           </div>)}
         </div>
       </div>
+      
     </div>
+
 
     <div
       className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]"
@@ -196,12 +201,17 @@ const ProjectDetails = () => {
       
     </div>
   </div>
+    <div className="flex flex-col gap-5 md:flex-row justify-center">
+    <PaymentStatusCard projectId={projectId} />
+  </div>
+  </div>
         </>
         )}
 
         {schedule && (
           <ScheduleServiceModel show={schedule} onClose={() => setSchedule(false)} projectId={project.id} />
         )}
+    </div>
     </div>
     
 

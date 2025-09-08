@@ -10,6 +10,7 @@ export default function Dashboard() {
   const {token} = useAuth();
 
   const [projectCount, setProjectCount] = useState(0);
+  const [holdProjectCount, setHoldProjectCount] = useState(0);
   const [firstServiceCount, setFirstServiceCount] = useState(0);
   const [secondServiceCount, setSecondServiceCount] = useState(0);
 
@@ -27,6 +28,29 @@ export default function Dashboard() {
      console.log(response.data);
 if(response.data && response.data.success === true){
   setProjectCount(response.data.data.project_count);
+}else{
+      console.warn("Unexpected response status:", response.status);
+    }
+    
+    }catch(error){
+      console.error("Error fetching project count:", error);
+    }
+  }
+
+    const fetchHoldProjectCount = async()=>{
+    try{
+      const response = await axios.get('http://127.0.0.1:8000/api/get-hold-project-count',
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+      }
+    )
+     console.log(response.data);
+if(response.data && response.data.success === true){
+  setHoldProjectCount(response.data.data.hold_project_count);
 }else{
       console.warn("Unexpected response status:", response.status);
     }
@@ -64,16 +88,18 @@ if(response.data && response.data.success === true){
   useEffect(()=>{
     fetchProjectCount();
     fetchServiceCounts();
+    fetchHoldProjectCount();
   },[])
   
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%]">
     <div> {/* Added bg-gray-100 to main content for context */}
       <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
-      <div className="grid grid-cols-1 gap-6 ml-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 ml-4 md:grid-cols-4">
         <DashboardCard title="Total Projects" value={projectCount} />
         <DashboardCard title="First Service Done on" value={firstServiceCount} />
         <DashboardCard title="Second Service Done on" value={secondServiceCount} />
+        <DashboardCard title="Hold Projects" value={holdProjectCount} />
       </div>
         {/* Add the ServiceSummary component below the cards */}
         <div className="mt-8">

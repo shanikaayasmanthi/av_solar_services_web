@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import Pagination from 'react-js-pagination';
 import SolarProjectRow from '../components/SolarProjectRow';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import AddModel from '../components/AddModel';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import { useNavigate } from 'react-router-dom';
 
 export default function SolarProjects() {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('All');
-    const [externalSubTab, setExternalSubTab] = useState('All'); // sub-tabs for external
+    const [externalSubTab, setExternalSubTab] = useState('All'); 
     const [projects, setProjects] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const [totalItems, setTotalItems] = useState(0);
-    const { token } = useAuth(); // Destructuring token from useAuth
+    const { token } = useAuth(); 
     const [showAddModel, setShowAddModel] = useState(false);
     const [ searchQuery, setSearchQuery ] = useState("");
 
@@ -26,6 +28,7 @@ export default function SolarProjects() {
             page: pageNumber,
             query: searchQuery,
             per_page: itemsPerPage,
+            is_hold: 0 // Exclude hold projects
         };
 
         // Determine which API endpoint to call
@@ -64,6 +67,10 @@ export default function SolarProjects() {
         }
 
         if (projectsData && projectsData.data) {
+    //             const filteredProjects = projectsData.data.filter(
+    //     (project) => project.is_hold !== 1
+    // );
+    //         setProjects(filteredProjects);
             setProjects(projectsData.data);
             setCurrentPage(projectsData.current_page);
             setItemsPerPage(projectsData.per_page);
@@ -96,7 +103,7 @@ export default function SolarProjects() {
         <div>
             <div className="flex items-center justify-between">
                 {/* Left section: Solar Projects title */}
-                <h1 className="mb-6 text-3xl font-bold">SolarProjects</h1>
+                <h1 className="mb-6 text-3xl font-bold">Solar Projects</h1>
 
                 {/* Middle section: Navigation tabs */}
                 <div className='md:flex'>
@@ -201,11 +208,11 @@ export default function SolarProjects() {
                                 ></path>
                             </svg>
                         </div>
-                        <div className="relative">
+                        <div className="flex space-x-3">
                             <button className="flex items-center justify-center w-10 h-10 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 hover:transform hover:scale-105 transition-transform duration-200"
                         onClick={()=>{setShowAddModel(true)}}>
                             <svg
-                                className="w-6 h-6"
+                                className="font-size-medium w-6 h-6"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -217,6 +224,13 @@ export default function SolarProjects() {
                         {showAddModel && (
                             <AddModel show={showAddModel} onClose={() => setShowAddModel(false)} />
                             )}
+
+          <div className="mt-3 md:mt-0 bg-teal-600 hover:bg-teal-700 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer"
+        onClick={() => navigate("/holdprojects")}
+        >
+          <HourglassTopIcon fontSize="medium" />
+        </div>
+
                         </div>
                     </div>
                 </div>
@@ -238,28 +252,34 @@ export default function SolarProjects() {
                 ) : (
                     <p className="text-center text-gray-500">No projects found.</p>
                 )}
-            </div>
-
-            {/* Pagination Controls */}
-               {totalItems > itemsPerPage && (
+            </div>     
     <div className="flex justify-end mt-10 right-20">
-        <Pagination
-            activePage={currentPage}
-            itemsCountPerPage={itemsPerPage}
-            totalItemsCount={totalItems}
-            pageRangeDisplayed={5}
-            onChange={handlePageChange}
-            itemClass="px-2 py-1 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white rounded-md mx-1 inline-flex items-center justify-center"
-            // linkClass="text-gray-500 bg-white  hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white rounded-md mx-1 inline-flex items-center justify-center"
-            activeLinkClass="text-teal-600 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md inline-flex items-center justify-center"
-            prevPageText="Previous"
-            nextPageText="Next"
-            firstPageText="First"
-            lastPageText="Last"
-        />
+{/* Pagination Controls */}
+{projects.length > 0 && (
+  <div className="flex justify-end mt-6">
+    <button
+      onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+      disabled={currentPage === 1}
+      className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+    >
+      Previous
+    </button>
+    <span className="px-4 py-2">
+      {currentPage} / {Math.ceil(totalItems / itemsPerPage)}
+    </span>
+    <button
+      onClick={() => currentPage < Math.ceil(totalItems / itemsPerPage) && setCurrentPage(currentPage + 1)}
+      disabled={currentPage === Math.ceil(totalItems / itemsPerPage)}
+      className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+)}
+
     </div>
 
-)}
+
             </div>
             </div>
             
