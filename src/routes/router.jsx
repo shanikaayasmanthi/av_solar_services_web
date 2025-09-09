@@ -20,10 +20,11 @@ import Users from "../pages/Users";
 import AddUser from "../pages/AddUsers";
 import PendingInstallationProjects from "../pages/PendingInstallationProjects";
 import PendingInstallationProjectsDetails from "../pages/PendingInstallationProjectsDetails";
-import ExternalCustomerDetails from "../pages/ExternalCustomerDetails";
 import ExternalProjectOpen from "../pages/ExternalProjectOpen";
 import DueService from "../pages/DueService";
 import HoldProjects from "../pages/HoldProjects";
+import AccountsPage from "../pages/AccountsPage";
+import AccountsLayout from "../layouts/AccountsLayout.jsx";
 
 
 
@@ -63,13 +64,26 @@ const router = createBrowserRouter([
       {path: "add-user", element: <AddUser />},
       {path: "pendingInstallationProjects", element: <PendingInstallationProjects />},
       {path: "pendingInstallationProjectsDetails/:project_id", element: <PendingInstallationProjectsDetails />},
-      {path: "externalCustomerDetails", element: <ExternalCustomerDetails />},
       {path: "openExternalProject", element: <ExternalProjectOpen />},
       {path: "dueservice", element: <DueService />},
       {path: "holdprojects", element: <HoldProjects />},
     {path:"*",element:<div>404 not found</div>}
     ],
   },
+
+  // Protected Routes for accounts
+  {
+    path: "/accounts",
+    element: (
+      <ProtectedRoute allowedRoles={["accounts"]}>
+        <AccountsLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "", element: <AccountsPage /> },
+    ],
+  },
+
   {
     path:"/*",
     element:<div>404 not found</div>

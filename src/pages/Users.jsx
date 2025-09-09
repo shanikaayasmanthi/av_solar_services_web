@@ -186,7 +186,7 @@ const Users = () => {
         }
       }}
       className={`px-3 py-1 rounded-md text-white text-sm shadow-md transition hover:scale-105  ${
-        user.is_active ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600 '
+        user.is_active ? 'bg-blue-400 hover:bg-blue-500' : 'bg-green-500 hover:bg-green-600 '
       }`}
     >
       {user.is_active ? 'Deactivate' : 'Activate'}

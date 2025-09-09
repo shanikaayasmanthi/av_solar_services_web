@@ -102,7 +102,6 @@ export default function SolarProjects() {
         <div className="origin-top-left scale-[0.75] w-[133.33%]">
         <div>
             <div className="flex items-center justify-between">
-                {/* Left section: Solar Projects title */}
                 <h1 className="mb-6 text-3xl font-bold">Solar Projects</h1>
 
                 {/* Middle section: Navigation tabs */}
@@ -208,7 +207,7 @@ export default function SolarProjects() {
                                 ></path>
                             </svg>
                         </div>
-                        <div className="flex space-x-3">
+                        <div className="flex space-x-3 relative">
                             <button className="flex items-center justify-center w-10 h-10 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 hover:transform hover:scale-105 transition-transform duration-200"
                         onClick={()=>{setShowAddModel(true)}}>
                             <svg
@@ -222,7 +221,9 @@ export default function SolarProjects() {
                             </svg>
                         </button>
                         {showAddModel && (
-                            <AddModel show={showAddModel} onClose={() => setShowAddModel(false)} />
+                                <div className="absolute top-full right-0 z-50 mt-1">
+                                    <AddModel show={showAddModel} onClose={() => setShowAddModel(false)} />
+                                </div>
                             )}
 
           <div className="mt-3 md:mt-0 bg-teal-600 hover:bg-teal-700 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer"

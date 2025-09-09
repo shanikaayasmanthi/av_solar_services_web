@@ -66,15 +66,23 @@ export default function NewProjectCustomerDetails() {
       }
     } catch (error) {
       console.error("Error searching customer:", error);
-      setSearchQueryError(
-        "An error occurred while searching for the customer."
-      );
-      setCustomer(null);
-      setCustomerFound(false);
-    } finally {
-      setCustomerLoading(false);
+         // More specific error handling
+    if (error.response && error.response.status === 404) {
+      setSearchQueryError("No customer found with this email. Please check the email and try again.");
+    } else if (error.response && error.response.status === 500) {
+      setSearchQueryError("Server error. Please try again later.");
+    } else if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
+      setSearchQueryError("Network error. Please check your connection and try again.");
+    } else {
+      setSearchQueryError("An error occurred while searching for the customer.");
     }
-  };
+    
+    setCustomer(null);
+    setCustomerFound(false);
+  } finally {
+    setCustomerLoading(false);
+  }
+};
 
   const handleonContiuneClick = () => {
     if (customer.id > 0) {
@@ -293,49 +301,49 @@ export default function NewProjectCustomerDetails() {
             >
               Tel. No
             </label>
-            {isNewCustomer ? (
-              phoneNumbers.map((phone, index) => (
-                <div key={index} className="flex items-center gap-2 mb-2">
-                  <input
-                    id={`phone-${index}`}
-                    type="text"
-                    placeholder="Tel. No"
-                    value={phone}
-                    onChange={(e) =>
-                      handlePhoneNumberChange(index, e.target.value)
-                    }
-                    className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  {phoneNumbers.length > 1 && (
-                    <XCircleIcon
-                      className="w-6 h-6 text-red-500 cursor-pointer hover:text-red-700"
-                      onClick={() => handleRemovePhoneNumber(index)}
-                    />
-                  )}
-                </div>
-              ))
-            ) : customer.phone_numbers && customer.phone_numbers.length > 0 ? (
-              <div className="flex flex-row flex-wrap gap-2">
-                {customer.phone_numbers.map((phone, index) => (
-                  <input
-                    key={index}
-                    id={`phone-display-${index}`}
-                    type="text"
-                    disabled={true}
-                    value={phone}
-                    className="p-2 bg-gray-100 border border-gray-200 rounded-lg w-fit"
-                  />
-                ))}
-              </div>
-            ) : (
-              <input
-                id="phone-placeholder"
-                type="text"
-                disabled={true}
-                placeholder="No phone numbers"
-                className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg"
-              />
-            )}
+{isNewCustomer ? (
+  phoneNumbers.map((phone, index) => (
+    <div key={index} className="flex items-center gap-2 mb-2">
+      <input
+        id={`phone-${index}`}
+        type="text"
+        placeholder="Tel. No"
+        value={phone}
+        onChange={(e) =>
+          handlePhoneNumberChange(index, e.target.value)
+        }
+        className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      />
+      {phoneNumbers.length > 1 && (
+        <XCircleIcon
+          className="w-6 h-6 text-red-500 cursor-pointer hover:text-red-700"
+          onClick={() => handleRemovePhoneNumber(index)}
+        />
+      )}
+    </div>
+  ))
+) : customer && customer.phone_numbers && customer.phone_numbers.length > 0 ? ( // Added null check here
+  <div className="flex flex-row flex-wrap gap-2">
+    {customer.phone_numbers.map((phone, index) => (
+      <input
+        key={index}
+        id={`phone-display-${index}`}
+        type="text"
+        disabled={true}
+        value={phone}
+        className="p-2 bg-gray-100 border border-gray-200 rounded-lg w-fit"
+      />
+    ))}
+  </div>
+) : (
+  <input
+    id="phone-placeholder"
+    type="text"
+    disabled={true}
+    placeholder="No phone numbers"
+    className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg"
+  />
+)}
             {isNewCustomer && (
               <div className="flex justify-end w-full">
                 <button

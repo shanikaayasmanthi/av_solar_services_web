@@ -30,11 +30,15 @@ const LoginPage = () => {
       const user = response.data.data.user;
       const token = response.data.data.token;
 
-      if (user.user_type === "admin" || user.user_type === "Super Admin") {
+      if (user.user_type === "admin" || user.user_type === "super admin") {
         login(user, token);
         navigate("/dashboard");
-      } else {
-        setErrorMsg("Access denied. Only Admins can login.");
+      } 
+      else if (user.user_type === "accounts") {
+      login(user, token);
+      navigate("/accounts");
+    } else {
+        setErrorMsg("Access denied. Only Admins and Account Officers can login.");
       }
     } catch (error) {
       console.error(error);
