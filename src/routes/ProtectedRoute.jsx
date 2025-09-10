@@ -24,9 +24,17 @@ import React from "react";
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, token } = useAuth();
 
-  if (!token || !user || !allowedRoles.includes(user.user_type)) {
-    return <Navigate to="/" replace />;
-  }
+if (!token || !user) return <Navigate to="/" replace />;
+
+if (user.user_type === "super admin") {
+  
+  return children;
+}
+
+if (!allowedRoles.includes(user.user_type)) {
+  return <Navigate to="/" replace />;
+}
+
 
   return children;
 };

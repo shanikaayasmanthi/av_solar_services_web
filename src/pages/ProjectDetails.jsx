@@ -126,7 +126,7 @@ const ProjectDetails = () => {
   <div className="flex flex-col flex-wrap gap-5 md:flex-row justify-center">
     <div className="flex flex-col gap-5">
 
-<CustomerCard projectId={projectId}/>
+<CustomerCard projectId={projectId}  customerData={project.customer} />
       <div
         className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px] h-[100px]"
       >

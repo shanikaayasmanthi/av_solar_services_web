@@ -105,7 +105,7 @@ const handleSavePayment = async () => {
         <div className="md:min-w-[200px] relative">
           <input
             type="text"
-            placeholder="Search by project no, name, or customer..."
+            placeholder="Search by project no, name, customer..."
             className="w-80 px-15 py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

@@ -15,6 +15,20 @@ export default function ServiceSummaryCard({ service, project_id, project_no}) {
     }
   };
 
+    // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No date';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString(); // This will format to local date format
+
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString; 
+    }
+  };
+
   return (
     <div>
       <div
@@ -31,10 +45,10 @@ export default function ServiceSummaryCard({ service, project_id, project_no}) {
 >
 
           <p className="m-0 font-bold">
-            {service.service_round}{getSuffix(service.service_round)} service round
+            {service.service_round}{getSuffix(service.service_round)} ({service.service_type}) service round
           </p>
         </Link>
-        <span className="text-sm text-gray-700">{service.service_date}</span>
+        <span className="text-sm text-gray-700">{formatDate(service.service_date)}</span>
       </div>
     </div>
   );

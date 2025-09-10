@@ -5,10 +5,10 @@ import axios from 'axios';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function CustomerCard({ projectId }) {
+export default function CustomerCard({ projectId, customerData }) {
   const { token } = useAuth();
 
-  const [customer, setCustomer] = useState({
+  const [customer, setCustomer] = useState(customerData || {
     name: '',
     email: '',
     address: '',
@@ -52,10 +52,13 @@ export default function CustomerCard({ projectId }) {
   };
 
   useEffect(() => {
-    if (projectId) {
+    if (!customerData && projectId) {
       fetchCustomerData();
     }
-  }, [projectId]);
+    else if (customerData) {
+      setCustomer(customerData);
+    }
+  }, [projectId, customerData]);
 
   // Toggle edit mode
   const handleEditToggle = () => {

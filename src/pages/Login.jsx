@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext.jsx";
+import SuperAdminChoiceModal from "../components/SuperAdminChoiceModal.jsx";
 // import Logo from "../images/AVlogo.jpeg"; // assuming this path is correct
 
 
@@ -9,7 +10,7 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-
+  const [showChoice, setShowChoice] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -30,14 +31,18 @@ const LoginPage = () => {
       const user = response.data.data.user;
       const token = response.data.data.token;
 
-      if (user.user_type === "admin" || user.user_type === "super admin") {
+      if (user.user_type === "admin" ) {
         login(user, token);
         navigate("/dashboard");
       } 
       else if (user.user_type === "accounts") {
       login(user, token);
       navigate("/accounts");
-    } else {
+    }else if (user.user_type === "super admin") {
+  login(user, token);
+  setShowChoice(true); 
+} 
+    else {
         setErrorMsg("Access denied. Only Admins and Account Officers can login.");
       }
     } catch (error) {
@@ -45,6 +50,11 @@ const LoginPage = () => {
       setErrorMsg("Login failed. Please check your email or password.");
     }
   };
+
+  const handleChoice = (path) => {
+  setShowChoice(false);
+  navigate(path);
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-cover bg-center bg-no-repeat"
@@ -90,20 +100,17 @@ const LoginPage = () => {
 
         <button
           onClick={handleLogin}
-          className="block w-1/2 py-2 mx-auto text-white transition bg-blue-600 rounded-full hover:bg-blue-700"
+          className="block w-1/2 py-2 mx-auto text-white transition bg-blue-600 rounded-full hover:bg-blue-700 mb-6"
         >
           Login
         </button>
 
-        <p className="mt-4 text-sm text-center text-gray-600">
-          Don't have an account?{" "}
-          <a href="#" className="text-blue-500 hover:underline">
-            Sign Up
-          </a>
-        </p>
+        
       </div>
+       <SuperAdminChoiceModal open={showChoice} onClose={handleChoice} />
     </div>
   );
+
 };
 
 export default LoginPage;

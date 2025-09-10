@@ -52,6 +52,7 @@ const filteredServices = services.filter((service) => {
     String(service.project_no || '').toLowerCase().includes(term) ||
     String(service.customer_name || '').toLowerCase().includes(term) ||
     String(service.service_date || '').toLowerCase().includes(term) ||
+    String(service.service_type || '').toLowerCase().includes(term) ||
     (Array.isArray(service.supervisors) &&
       service.supervisors.some(sup => String(sup).toLowerCase().includes(term)))
   );
@@ -154,7 +155,7 @@ const ServiceBox = ({ service }) => {
         <p className="text-base font-semibold text-teal-600">Project No. {service.project_no || 'N/A'}</p>
         <p className="text-sm font-medium text-gray-700">{service.customer_name || 'No customer'}</p>
         <p className="text-sm text-gray-600">
-          {service.service_round ? `${getOrdinalSuffix(service.service_round)} service round` : 'Service round not specified'}
+          {service.service_round ? `${getOrdinalSuffix(service.service_round)} (${service.service_type ? service.service_type : 'Unknown'}) service round` : 'Service round not specified'}
         </p>
         <p className="text-sm text-gray-600">{displayDate}{displayTime}</p>
         <p className="mt-2 text-sm font-medium text-gray-700">Assigners:</p>

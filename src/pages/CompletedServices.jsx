@@ -72,6 +72,20 @@ const CompletedServices = () => {
     });
   };
 
+    // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No date';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString(); // This will format to local date format
+      
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString; 
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -107,7 +121,7 @@ const CompletedServices = () => {
                   className="flex flex-row items-center justify-between border border-gray-300 border-2 p-4 rounded-lg bg-white shadow-md transition-shadow duration-300 max-w-lg w-full sm:max-w-xl mt-4"
                 >
                   <span className="font-semibold text-gray-700 text-lg">
-                    {getOrdinal(service.service_round)} Round Service - {service.service_date}
+                    {getOrdinal(service.service_round)} ({service.service_type}) Round Service - {formatDate(service.service_date)}
                   </span>
                   <button
                     className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium hover:scale-105 transition-transform duration-200"

@@ -28,6 +28,7 @@ import AccountsLayout from "../layouts/AccountsLayout.jsx";
 
 
 
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -44,7 +45,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute allowedRoles={["admin", "Super Admin"]}>
+      <ProtectedRoute allowedRoles={["admin", "super admin"]}>
         <AuthLayout />
       </ProtectedRoute>
     ),
@@ -75,7 +76,7 @@ const router = createBrowserRouter([
   {
     path: "/accounts",
     element: (
-      <ProtectedRoute allowedRoles={["accounts"]}>
+      <ProtectedRoute allowedRoles={["accounts","super admin"]}>
         <AccountsLayout />
       </ProtectedRoute>
     ),
@@ -83,6 +84,7 @@ const router = createBrowserRouter([
       { path: "", element: <AccountsPage /> },
     ],
   },
+
 
   {
     path:"/*",

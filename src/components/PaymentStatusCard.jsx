@@ -80,10 +80,10 @@ const PaymentStatusCard = ({ projectId }) => {
     <tbody>
       {payments.map((payment) => (
         <tr key={payment.id} className="hover:bg-gray-50 transition-colors duration-200">
-          <td className="border border-gray-300 p-2 text-gray-600">{formatCurrency(payment.total_payment)}</td>
-          <td className="border border-gray-300 p-2 text-green-600">{formatCurrency(payment.paid_amount)}</td>
-          <td className="border border-gray-300 p-2 text-red-600">{formatCurrency(payment.due_payment)}</td>
-          <td className="border border-gray-300 p-2 text-gray-600">{payment.payment_notes || '—'}</td>
+          <td className="border border-gray-300 p-2 text-gray-600 font-semibold">{formatCurrency(payment.total_payment)}</td>
+          <td className="border border-gray-300 p-2 text-green-600 font-semibold">{formatCurrency(payment.paid_amount)}</td>
+          <td className="border border-gray-300 p-2 text-red-600 font-semibold">{formatCurrency(payment.due_payment)}</td>
+          <td className="border border-gray-300 p-2 text-gray-600 font-semibold">{payment.payment_notes || '—'}</td>
         </tr>
       ))}
     </tbody>
