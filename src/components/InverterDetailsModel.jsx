@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const InverterDetailsModel = ({ show, onClose, projectId, noOfInvertersAllowed }) => { // Renamed prop for clarity
     if (!show) {
@@ -26,7 +27,7 @@ const InverterDetailsModel = ({ show, onClose, projectId, noOfInvertersAllowed }
         setInlineEditError('');
         setInlineEditSuccess('');
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/get-inverters', {
+            const response = await axios.get(`${BASE_URL}api/get-inverters`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -170,7 +171,7 @@ const InverterDetailsModel = ({ show, onClose, projectId, noOfInvertersAllowed }
         };
 
         try {
-            const apiUrl = "http://127.0.0.1:8000/api/change-inverters";
+            const apiUrl = `${BASE_URL}api/change-inverters`;
 
             const response = await axios.post(apiUrl, payload, {
                 headers: {

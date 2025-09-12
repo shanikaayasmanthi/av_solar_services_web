@@ -25,6 +25,9 @@ import DueService from "../pages/DueService";
 import HoldProjects from "../pages/HoldProjects";
 import AccountsPage from "../pages/AccountsPage";
 import AccountsLayout from "../layouts/AccountsLayout.jsx";
+import Profile from "../pages/Profile.jsx";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "../pages/ResetPasswordPage.jsx";
 
 
 
@@ -37,7 +40,9 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Login/>,
-            }
+            },
+                  {path: "forgot-password", element: <ForgotPasswordPage />},
+            {path: "reset-password", element: <ResetPasswordPage />},
         ],
     },
 
@@ -68,6 +73,8 @@ const router = createBrowserRouter([
       {path: "openExternalProject", element: <ExternalProjectOpen />},
       {path: "dueservice", element: <DueService />},
       {path: "holdprojects", element: <HoldProjects />},
+      {path: "profile", element: <Profile />},
+
     {path:"*",element:<div>404 not found</div>}
     ],
   },

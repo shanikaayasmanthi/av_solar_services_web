@@ -4,6 +4,7 @@ import { ArrowLeftCircleIcon, XCircleIcon } from "@heroicons/react/16/solid";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function NewProjectCustomerDetails() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default function NewProjectCustomerDetails() {
     }
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/search-customer",
+        `${BASE_URL}api/search-customer`,
         {
           headers: {
             Accept: "application/json",
@@ -114,7 +115,7 @@ export default function NewProjectCustomerDetails() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/addcustomer",
+        `${BASE_URL}api/addcustomer`,
         {
           name: name,
           email: email,

@@ -7,6 +7,7 @@ import ProjectGridDetails from '../components/ProjectGridDetails';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function PendingInstallationProjectsDetails() {
   const { project_id } = useParams();
   const { token } = useAuth();

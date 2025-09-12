@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../contexts/AuthContext.jsx"; // Ensure this path is correct
+import { useAuth } from "../contexts/AuthContext.jsx"; 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ExternalProjectOpen = () => {
   const { token } = useAuth();
   const location = useLocation();
-  // Ensure customer_id is correctly extracted from location.state.customer.id
   const customer_id = location.state?.customerId||null;
   const navigate = useNavigate();
 
@@ -16,13 +16,13 @@ const ExternalProjectOpen = () => {
     project_address: "",
     no_of_panels: "",
     project_no:null,
-    type: "", // 'on_grids' or 'offgridhybrids'
-    system_capacity: "", // Added for panel capacity
+    type: "", 
+    system_capacity: "",
     project_installation_date: "",
-    nearest_town: "", // Corrected typo from 'neatest_town' to 'nearest_town'
+    nearest_town: "", 
     service_years_in_agreement: "",
     service_rounds_in_agreement: "",
-    customer_id: customer_id || null, // Important!
+    customer_id: customer_id || null, 
     company_name: "",
     installation_completed: false,
     project_installation_date: "",
@@ -30,7 +30,7 @@ const ExternalProjectOpen = () => {
     system_on_date: "",
   });
 
-  // Log customer_id to ensure it's being received
+ 
   useEffect(() => {
     console.log("Customer ID received:", customer_id);
     if (customer_id) {
@@ -47,11 +47,11 @@ const ExternalProjectOpen = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault(); 
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/open-external-project",
+        `${BASE_URL}api/open-external-project`,
         formData,
         {
           headers: {
@@ -65,8 +65,8 @@ const ExternalProjectOpen = () => {
       if(response.status === 200) {
         console.log("Project created:", response.data);
       alert("Project opened successfully!");
-      // Optionally, navigate to another page or clear form
-      setFormData({ // Clear form after successful submission
+
+      setFormData({ 
         project_address: "",
         no_of_panels: "",
         type: "",

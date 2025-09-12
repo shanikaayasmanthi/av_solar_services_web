@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 
 export default function HoldProjects() {
@@ -16,11 +17,11 @@ export default function HoldProjects() {
 const fetchHoldProjects = async (page = 1) => {
   try {
     const [internalRes, externalRes] = await Promise.all([
-      axios.get("http://127.0.0.1:8000/api/hold-projects", {
+      axios.get(`${BASE_URL}api/hold-projects`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { page }
       }),
-      axios.get("http://127.0.0.1:8000/api/hold-external-projects", {
+      axios.get(`${BASE_URL}api/hold-external-projects`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { page }
       })

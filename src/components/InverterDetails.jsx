@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const InverterDetails = ({ projectId }) => {
   const { token } = useAuth();
@@ -13,7 +14,7 @@ const InverterDetails = ({ projectId }) => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/get-inverters', {
+      const response = await axios.get(`${BASE_URL}api/get-inverters`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

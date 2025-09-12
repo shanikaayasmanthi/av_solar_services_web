@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import EditDocumentIcon from "@mui/icons-material/EditDocument";
 import SearchIcon from "@mui/icons-material/Search";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 
 const AccountsPage = () => {
@@ -22,7 +23,7 @@ const AccountsPage = () => {
   const fetchPayments = async (pageNo = 1, search = "") => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/projects/payments?page=${pageNo}&per_page=10&search=${search}`,
+        `${BASE_URL}api/projects/payments?page=${pageNo}&per_page=10&search=${search}`,
         {
           headers: {
             Accept: "application/json",
@@ -52,8 +53,8 @@ const AccountsPage = () => {
 const handleSavePayment = async () => {
   try {
     const url = editPayment.id
-      ? `http://127.0.0.1:8000/api/payments/${editPayment.id}`
-      : `http://127.0.0.1:8000/api/projects/${editPayment.project_id}/payments`;
+      ? `${BASE_URL}api/payments/${editPayment.id}`
+      : `${BASE_URL}api/projects/${editPayment.project_id}/payments`;
 
     const method = editPayment.id ? "put" : "post";
 

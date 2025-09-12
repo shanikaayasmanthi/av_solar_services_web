@@ -26,6 +26,16 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 if (!token || !user) return <Navigate to="/" replace />;
 
+  // Check if user is active
+  if (!user.is_active) {
+    return <Navigate to="/" replace />;
+  }
+
+    // Allow access to profile for all authenticated users
+  if (window.location.pathname === '/profile' || window.location.pathname === '/accounts/profile') {
+    return children;
+  }
+
 if (user.user_type === "super admin") {
   
   return children;

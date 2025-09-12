@@ -5,6 +5,7 @@ import axios from 'axios';
 import AddModel from '../components/AddModel';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function SolarProjects() {
     const navigate = useNavigate();
@@ -17,13 +18,14 @@ export default function SolarProjects() {
     const { token } = useAuth(); 
     const [showAddModel, setShowAddModel] = useState(false);
     const [ searchQuery, setSearchQuery ] = useState("");
+    
 
     // Function to fetch projects
     const fetchProjects = async (pageNumber = 1, tab = activeTab) => {
     // console.log("Current tab for fetch:", tab);
 
  try {
-        let apiUrl = 'http://127.0.0.1:8000/api/get-projects';
+        let apiUrl = `${BASE_URL}api/get-projects`;
         let params = {
             page: pageNumber,
             query: searchQuery,
@@ -33,7 +35,7 @@ export default function SolarProjects() {
 
         // Determine which API endpoint to call
         if (tab === 'external') {
-            apiUrl = 'http://127.0.0.1:8000/api/external-projects';
+            apiUrl = `${BASE_URL}api/external-projects`;
             // Add external sub-tab filter if not 'All'
             if (externalSubTab !== 'All') {
                 params.type = externalSubTab.toLowerCase();

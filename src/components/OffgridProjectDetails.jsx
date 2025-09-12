@@ -10,6 +10,7 @@ import { useAuth } from '../contexts/AuthContext';
 import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import CloseIcon from '@mui/icons-material/Close';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function OffgridProjectDataCard({project, onGrid, offGrid, setProject, setOffGrid, setOnGrid}) {
   const { id: projectId } = useParams(); 
@@ -31,7 +32,7 @@ export default function OffgridProjectDataCard({project, onGrid, offGrid, setPro
 const handleSave = async () => {
   try {
     const response = await axios.post(
-      `http://127.0.0.1:8000/api/update-project`,
+      `${BASE_URL}api/update-project`,
       {
         project_id: projectId,
         project: {
@@ -135,7 +136,7 @@ const fetchAndInsertDetails = async (printWindow, projectId, wifiDetails) => {
   
   try {
     // Inverter details
-    const inverterRes = await axios.get("http://127.0.0.1:8000/api/get-inverters", {
+    const inverterRes = await axios.get(`${BASE_URL}api/get-inverters`, {
       headers: { Authorization: `Bearer ${token}` },
       params: { project_id: projectId }
     });
@@ -171,7 +172,7 @@ const fetchAndInsertDetails = async (printWindow, projectId, wifiDetails) => {
 
 
     // Solar Panel details
-const solarRes = await axios.get("http://127.0.0.1:8000/api/get-solar-panel", {
+const solarRes = await axios.get(`${BASE_URL}api/get-solar-panel`, {
   headers: { Authorization: `Bearer ${token}` },
   params: { project_id: projectId }
 });
@@ -227,8 +228,8 @@ printWindow.document.getElementById("solar-details").innerHTML = solarTable;
 
     printWindow.document.getElementById("wifi-details").innerHTML = wifiTable;
 
-  // 🔹 Battery details 
-    const batteryRes = await axios.get("http://127.0.0.1:8000/api/get-batteries", {
+  // 🔹 Battery details
+    const batteryRes = await axios.get(`${BASE_URL}api/get-batteries`, {
       headers: { Authorization: `Bearer ${token}` },
       params: { off_grid_hybrid_project_id: offGrid?.off_grid_hybrid_project_id }
     });

@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const SearchServices = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,7 +19,7 @@ const SearchServices = () => {
   useEffect(() => {
     const fetchProjects = async (page = 1) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/projects/completed?page=${page}`, {
+    const response = await axios.get(`${BASE_URL}api/projects/completed?page=${page}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",

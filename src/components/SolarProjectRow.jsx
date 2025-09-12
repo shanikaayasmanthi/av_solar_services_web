@@ -5,6 +5,7 @@ import HoldConfirmationModal from "./HoldConfirmationModal";
 import RestoreIcon from "@mui/icons-material/Restore";
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const SolarProjectRow = ({project,onStatusChange}) => {
   const { token } = useAuth();
@@ -23,7 +24,7 @@ const SolarProjectRow = ({project,onStatusChange}) => {
     const actionType = project.is_hold ? "release" : "hold";
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/projects/${project.id}/${actionType}`,
+        `${BASE_URL}api/projects/${project.id}/${actionType}`,
         { remarks },
         {
           headers: { Authorization: `Bearer ${token}` }

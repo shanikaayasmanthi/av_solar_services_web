@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const NewBatteryDetails = ({ show, onClose, projectId }) => {
   const { token } = useAuth();
@@ -58,7 +59,7 @@ const NewBatteryDetails = ({ show, onClose, projectId }) => {
     });
 
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/add-batteries",
+      `${BASE_URL}api/add-batteries`,
       {
         project_id: projectId,
         batteries: validatedBatteries

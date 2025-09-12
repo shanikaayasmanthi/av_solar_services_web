@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const PendingInstallationForm = () => {
   const { project_id } = useParams();
@@ -21,7 +22,7 @@ useEffect(() => {
     const fetchInstallationDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/projects/${project_id}/pending-installation`,
+          `${BASE_URL}api/projects/${project_id}/pending-installation`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -103,7 +104,7 @@ useEffect(() => {
       };
 
       await axios.put(
-        `http://127.0.0.1:8000/api/projects/${project_id}/installation`, 
+        `${BASE_URL}api/projects/${project_id}/installation`, 
         payload,
         {
           headers: { Authorization: `Bearer ${token}` }

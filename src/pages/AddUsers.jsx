@@ -5,10 +5,11 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const Adduser = () => {
   const [userTypes, setUserTypes] = useState([]);
-  const { token } = useAuth();
+  const { token, user: currentUser } = useAuth();
   const [formData, setFormData] = useState({
   name: '',
   email: '',
@@ -20,10 +21,22 @@ const Adduser = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+    // Filter user types based on current user role
+  const filteredUserTypes = userTypes.filter((type) => {
+    if (currentUser?.user_type === 'admin') {
+      // Admin can only add supervisors (assuming supervisor has id 2)
+      return type.id === 2;
+    } else if (currentUser?.user_type === 'super admin') {
+      // Super admin can add all user types except customer (id 3)
+      return type.id !== 3;
+    }
+    return false;
+  });
+
   useEffect(() => {
     const fetchUserTypes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/user-types', {
+        const response = await axios.get(`${BASE_URL}api/user-types`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -44,6 +57,8 @@ const Adduser = () => {
   });
 };
 
+
+
  const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -51,7 +66,7 @@ const Adduser = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/users',
+        `${BASE_URL}api/users`,
         formData,
         {
           headers: {
@@ -168,7 +183,7 @@ const Adduser = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
               <label className="text-md font-medium text-gray-700 mb-2">Role</label>
-              <select
+              {/* <select
                 name="user_type_id"
                 value={formData.user_type_id}
                 onChange={handleChange}
@@ -188,7 +203,25 @@ const Adduser = () => {
                     </option>
 
                 ))}
-              </select>
+              </select> */}
+                <select
+      name="user_type_id"
+      value={formData.user_type_id}
+      onChange={handleChange}
+      className="width-md border border-gray-400 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+      required
+    >
+      <option value="" disabled>Select User Role</option>
+      {filteredUserTypes.map((type) => (
+        <option
+          key={type.id}
+          value={type.id}
+          className="text-sm"
+        >
+          {type.name}
+        </option>
+      ))}
+    </select>
 
             </div>
           </div>

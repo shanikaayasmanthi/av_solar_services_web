@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import FileDownloadSharpIcon from '@mui/icons-material/FileDownloadSharp';
 import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const AnnualServiceSummary = () => {
   const { token } = useAuth();
@@ -20,7 +21,7 @@ const AnnualServiceSummary = () => {
   const fetchAnnualServiceSummary = async (year) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://127.0.0.1:8000/api/service-summary/annual?year=${year}`, {
+      const response = await axios.get(`${BASE_URL}api/service-summary/annual?year=${year}`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",

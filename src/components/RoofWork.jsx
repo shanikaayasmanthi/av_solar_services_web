@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const RoofWork = ({ serviceId }) => {
   const { token } = useAuth();
@@ -12,7 +13,7 @@ const RoofWork = ({ serviceId }) => {
     const fetchRoofWorkData = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:8000/api/roof-work/details',
+          `${BASE_URL}api/roof-work/details`,
           {
             params: { service_id: serviceId },
             headers: {

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import SuperAdminChoiceModal from "../components/SuperAdminChoiceModal.jsx";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 // import Logo from "../images/AVlogo.jpeg"; // assuming this path is correct
 
 
@@ -18,7 +19,7 @@ const LoginPage = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/login",
+        `${BASE_URL}api/login`,
         { email, password },
         {
           headers: {
@@ -47,9 +48,16 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error(error);
+       // Handle specific error messages from backend
+    if (error.response && error.response.data && error.response.data.message) {
+      setErrorMsg(error.response.data.message);
+    } else if (error.response && error.response.status === 403) {
+      setErrorMsg("Your account has been deactivated. Please contact administrator.");
+    } else {
       setErrorMsg("Login failed. Please check your email or password.");
     }
-  };
+  }
+};
 
   const handleChoice = (path) => {
   setShowChoice(false);
@@ -90,9 +98,13 @@ const LoginPage = () => {
           className="w-full px-4 py-3 mb-2 text-sm bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <div className="mb-2 text-sm text-right text-gray-500 cursor-pointer hover:text-blue-500">
-          Forgot password?
-        </div>
+<div 
+  className="mb-2 text-sm text-right text-gray-500 cursor-pointer hover:text-blue-500"
+  onClick={() => navigate("/forgot-password")}
+>
+  Forgot password?
+</div>
+
 
         {errorMsg && (
           <p className="mb-3 text-sm text-red-500">{errorMsg}</p>

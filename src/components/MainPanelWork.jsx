@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const MainPanelWork = ({ serviceId }) => {
   const { token } = useAuth();
@@ -12,7 +13,7 @@ const MainPanelWork = ({ serviceId }) => {
     const fetchMainPanelData = async () => {
       try {
         const response = await axios.post(
-          'http://localhost:8000/api/mainpanel/details',
+          `${BASE_URL}api/mainpanel/details`,
           { service_id: serviceId },
           {
             headers: {

@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import NewSolarPanelDetails from './NewSolarPanelDetails';
 import NewInverterDetails from './NewInventerDetails';
 import NewBatteryDetails from './NewBatteryDetails';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ProjectTypeDetailsForm = () => {
   const { project_id } = useParams();
@@ -26,11 +27,12 @@ const ProjectTypeDetailsForm = () => {
   const [noOfPanels, setNoOfPanels] = useState(0);
   const [showInverterModal, setShowInverterModal] = useState(false);
   const [showBatteryModal, setShowBatteryModal] = useState(false);
+  
 
 useEffect(() => {
   const fetchProjectDetails = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/projects/non-installed`, {
+      const response = await axios.get(`${BASE_URL}api/projects/non-installed`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -147,8 +149,8 @@ const handleSubmit = async (e) => {
 
     const endpoint =
       projectType === 'ongrid'
-        ? 'http://localhost:8000/api/projects/ongrid'
-        : 'http://localhost:8000/api/projects/offgrid';
+        ? `${BASE_URL}api/projects/ongrid`
+        : `${BASE_URL}api/projects/offgrid`;
 
     const response = await axios.post(endpoint, payload, {
       headers: {

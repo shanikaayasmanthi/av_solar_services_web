@@ -4,6 +4,7 @@ import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurned
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { useAuth } from "../contexts/AuthContext";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ScheduledServices = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const ScheduledServices = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/services/scheduled?page=${currentPage}`, {
+        const response = await axios.get(`${BASE_URL}api/services/scheduled?page=${currentPage}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json"

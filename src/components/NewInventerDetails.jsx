@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const NewInverterDetails = ({ show, onClose, projectId }) => {
   const { token } = useAuth();
@@ -62,7 +63,7 @@ const NewInverterDetails = ({ show, onClose, projectId }) => {
       });
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/change-inverters",
+        `${BASE_URL}api/change-inverters`,
         {
           project_id: projectId,
           inverters_to_add: payloadInverters,

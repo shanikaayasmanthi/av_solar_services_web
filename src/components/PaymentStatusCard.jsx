@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const PaymentStatusCard = ({ projectId }) => {
   const { token } = useAuth();
@@ -11,7 +12,7 @@ const PaymentStatusCard = ({ projectId }) => {
   const fetchPayments = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/projects/${projectId}/payments`,
+        `${BASE_URL}api/projects/${projectId}/payments`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

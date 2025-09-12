@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import ServiceSummary from '../components/MonthlySummaryReport';
 import AnnualServiceSummary from '../components/AnnualSummaryReport';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function Dashboard() {
 
@@ -16,7 +17,7 @@ export default function Dashboard() {
 
   const fetchProjectCount = async()=>{
     try{
-      const response = await axios.get('http://127.0.0.1:8000/api/get-project-count',
+      const response = await axios.get(`${BASE_URL}api/get-project-count`,
       {
         headers: {
           Accept: "application/json",
@@ -39,7 +40,7 @@ if(response.data && response.data.success === true){
 
     const fetchHoldProjectCount = async()=>{
     try{
-      const response = await axios.get('http://127.0.0.1:8000/api/get-hold-project-count',
+      const response = await axios.get(`${BASE_URL}api/get-hold-project-count`,
       {
         headers: {
           Accept: "application/json",
@@ -62,7 +63,7 @@ if(response.data && response.data.success === true){
 
   const fetchServiceCounts = async()=>{
     try{
-      const response =await axios.get('http://127.0.0.1:8000/api/get-service-counts',
+      const response =await axios.get(`${BASE_URL}api/get-service-counts`,
         {
         headers: {
           Accept: "application/json",

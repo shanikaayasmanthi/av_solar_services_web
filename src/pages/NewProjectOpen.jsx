@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../contexts/AuthContext.jsx"; // Ensure this path is correct
+import { useAuth } from "../contexts/AuthContext.jsx"; 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const NewProjectOpen = () => {
   const { token } = useAuth();
   const location = useLocation();
-  // Ensure customer_id is correctly extracted from location.state.customer.id
   const customer_id = location.state?.customerId||null;
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ const NewProjectOpen = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/openproject",
+        `${BASE_URL}api/openproject`,
         formData,
         {
           headers: {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const BatteryDetailsModel = ({ show, onClose, offgridProjectId }) => {
     if (!show) {
@@ -26,7 +27,7 @@ const BatteryDetailsModel = ({ show, onClose, offgridProjectId }) => {
         setInlineEditError('');
         setInlineEditSuccess('');
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/get-batteries', {
+            const response = await axios.get(`${BASE_URL}api/get-batteries`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -153,7 +154,7 @@ const BatteryDetailsModel = ({ show, onClose, offgridProjectId }) => {
         };
 
         try {
-            const apiUrl = "http://127.0.0.1:8000/api/change-batteries"; // **NEW API ENDPOINT**
+            const apiUrl = `${BASE_URL}api/change-batteries`; 
 
             const response = await axios.post(apiUrl, payload, {
                 headers: {

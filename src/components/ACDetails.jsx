@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ACDetails = ({ serviceId }) => {
   const { token } = useAuth();
@@ -11,7 +12,7 @@ const ACDetails = ({ serviceId }) => {
   useEffect(() => {
     const fetchACData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/ac/details-by-service-id", {
+        const response = await axios.get(`${BASE_URL}api/ac/details-by-service-id`, {
           params: { service_id: serviceId },
           headers: {
             Authorization: `Bearer ${token}`,

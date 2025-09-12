@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import CloseIcon from '@mui/icons-material/Close';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function CustomerCard({ projectId, customerData }) {
   const { token } = useAuth();
@@ -23,7 +24,7 @@ export default function CustomerCard({ projectId, customerData }) {
   // Fetch customer details
   const fetchCustomerData = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/get-customer', {
+      const response = await axios.get(`${BASE_URL}api/get-customer`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { project_id: projectId }
       });
@@ -101,7 +102,7 @@ export default function CustomerCard({ projectId, customerData }) {
       }
 
       const response = await axios.put(
-        'http://127.0.0.1:8000/api/customers/update-details',
+        `${BASE_URL}api/customers/update-details`,
         {
           project_id: projectId,
           name: customer.name,

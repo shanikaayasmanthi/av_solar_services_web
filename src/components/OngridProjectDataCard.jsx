@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import CloseIcon from '@mui/icons-material/Close';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function OngridProjectDataCard({project,onGrid,offGrid,setProject,setOnGrid,setOffGrid}) {
   const { id: projectId } = useParams(); 
@@ -28,7 +29,7 @@ export default function OngridProjectDataCard({project,onGrid,offGrid,setProject
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/update-project`,
+        `${BASE_URL}api/update-project`,
         {
           project_id: projectId,
           project: {
@@ -125,7 +126,7 @@ export default function OngridProjectDataCard({project,onGrid,offGrid,setProject
 const fetchAndInsertDetails = async (printWindow, projectId, wifiDetails) => {
   try {
     // Inverter details
-    const inverterRes = await axios.get("http://127.0.0.1:8000/api/get-inverters", {
+    const inverterRes = await axios.get(`${BASE_URL}api/get-inverters`, {
       headers: { Authorization: `Bearer ${token}` },
       params: { project_id: projectId }
     });
@@ -161,7 +162,7 @@ const fetchAndInsertDetails = async (printWindow, projectId, wifiDetails) => {
 
 
     // Solar Panel details
-const solarRes = await axios.get("http://127.0.0.1:8000/api/get-solar-panel", {
+const solarRes = await axios.get(`${BASE_URL}api/get-solar-panel`, {
   headers: { Authorization: `Bearer ${token}` },
   params: { project_id: projectId }
 });

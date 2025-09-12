@@ -7,6 +7,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ScheduleServiceModel from '../components/ScheduleServiceModel';
 import ProjectDetails from './ProjectDetails.jsx';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const DueService = () => {
   const [notifications, setNotifications] = useState([]);
@@ -24,7 +25,7 @@ const DueService = () => {
     setError(null);
     try {
       const response = await axios.get(
-        'http://127.0.0.1:8000/api/services/notifications',
+        `${BASE_URL}api/services/notifications`,
         {
           headers: {
             Accept: "application/json",

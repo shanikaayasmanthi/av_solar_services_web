@@ -8,6 +8,7 @@ import { useAuth } from "../contexts/AuthContext";
 import InverterDetails from '../components/InverterDetails';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 
 
@@ -42,7 +43,7 @@ const ServiceDetail = () => {
       try {
         // Fetch service details
         const serviceResponse = await axios.get(
-          `http://localhost:8000/api/services/completed-by-project-id`,
+          `${BASE_URL}api/services/completed-by-project-id`,
           {
             params: { project_id: project_id },
             headers: {
@@ -73,7 +74,7 @@ const ServiceDetail = () => {
 
         // Fetch location data
         const locationResponse = await axios.get(
-          'http://localhost:8000/api/project/location-capacity',
+          `${BASE_URL}api/project/location-capacity`,
           {
             params: { project_id: project_id },
             headers: {

@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { AlignHorizontalCenter } from '@mui/icons-material';
 import FileDownloadSharpIcon from '@mui/icons-material/FileDownloadSharp';
 import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ServiceSummary = () => {
   const { token } = useAuth();
@@ -22,7 +23,7 @@ const ServiceSummary = () => {
   const fetchServiceSummary = async (year, month) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://127.0.0.1:8000/api/service-summary?year=${year}&month=${month}`, {
+      const response = await axios.get(`${BASE_URL}api/service-summary?year=${year}&month=${month}`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",

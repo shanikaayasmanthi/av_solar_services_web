@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-// import ChangingPanelsModal from './ChangingPanelsModal'; // If you re-introduce a separate modal
+import { BASE_URL } from "../constants/BaseUrl.jsx";
+
 
 const SolarPanelDetailsModel = ({
   show,
@@ -46,7 +47,7 @@ const SolarPanelDetailsModel = ({
     setInlineEditSuccess("");
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/get-solar-panel",
+        `${BASE_URL}api/get-solar-panel`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -379,8 +380,8 @@ const SolarPanelDetailsModel = ({
     // --- API Call ---
     try {
       const apiUrl = selectedActionType === "changing"
-        ? "http://127.0.0.1:8000/api/change-solar-panels" // New endpoint for changing
-        : "http://127.0.0.1:8000/api/add-new-solar-panels"; // Existing endpoint for adding/expanding
+        ? `${BASE_URL}api/change-solar-panels` // New endpoint for changing
+        : `${BASE_URL}api/add-new-solar-panels`; // Existing endpoint for adding/expanding
 
       const response = await axios.post(
         apiUrl,

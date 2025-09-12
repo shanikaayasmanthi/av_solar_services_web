@@ -6,6 +6,7 @@ import {
 import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ExpandPanelsModel = ({ onClose ,projectId,onPanelsUpdated,option}) => {
     const {token} = useAuth();
@@ -79,7 +80,7 @@ const ExpandPanelsModel = ({ onClose ,projectId,onPanelsUpdated,option}) => {
     
     
     try{
-        const response = await axios.post("http://127.0.0.1:8000/api/add-new-solar-panels",
+        const response = await axios.post(`${BASE_URL}api/add-new-solar-panels`,
         {
             project_id:projectId,
             total_panels: totalPanels,

@@ -5,10 +5,12 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from "@mui/icons-material/Person";
 import axios from "axios";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 
-const Header = () => {
+const Header = ({showNotification=true}) => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, token, logout } = useAuth();
@@ -23,7 +25,7 @@ const Header = () => {
   const logoutUser = async () => {
     try {
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/logout',
+        `${BASE_URL}api/logout`,
         {},
         {  
           headers: {
@@ -66,7 +68,7 @@ const Header = () => {
   const fetchNotificationCount = async () => {
     try {
       const response = await axios.get(
-        'http://127.0.0.1:8000/api/services/notifications',
+        `${BASE_URL}api/services/notifications`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -108,6 +110,10 @@ const Header = () => {
       navigate("/");
     }
   };
+    const handleProfileClick = () => {
+    setDropdownOpen(false);
+    navigate("/profile");
+  };
 
   return (
     <header className="fixed top-0 left-0 z-50 flex items-center justify-between w-full h-[65px] px-4 md:px-6 lg:px-7 text-gray-800 bg-white shadow-md border-b border-gray-100">
@@ -116,7 +122,7 @@ const Header = () => {
           alt="Logo" 
           className="h-7 w-auto md:h-7 transition-all duration-300 hover:scale-105 cursor-pointer" 
           onClick={() => {
-            if (user?.user_type === "admin" || user?.user_type === "Super Admin") {
+            if (user?.user_type === "admin" || user?.user_type === "super admin") {
               navigate('/dashboard');
             }
           }}
@@ -124,7 +130,7 @@ const Header = () => {
       
       <div className="flex items-center gap-4 md:gap-6">
   {/* Notification button only for admin/super admin */}
-  {(user?.user_type === "admin" || user?.user_type === "Super Admin") && (
+  {showNotification && (user?.user_type === "admin" || user?.user_type === "super admin") && (
     <div 
       className="relative p-2 text-teal-600 cursor-pointer rounded-full transition-all duration-300 hover:bg-teal-50 hover:text-teal-700 hover:scale-110"
       onClick={handleClick}
@@ -155,10 +161,22 @@ const Header = () => {
               className="absolute right-0 z-50 mt-2 w-40 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-fadeIn"
               onMouseLeave={() => setDropdownOpen(false)}
             >
-              <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                <p className="text-sm font-medium text-gray-700 truncate">{user?.name || "User"}</p>
-                <p className="text-xs text-gray-500 truncate">{user?.email || ""}</p>
-              </div>
+            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+              <p className="text-sm font-medium text-gray-700 truncate">{user?.name || "User"}</p>
+              <p 
+                className="text-xs text-gray-500 truncate cursor-pointer hover:text-blue-600 transition-colors"
+                onClick={handleProfileClick}
+              >
+                {user?.email || ""}
+              </p>
+            </div>
+            <button
+              onClick={handleProfileClick}
+              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 transition-colors duration-200"
+            >
+              <PersonIcon fontSize="small" />
+              <span>Profile</span>
+            </button>
               <button
                 onClick={handleLogout}
                 className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 flex items-center gap-2 transition-colors duration-200"

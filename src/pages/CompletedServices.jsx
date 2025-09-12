@@ -5,6 +5,7 @@ import axios from 'axios';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const CompletedServices = () => {
   const { project_id } = useParams();
@@ -32,7 +33,7 @@ const CompletedServices = () => {
   useEffect(() => {
     const fetchCompletedServices = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/services/completed-by-project-id`, {
+        const response = await axios.get(`${BASE_URL}api/services/completed-by-project-id`, {
           params: { project_id },
           headers: {
             Authorization: `Bearer ${token}`,

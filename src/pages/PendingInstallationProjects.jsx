@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function PendingInstallationProjects() {
     const [allProjects, setAllProjects] = useState([]);
@@ -18,7 +19,7 @@ export default function PendingInstallationProjects() {
         setIsLoading(true);
         try {
             const response = await axios.get(
-                `http://127.0.0.1:8000/api/projects/non-installed`,
+                `${BASE_URL}api/projects/non-installed`,
                 {
                     headers: {
                         Accept: "application/json",

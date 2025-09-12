@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import CloseIcon from '@mui/icons-material/Close';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const PendingInstallationCustomerCard = ({ projectId }) => {
   const { token } = useAuth();
@@ -20,7 +21,7 @@ const PendingInstallationCustomerCard = ({ projectId }) => {
 
   const fetchCustomerData = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/customers/non-installed', {
+      const response = await axios.get(`${BASE_URL}api/customers/non-installed`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +86,7 @@ const PendingInstallationCustomerCard = ({ projectId }) => {
       }
 
       const response = await axios.put(
-        'http://127.0.0.1:8000/api/customers/update-details',
+        `${BASE_URL}api/customers/update-details`,
         {
           project_id: projectId,
           name: customer.name,

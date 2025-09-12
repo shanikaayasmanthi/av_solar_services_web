@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const OutdoorWork = ({ serviceId }) => {
   const { token } = useAuth();
@@ -12,7 +13,7 @@ const OutdoorWork = ({ serviceId }) => {
     const fetchOutdoorWorkData = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:8000/api/outdoor-work/details',
+          `${BASE_URL}api/outdoor-work/details`,
           {
             params: { service_id: serviceId },
             headers: {

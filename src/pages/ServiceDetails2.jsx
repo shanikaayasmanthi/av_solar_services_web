@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
 import axios from 'axios';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ServiceDetails2 = () => {
   const location = useLocation();
@@ -27,7 +28,7 @@ const ServiceDetails2 = () => {
     const fetchTechnicians = async () => {
       try {
         const response = await axios.post(
-          'http://localhost:8000/api/service/technicians',
+          `${BASE_URL}api/service/technicians`,
           { service_id: service_id },
           {
             headers: {

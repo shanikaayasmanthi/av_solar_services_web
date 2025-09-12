@@ -9,7 +9,7 @@ import { Upcoming } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import PaymentIcon from "@mui/icons-material/Payment";
 
-const Sidebar = () => {
+const Sidebar = ({layout}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,7 +17,8 @@ const Sidebar = () => {
   
   let sidebarItems = [];
 
-  if (user?.user_type === "accounts") {
+  if (layout === "accounts") {
+    // Accounts layout (accounts + super admin inside accounts)
     sidebarItems = [
       {
         id: "payments",
@@ -27,54 +28,57 @@ const Sidebar = () => {
         label: "Payments"
       }
     ];
-  } else sidebarItems = [
-    {
-      id: "dashboard",
-      icon: DatasetIcon,
-      onClickPath: "/dashboard",
-      activeRoutes: ["/dashboard"],
-      label: "Dashboard"
-    },
-    {
-      id: "projects",
-      icon: FaxIcon,
-      onClickPath: "/solarprojects",
-      activeRoutes: [
-        "/solarproject",
-        "/projectDetails",
-        "/CustomerDetails",
-        "/openProject",
-      ],
-      label: "Projects"
-    },
-    {
-      id: "services",
-      icon: MiscellaneousServicesIcon,
-      onClickPath: "/scheduledServices",
-      activeRoutes: [
-        "/scheduledServices",
-        "/Searchservices",
-        "/completedservices",
-        "/servicedetails",
-        "/serviceDetails2",
-      ],
-      label: "Services"
-    },
-    {
-      id: "pending",
-      icon: Upcoming,
-      onClickPath: "/pendingInstallationProjects",
-      activeRoutes: ["/pendingInstallationProjects"],
-      label: "Pending"
-    },
-    {
-      id: "users",
-      icon: GroupsIcon,
-      onClickPath: "/users",
-      activeRoutes: ["/users", "/addusers"],
-      label: "Users"
-    },
-  ];
+  } else {
+    // Admin layout (admin + super admin inside admin)
+    sidebarItems = [
+      {
+        id: "dashboard",
+        icon: DatasetIcon,
+        onClickPath: "/dashboard",
+        activeRoutes: ["/dashboard"],
+        label: "Dashboard"
+      },
+      {
+        id: "projects",
+        icon: FaxIcon,
+        onClickPath: "/solarprojects",
+        activeRoutes: [
+          "/solarproject",
+          "/projectDetails",
+          "/CustomerDetails",
+          "/openProject",
+        ],
+        label: "Projects"
+      },
+      {
+        id: "services",
+        icon: MiscellaneousServicesIcon,
+        onClickPath: "/scheduledServices",
+        activeRoutes: [
+          "/scheduledServices",
+          "/Searchservices",
+          "/completedservices",
+          "/servicedetails",
+          "/serviceDetails2",
+        ],
+        label: "Services"
+      },
+      {
+        id: "pending",
+        icon: Upcoming,
+        onClickPath: "/pendingInstallationProjects",
+        activeRoutes: ["/pendingInstallationProjects"],
+        label: "Pending"
+      },
+      {
+        id: "users",
+        icon: GroupsIcon,
+        onClickPath: "/users",
+        activeRoutes: ["/users", "/addusers"],
+        label: "Users"
+      },
+    ];
+  }
 
   return (
     <>

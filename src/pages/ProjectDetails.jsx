@@ -11,6 +11,7 @@ import ScheduleServiceModel from '../components/ScheduleServiceModel';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PaymentStatusCard from '../components/PaymentStatusCard';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ProjectDetails = () => {
     const [schedule, setSchedule] = useState(false);
@@ -27,7 +28,7 @@ const ProjectDetails = () => {
   const [summeryError, setSummeryError] = useState(null);
   const fetchProjectData = async()=>{
     try{
-        const projectResponse = await axios.get(`http://127.0.0.1:8000/api/get-project`,
+        const projectResponse = await axios.get(`${BASE_URL}api/get-project`,
             {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +63,7 @@ const ProjectDetails = () => {
 
   const fetchServiceSummary = async()=>{
     try{
-      const servicesResponse = await axios.get('http://127.0.0.1:8000/api/get-services-summary',
+      const servicesResponse = await axios.get(`${BASE_URL}api/get-services-summary`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
