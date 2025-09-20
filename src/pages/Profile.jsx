@@ -243,7 +243,7 @@ const Profile = () => {
               {!isEditing && (
                 <button
                   onClick={handleEdit}
-                  className="absolute top-4 right-4 bg-teal-500 text-white p-1.5 rounded-md hover:bg-teal-600 transition-colors"
+                  className="absolute top-4 right-4 bg-teal-600 text-white p-1.5 rounded-md hover:bg-teal-700 transition-colors hover:transform hover:scale-105"
                   title="Edit Profile"
                 >
                   <EditIcon fontSize="small" />
@@ -251,7 +251,7 @@ const Profile = () => {
               )}
 
               <div className="text-center mb-5">
-                <div className="w-20 h-20 mx-auto bg-gradient-to-r from-teal-500 to-teal-400 rounded-full flex items-center justify-center shadow-md mb-4">
+                <div className="w-20 h-20 mx-auto bg-gradient-to-r from-teal-600 to-teal-400 rounded-full flex items-center justify-center shadow-md mb-4">
                   <PersonIcon className="text-white text-3xl" />
                 </div>
                 <h1 className="text-xl font-bold text-gray-900 mb-1">{profileData?.name}</h1>
@@ -373,7 +373,7 @@ const Profile = () => {
         </div>
 
         {/*  Change Password Card */}
-          <div className="w-full">
+        <div className="w-full">
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 h-full">
             <div className="text-center mb-6">
               <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -383,19 +383,12 @@ const Profile = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Change Password</h3>
               
-              {!showPasswordChange ? (
+              {!showPasswordChange && (
                 <button
                   onClick={() => setShowPasswordChange(true)}
                   className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm"
                 >
                   Change Password
-                </button>
-              ) : (
-                <button
-                  onClick={cancelPasswordChange}
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
-                >
-                  Cancel
                 </button>
               )}
             </div>
@@ -481,14 +474,14 @@ const Profile = () => {
                 <div className="flex gap-3 pt-2">
                   <button
                     onClick={cancelPasswordChange}
-                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleChangePassword}
                     disabled={passwordLoading}
-                    className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50"
+                    className="flex-1 px-2 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50"
                   >
                     {passwordLoading ? 'Changing...' : 'Update Password'}
                   </button>

@@ -18,6 +18,7 @@ export default function SolarProjects() {
     const { token } = useAuth(); 
     const [showAddModel, setShowAddModel] = useState(false);
     const [ searchQuery, setSearchQuery ] = useState("");
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
     
 
     // Function to fetch projects
@@ -77,6 +78,7 @@ export default function SolarProjects() {
             setCurrentPage(projectsData.current_page);
             setItemsPerPage(projectsData.per_page);
             setTotalItems(projectsData.total);
+
         } else {
             console.warn("Unexpected data structure:", responseData);
             setProjects([]);
@@ -85,6 +87,15 @@ export default function SolarProjects() {
 
     } catch (error) {
         console.error('Error fetching projects:', error);
+        // Add more detailed error logging
+        if (error.response) {
+            console.error('Server responded with:', error.response.status);
+            console.error('Response data:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up request:', error.message);
+        }
         setProjects([]);
         setTotalItems(0);
     }
@@ -94,10 +105,14 @@ export default function SolarProjects() {
         if (token) {
             fetchProjects(currentPage);
         }
-    }, [currentPage, token,activeTab, externalSubTab, searchQuery]); 
+    }, [currentPage, token,activeTab, externalSubTab, searchQuery,refreshTrigger]); 
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+    };
+
+    const handleProjectStatusChange = () => {
+        setRefreshTrigger(prev => prev + 1); // This will trigger a re-fetch
     };
 
     return (
@@ -114,7 +129,10 @@ export default function SolarProjects() {
                             className={`px-3 py-1 rounded-md text-m font-medium ${
                                 activeTab === 'All' ? 'text-teal-400' : 'text-teal-600 hover:text-teal-600'
                             }`}
-                            onClick={() => setActiveTab('All')}
+                            onClick={() => {
+                                setActiveTab('All');
+                                setCurrentPage(1);
+                            }}
                         >
                             All
                         </button>
@@ -122,7 +140,10 @@ export default function SolarProjects() {
                             className={`px-3 py-1 rounded-md text-m font-medium ${
                                 activeTab === 'Ongrid' ? 'text-teal-400' : 'text-teal-600 hover:text-teal-600'
                             }`}
-                            onClick={() => setActiveTab('Ongrid')}
+                            onClick={() => {
+                                setActiveTab('Ongrid');
+                                setCurrentPage(1);
+                            }}
                         >
                             On-grid
                         </button>
@@ -130,7 +151,10 @@ export default function SolarProjects() {
                             className={`px-3 py-1 rounded-md text-m font-medium ${
                                 activeTab === 'Offgrid' ? 'text-teal-400' : 'text-teal-600 hover:text-teal-600'
                             }`}
-                            onClick={() => setActiveTab('Offgrid')}
+                            onClick={() => {
+                                setActiveTab('Offgrid');
+                                setCurrentPage(1);
+                            }}
                         >
                             Off-grid & Hybrid
                         </button>
@@ -139,7 +163,10 @@ export default function SolarProjects() {
         className={`px-3 py-1 rounded-md text-m font-medium ${
             activeTab === 'external' ? 'text-teal-400' : 'text-teal-600 hover:text-teal-600'
         }`}
-        onClick={() => setActiveTab('external')}
+        onClick={() => {
+            setActiveTab('external');
+            setCurrentPage(1);
+        }}
     >
         External
     </button>
@@ -154,7 +181,10 @@ export default function SolarProjects() {
                             ? 'bg-teal-100 text-teal-700 font-medium' 
                             : 'text-gray-600 hover:bg-gray-50'
                     }`}
-                    onClick={() => setExternalSubTab('All')}
+                    onClick={() => {
+                        setExternalSubTab('All');
+                        setCurrentPage(1);
+                    }}
                 >
                     All
                 </button>
@@ -164,7 +194,10 @@ export default function SolarProjects() {
                             ? 'bg-teal-100 text-teal-700 font-medium' 
                             : 'text-gray-600 hover:bg-gray-50'
                     }`}
-                    onClick={() => setExternalSubTab('Ongrid')}
+                    onClick={() => {
+                        setExternalSubTab('Ongrid');
+                        setCurrentPage(1);
+                    }}
                 >
                     On-grid
                 </button>
@@ -174,7 +207,10 @@ export default function SolarProjects() {
                             ? 'bg-teal-100 text-teal-700 font-medium' 
                             : 'text-gray-600 hover:bg-gray-50'
                     }`}
-                    onClick={() => setExternalSubTab('Offgrid')}
+                    onClick={() => {
+                        setExternalSubTab('Offgrid');
+                        setCurrentPage(1);
+                    }}
                 >
                     Off-grid
                 </button>
@@ -246,6 +282,7 @@ export default function SolarProjects() {
                         <SolarProjectRow
                             key={project.id}
                             project = {project}
+                             onStatusChange={handleProjectStatusChange} 
                             // projectNumber={project.id}
                             // description={project.project_name}
                             // location={project.neatest_town}

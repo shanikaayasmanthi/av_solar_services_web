@@ -32,7 +32,7 @@ export default function PendingInstallationProjectsDetails() {
     <ArrowBackIcon fontSize="medium" />
   </div>
   <div>
-    <h1 className="text-3xl font-bold text-gray-800 mb-5">Project No: {projectNo} - Completed Services</h1>
+    <h1 className="text-3xl font-bold text-gray-800 mb-5">Project No: {projectNo} - Project Installation Details</h1>
     <h2 className="text-2xl font-semibold mb-8"> {projectName}</h2>
   </div>
 </div>
