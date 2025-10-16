@@ -1,70 +1,57 @@
-import { PencilIcon } from '@heroicons/react/16/solid';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import CloseIcon from '@mui/icons-material/Close';
 import { BASE_URL } from "../constants/BaseUrl.jsx";
 
-export default function CustomerCard({ projectId, customerData }) {
+const PendingInstallationCustomerCard = ({ projectId }) => {
   const { token } = useAuth();
-
-  const [customer, setCustomer] = useState(customerData || {
+  const [customer, setCustomer] = useState({
     name: '',
     email: '',
     address: '',
     phone_numbers: []
   });
-  const [tempPhoneNumbers, setTempPhoneNumbers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [tempPhoneNumbers, setTempPhoneNumbers] = useState([]);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  // Fetch customer details
   const fetchCustomerData = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}api/get-customer`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { project_id: projectId }
+      const response = await axios.get(`${BASE_URL}api/customers/non-installed`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          project_id: projectId
+        }
       });
 
-      if (
-        response.data.status === 'Request was successful.' ||
-        response.data.success === true
-      ) {
-        const customerResponseData = response.data.data;
+      if (response.data.status === 'success' && response.data.customers.length > 0) {
+        const customerData = response.data.customers[0];
         setCustomer({
-          name: customerResponseData.customer.name,
-          email: customerResponseData.customer.email,
-          address: customerResponseData.customer.address,
-          phone_numbers: customerResponseData.phone_numbers
+          name: customerData.customer_name,
+          email: customerData.email,
+          address: customerData.address,
+          phone_numbers: customerData.telephone_numbers
         });
-        setTempPhoneNumbers([...customerResponseData.phone_numbers]);
-      } else {
-        console.error('Unexpected response structure:', response.data);
+        setTempPhoneNumbers([...customerData.telephone_numbers]);
       }
     } catch (error) {
-      console.error('Error fetching customer data:', error);
+      console.error("Error fetching customer data:", error);
       setError('Failed to load customer data');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (!customerData && projectId) {
-      fetchCustomerData();
-    }
-    else if (customerData) {
-      setCustomer(customerData);
-    }
-  }, [projectId, customerData]);
-
-  // Toggle edit mode
   const handleEditToggle = () => {
     setEditing(!editing);
     if (!editing) {
+      // When entering edit mode, copy current phone numbers to temp state
       setTempPhoneNumbers([...customer.phone_numbers]);
     }
     setError('');
@@ -73,7 +60,7 @@ export default function CustomerCard({ projectId, customerData }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCustomer((prev) => ({ ...prev, [name]: value }));
+    setCustomer(prev => ({ ...prev, [name]: value }));
   };
 
   const handlePhoneChange = (index, value) => {
@@ -91,13 +78,10 @@ export default function CustomerCard({ projectId, customerData }) {
     setTempPhoneNumbers(updatedPhones);
   };
 
-  // Save changes
   const handleSubmit = async () => {
     try {
-      if (
-        tempPhoneNumbers.length === 0 ||
-        tempPhoneNumbers.some((phone) => !phone.trim())
-      ) {
+      // Validate at least one phone number exists
+      if (tempPhoneNumbers.length === 0 || tempPhoneNumbers.some(phone => !phone.trim())) {
         throw new Error('Please provide at least one valid phone number');
       }
 
@@ -108,7 +92,7 @@ export default function CustomerCard({ projectId, customerData }) {
           name: customer.name,
           email: customer.email,
           address: customer.address,
-          phone_numbers: tempPhoneNumbers.filter((phone) => phone.trim())
+          phone_numbers: tempPhoneNumbers.filter(phone => phone.trim())
         },
         {
           headers: {
@@ -119,6 +103,7 @@ export default function CustomerCard({ projectId, customerData }) {
       );
 
       if (response.data.status === 'success') {
+        // Update local state with new data
         setCustomer({
           ...customer,
           phone_numbers: response.data.customer.telephone_numbers
@@ -129,14 +114,17 @@ export default function CustomerCard({ projectId, customerData }) {
       }
     } catch (err) {
       console.error('Update error:', err);
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          'Failed to update customer details'
-      );
+      setError(err.response?.data?.message || err.message || 'Failed to update customer details');
+      // Revert to original phone numbers if update fails
       setTempPhoneNumbers([...customer.phone_numbers]);
     }
   };
+
+  useEffect(() => {
+    if (projectId) {
+      fetchCustomerData();
+    }
+  }, [projectId]);
 
   if (loading) {
     return (
@@ -147,14 +135,14 @@ export default function CustomerCard({ projectId, customerData }) {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 mb-6 flex-1 min-w-[600px] ">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">Customer Details</h3>
         <button
           onClick={handleEditToggle}
-          className={`px-2 py-2 rounded-md ${editing ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '}hover:transform hover:scale-105 transition-transform duration-200`}
+          className={`px-2 py-2 rounded-md ${editing ? 'bg-red-400 text-white hover:bg-red-600' : 'bg-teal-600 text-white hover:bg-teal-700 '}`}
         >
-          {editing ? <CloseIcon fontSize="medium" /> : <EditDocumentIcon fontSize="medium" />}
+          {editing ?  <CloseIcon fontSize="medium" /> : <EditDocumentIcon fontSize="medium" />}
         </button>
       </div>
 
@@ -163,30 +151,49 @@ export default function CustomerCard({ projectId, customerData }) {
           {success}
         </div>
       )}
+
       {error && (
-        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
+        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
+          {error}
+        </div>
       )}
 
       <div className="space-y-4">
-        {/* Name */}
         <div>
           <label className="block text-sm mb-1">Name</label>
           <input
             name="name"
-            value={customer.name || ''}
+            value={customer.name}
             onChange={handleInputChange}
             disabled={!editing}
-            className={`w-[90%] p-2 rounded-lg border ${
-              editing
-                ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
-                : 'bg-gray-200 border-gray-300'
-            }`}
+            className={`w-full p-2 rounded-lg border ${editing ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500' : 'bg-gray-100 border-gray-200'}`}
           />
         </div>
 
-        {/* Phone Numbers */}
         <div>
-          <label className="block text-sm mb-1">Tel. No</label>
+          <label className="block text-sm mb-1">Email</label>
+          <input
+            name="email"
+            value={customer.email}
+            onChange={handleInputChange}
+            disabled={!editing}
+            className={`w-full p-2 rounded-lg border ${editing ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500' : 'bg-gray-100 border-gray-200'}`}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm mb-1">Address</label>
+          <input
+            name="address"
+            value={customer.address}
+            onChange={handleInputChange}
+            disabled={!editing}
+            className={`w-full p-2 rounded-lg border ${editing ? 'bg-white focus:outline-none focus:ring-2 focus:ring-teal-500' : 'bg-gray-100 border-gray-200'}`}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm mb-4">Phone Numbers</label>
           {editing ? (
             <div className="space-y-2">
               {tempPhoneNumbers.map((phone, index) => (
@@ -194,11 +201,11 @@ export default function CustomerCard({ projectId, customerData }) {
                   <input
                     value={phone}
                     onChange={(e) => handlePhoneChange(index, e.target.value)}
-                    className="flex-1 p-2 rounded-lg border border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="flex-1 p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                   <button
                     onClick={() => removePhoneNumber(index)}
-                    className="p-2 text-red-500 text-xl hover:text-red-800"
+                    className="p-2 text-red-500 text-xl hover:text-red-800 "
                   >
                     ×
                   </button>
@@ -206,7 +213,7 @@ export default function CustomerCard({ projectId, customerData }) {
               ))}
               <button
                 onClick={addPhoneNumber}
-                className="mt-2 px-3 py-2 bg-teal-100 rounded-md hover:bg-teal-500"
+                className="mt-2 px-3 py-2 bg-teal-100 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2"
               >
                 + Add Phone Number
               </button>
@@ -219,58 +226,25 @@ export default function CustomerCard({ projectId, customerData }) {
                     key={index}
                     value={phone}
                     disabled
-                    className="p-2 rounded-lg border bg-gray-200 border-gray-300"
+                    className="p-2 rounded-lg border bg-gray-100 border-gray-200"
                   />
                 ))
               ) : (
                 <input
                   value="No phone numbers provided"
                   disabled
-                  className="p-2 rounded-lg border bg-gray-200 border-gray-300"
+                  className="p-2 rounded-lg border bg-gray-100 border-gray-200"
                 />
               )}
             </div>
           )}
         </div>
 
-        {/* Address */}
-        <div>
-          <label className="block text-sm mb-1">Address</label>
-          <input
-            name="address"
-            value={customer.address || 'No address provided'}
-            onChange={handleInputChange}
-            disabled={!editing}
-            className={`w-[90%] p-2 rounded-lg border ${
-              editing
-                ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
-                : 'bg-gray-200 border-gray-300'
-            }`}
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block text-sm mb-1">Email</label>
-          <input
-            name="email"
-            value={customer.email || ''}
-            onChange={handleInputChange}
-            disabled={!editing}
-            className={`w-[90%] p-2 rounded-lg border ${
-              editing
-                ? 'bg-white border-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500'
-                : 'bg-gray-200 border-gray-300'
-            }`}
-          />
-        </div>
-
-        {/* Save Button */}
         {editing && (
           <div className="pt-4 flex justify-end">
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+              className="  px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 "
             >
               Save Changes
             </button>
@@ -279,4 +253,6 @@ export default function CustomerCard({ projectId, customerData }) {
       </div>
     </div>
   );
-}
+};
+
+export default PendingInstallationCustomerCard;

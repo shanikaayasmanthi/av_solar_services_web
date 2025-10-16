@@ -8,7 +8,13 @@ export const AuthProvider = ({ children }) => {
     try{
       const storedAuth = localStorage.getItem("auth");
       if (storedAuth) {
-        return JSON.parse(storedAuth);
+        const parsedAuth = JSON.parse(storedAuth);
+        // Check if user is active when loading from storage
+        if (parsedAuth.user && !parsedAuth.user.is_active) {
+          localStorage.removeItem('auth');
+          return { user: null, token: null };
+        }
+        return parsedAuth;
       }
     } catch (error) {
       console.error("Failed to parse auth data:", error);

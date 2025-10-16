@@ -1,34 +1,55 @@
-import React from 'react'
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 
-const projectId = location.state?.project_id;
-
-
-export default function ServiceSummaryCard({service}) {
-
-    const getSuffix = (num)=>{
-        switch (num){
-            case 1:
-                return "st";
-            case 2:
-                return "nd";
-            case 3:
-                return "rd";
-            default:
-                return "th";
-        }
+export default function ServiceSummaryCard({ service, project_id, project_no}) {
+  const getSuffix = (num) => {
+    switch (num) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
     }
+  };
+
+    // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No date';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString(); // This will format to local date format
+
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString; 
+    }
+  };
+
   return (
     <div>
       <div
-            className={`p-[10px_15px] rounded-lg min-w-[140px] text-center ${service.service_type === 'free' ? 'bg-[#d5f7e9]' : 'bg-[#f7f7d5]'}`}
-          >
-            <Link to={`/servicedetails/${service.service_id}` 
-             
-          }><p class="m-0 font-bold">{service.service_round}{getSuffix(service.service_round)} service round</p></Link>
-            <span class="text-sm text-gray-700">{service.service_date}</span>
-          </div>
+        className={`p-[10px_15px] rounded-lg min-w-[140px] text-center ${service.service_type === 'free' ? 'bg-[#d5f7e9]' : 'bg-[#f7f7d5]'} hover:transform hover:scale-105 transition-transform duration-200`}
+      >
+     <Link
+  to={`/servicedetails/${service.service_id}/${project_id}`} 
+  state={{
+    service_id: service.service_id,
+    project_id: project_id,
+    project_no: project_no,
+   
+  }}
+>
+
+          <p className="m-0 font-bold">
+            {service.service_round}{getSuffix(service.service_round)} ({service.service_type}) service round
+          </p>
+        </Link>
+        <span className="text-sm text-gray-700">{formatDate(service.service_date)}</span>
+      </div>
     </div>
-  )
+  );
 }

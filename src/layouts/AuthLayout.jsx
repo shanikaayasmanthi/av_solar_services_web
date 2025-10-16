@@ -6,9 +6,9 @@ import Sidebar from '../components/Sidebar';
 export default function AuthLayout() {
   return (
     <div>
-      <Header/>
-      <Sidebar/>
-      <div className='mt-[85px] md:ml-[90px] p-9 ml-[40px]'>
+      <Header showNotification={true} />
+      <Sidebar layout="admin"/>
+      <div className='mt-[70px] md:ml-[90px] p-9 ml-[40px]'>
         <Outlet/>
       </div>
       

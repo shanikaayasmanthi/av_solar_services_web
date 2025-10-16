@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { PrinterIcon } from "@heroicons/react/24/outline";
-import { CalendarDaysIcon } from "@heroicons/react/16/solid";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function ScheduleServiceModel({ show, onClose, projectId }) {
   const formatDate = (date) => {
@@ -33,7 +34,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
   const getNextServiceRound = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/get-next-service-round",
+        `${BASE_URL}api/get-next-service-round`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,7 +105,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
         return;
       }
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/schedule-next-service",
+        `${BASE_URL}api/schedule-next-service`,
         {
           project_id: projectId,
           service_round: nextServiceRound,
@@ -144,7 +145,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
     }
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/search-supervisors",
+        `${BASE_URL}api/search-supervisors`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -237,7 +238,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           {/* Topic 1 - Header with Print Icon and Title */}
           <div className="flex items-center mb-5 gap-7">
             <div className="text-gray-700">
-              <CalendarDaysIcon className="w-6 h-6" />{" "}
+              <CalendarMonthIcon fontSize='medium' />{" "}
             </div>
             <h3 className="m-0 text-xl font-semibold">Schedule Next Service</h3>{" "}
           </div>

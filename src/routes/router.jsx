@@ -18,6 +18,18 @@ import DCDetails from '../components/DCDetails';
 import ServiceDetails2 from '../pages/ServiceDetails2'; 
 import Users from "../pages/Users";
 import AddUser from "../pages/AddUsers";
+import PendingInstallationProjects from "../pages/PendingInstallationProjects";
+import PendingInstallationProjectsDetails from "../pages/PendingInstallationProjectsDetails";
+import ExternalProjectOpen from "../pages/ExternalProjectOpen";
+import DueService from "../pages/DueService";
+import HoldProjects from "../pages/HoldProjects";
+import AccountsPage from "../pages/AccountsPage";
+import AccountsLayout from "../layouts/AccountsLayout.jsx";
+import Profile from "../pages/Profile.jsx";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "../pages/ResetPasswordPage.jsx";
+
+
 
 
 const router = createBrowserRouter([
@@ -28,7 +40,9 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Login/>,
-            }
+            },
+                  {path: "forgot-password", element: <ForgotPasswordPage />},
+            {path: "reset-password", element: <ResetPasswordPage />},
         ],
     },
 
@@ -36,7 +50,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute allowedRoles={["admin", "Super Admin"]}>
+      <ProtectedRoute allowedRoles={["admin", "super admin"]}>
         <AuthLayout />
       </ProtectedRoute>
     ),
@@ -47,16 +61,38 @@ const router = createBrowserRouter([
       { path: "scheduledServices", element: <ScheduledServices/> },
       { path: "searchservices", element: <SearchServices /> },
       { path: "/completedservices/:project_id",element: <CompletedServices />},
-      { path: "/servicedetails/:service_id", element: <ServiceDetail /> },
+      { path: "/servicedetails/:service_id/:project_id", element: <ServiceDetail /> },
       { path: "/dcDetails", element: <DCDetails /> },
-      { path: "/serviceworkdetails/:service_id", element: <ServiceDetails2 /> },
+      { path: "/serviceworkdetails/:service_id/:project_id", element: <ServiceDetails2 /> },
       {path: "CustomerDetails", element: <NewProjectCustomerDetails/>},
       {path: "openProject", element: <NewProjectOpen/>},
       {path: "users", element: <Users />},
       {path: "add-user", element: <AddUser />},
+      {path: "pendingInstallationProjects", element: <PendingInstallationProjects />},
+      {path: "pendingInstallationProjectsDetails/:project_id", element: <PendingInstallationProjectsDetails />},
+      {path: "openExternalProject", element: <ExternalProjectOpen />},
+      {path: "dueservice", element: <DueService />},
+      {path: "holdprojects", element: <HoldProjects />},
+      {path: "profile", element: <Profile />},
+
     {path:"*",element:<div>404 not found</div>}
     ],
   },
+
+  // Protected Routes for accounts
+  {
+    path: "/accounts",
+    element: (
+      <ProtectedRoute allowedRoles={["accounts","super admin"]}>
+        <AccountsLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "", element: <AccountsPage /> },
+    ],
+  },
+
+
   {
     path:"/*",
     element:<div>404 not found</div>

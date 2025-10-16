@@ -4,6 +4,8 @@ import { useAuth } from "../contexts/AuthContext";
 import axios from 'axios';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const CompletedServices = () => {
   const { project_id } = useParams();
@@ -31,7 +33,7 @@ const CompletedServices = () => {
   useEffect(() => {
     const fetchCompletedServices = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/services/completed-by-project-id`, {
+        const response = await axios.get(`${BASE_URL}api/services/completed-by-project-id`, {
           params: { project_id },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +56,7 @@ const CompletedServices = () => {
     }
     console.log("Navigating with service:", service);
 
-    navigate(`/servicedetails/${service.service_id}`, {
+    navigate(`/servicedetails/${service.service_id}/${service.project_id}`, {
       state: {
         serviceId: service.service_id,
         project_id: service.project_id,
@@ -71,15 +73,40 @@ const CompletedServices = () => {
     });
   };
 
+    // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No date';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString(); // This will format to local date format
+      
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString; 
+    }
+  };
+
   return (
     <div>
       <Header />
       <Sidebar />
-      <div className="relative px-6 py-4 ">
-        <div className=" mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Project No: {projectNo} - Completed Services</h1>
-          <h2 className="text-xl font-medium text-gray-600">Customer: {customerName} - {town}</h2>
-        </div>
+<div className="origin-top-left scale-[0.75] w-[133.33%]">
+      <div className="relative mx-auto">
+        
+<div className="flex gap-1 items-start">
+  <div
+    className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    onClick={() => navigate(-1)}
+  >
+    <ArrowBackIcon fontSize="medium" />
+  </div>
+  <div>
+    <h1 className="text-3xl font-bold text-gray-800 mb-5">Project No: {projectNo} - Completed Services</h1>
+    <h2 className="text-xl font-medium text-gray-600 mb-8">Customer: {customerName} - {town}</h2>
+  </div>
+</div>
+
 
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-6 p-6">
           {serviceRounds.length === 0 ? (
@@ -92,10 +119,10 @@ const CompletedServices = () => {
               return (
                 <div
                   key={index}
-                  className="flex flex-row items-center justify-between border border-gray-200 p-4 rounded-lg bg-white shadow-md hover:shadow-lg  hover:-translate-y-1 transition-shadow duration-300 max-w-lg w-full sm:max-w-xl mt-4"
+                  className="flex flex-row items-center justify-between border border-gray-300 border-2 p-4 rounded-lg bg-white shadow-md transition-shadow duration-300 max-w-lg w-full sm:max-w-xl mt-4"
                 >
                   <span className="font-semibold text-gray-700 text-lg">
-                    {getOrdinal(service.service_round)} Round Service - {service.service_date}
+                    {getOrdinal(service.service_round)} ({service.service_type}) Round Service - {formatDate(service.service_date)}
                   </span>
                   <button
                     className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium hover:scale-105 transition-transform duration-200"
@@ -108,6 +135,7 @@ const CompletedServices = () => {
             })
           )}
         </div>
+      </div>
       </div>
     </div>
   );

@@ -8,6 +8,10 @@ import OngridProjectDataCard from '../components/OngridProjectDataCard';
 import ServiceSummaryCard from '../components/ServiceSummaryCard';
 import OffgridProjectDataCard from '../components/OffgridProjectDetails';
 import ScheduleServiceModel from '../components/ScheduleServiceModel';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PaymentStatusCard from '../components/PaymentStatusCard';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ProjectDetails = () => {
     const [schedule, setSchedule] = useState(false);
@@ -24,7 +28,7 @@ const ProjectDetails = () => {
   const [summeryError, setSummeryError] = useState(null);
   const fetchProjectData = async()=>{
     try{
-        const projectResponse = await axios.get(`http://127.0.0.1:8000/api/get-project`,
+        const projectResponse = await axios.get(`${BASE_URL}api/get-project`,
             {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -34,8 +38,11 @@ const ProjectDetails = () => {
           }
         }
         );
+
+        console.log("project id", projectId);
+        console.log("API Response:", projectResponse.data);
         // console.log(projectResponse.data);
-        if(projectResponse.data.status === "Request was successful."){
+        if(projectResponse.data.status === "Request was successful." || projectResponse.data.success === true){
             const projectResponseData = projectResponse.data.data;
             setProject(projectResponseData.project);
             if(projectResponseData.project.type == 'offgrid'){
@@ -43,6 +50,8 @@ const ProjectDetails = () => {
             }else{
                 setOnGrid(projectResponseData.on_grid);
             }
+        } else {
+            console.error("Unexpected response structure:", projectResponse.data);
         }
         
     }catch(error){
@@ -54,12 +63,12 @@ const ProjectDetails = () => {
 
   const fetchServiceSummary = async()=>{
     try{
-      const servicesResponse = await axios.get('http://127.0.0.1:8000/api/get-services-summary',
+      const servicesResponse = await axios.get(`${BASE_URL}api/get-services-summary`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          params: {
+          params: { 
             project_id: projectId
           }
         }
@@ -93,41 +102,62 @@ const ProjectDetails = () => {
   },[]);
 
   return (
-    <div>
-      {!projectLoading &&
+    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+       <div className='max-h-[calc(140vh-70px)]'> 
+      {!projectLoading &&  project?.type &&
       (
         <>
             <div className='flex gap-1 align-baseline contents-center'>
-              <ArrowLeftCircleIcon className='w-6 h-6 my-2 text-black cursor-pointer' onClick={() => navigate(-1)}/>
-              <h1 className="mb-6 text-3xl font-bold">Project No :{project.type=='ongrid'?onGrid.on_grid_project_id:offGrid.off_grid_hybrid_project_id}({project?.type})</h1>
+<div 
+  className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer 
+             hover:bg-teal-100 rounded-md transition-colors duration-200' 
+  onClick={() => navigate(-1)}
+>
+  <ArrowBackIcon fontSize='medium' />
+</div>
+
+
+              {/* <ArrowLeftCircleIcon className='w-6 h-6 my-2 text-black cursor-pointer' onClick={() => navigate(-1)}/> */}
+              <h1 className="mb-6 text-3xl font-bold">Project No :{project.type=='ongrid'?onGrid.on_grid_project_id:offGrid.off_grid_hybrid_project_id}({project.type})</h1>
 
             </div>
 
-  <div class="flex flex-col flex-wrap gap-5 md:flex-row justify-center">
-    <div class="flex flex-col gap-5">
-      
-<CustomerCard projectId={projectId}/>
+  <div className="grid grid-cols-1 gap-5 ">
+
+  <div className="flex flex-col flex-wrap gap-5 md:flex-row justify-center">
+    <div className="flex flex-col gap-5">
+
+<CustomerCard projectId={projectId}  customerData={project.customer} />
       <div
-        class="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px] h-[100px]"
+        className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px] h-[100px]"
       >
-        <div class="flex justify-between items-center mb-2.5">
-          <h3 class="m-0 text-lg font-semibold">Services Summary</h3>
+        <div className="flex justify-between items-center mb-2.5">
+          <h3 className="m-0 text-lg font-semibold">Services Summary</h3>
           {/* <PrintIcon
-            class="rounded-full bg-[#00a68b] p-1.5 cursor-pointer" fontSize='medium'
+            className="rounded-full bg-[#00a68b] p-1.5 cursor-pointer" fontSize='medium'
             onClick={() => setSchedule(true)}
           /> */}
-          <CalendarDateRangeIcon class="icon h-8 w-8 bg-teal-600 text-white rounded-full p-1 cursor-pointer" 
+          <div className="icon bg-teal-600 text-white rounded-md px-2 py-2 cursor-pointer hover:bg-teal-700 hover:transform hover:scale-105 transition-transform duration-200" 
             onClick={() => setSchedule(true)}
-          />
+          >
+            <CalendarMonthIcon fontSize='medium' />
+          </div>
           {/* <ScheduleService show={schedule} onClose={() => setSchedule(false)} /> */}
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2.5">
           {!summaryLoading && servicesSummary.length > 0 ? (
-            servicesSummary.map((service, index) => (
-              <>
-                <ServiceSummaryCard  service={service} key={index} onClick />
-              </>
-            ))
+               servicesSummary.map((service) => (
+                                            <ServiceSummaryCard 
+                                                key={service.service_id} 
+                                                service={service}
+                                                project_id={projectId}
+                                                project_no={project.type === 'ongrid' ? onGrid.on_grid_project_id : offGrid.off_grid_hybrid_project_id}
+                                                customer_name={project.customer_name?.name}
+                                                nearest_town={project.nearest_town}
+                                                power={service.power}
+                                                power_time={service.power_time}
+                                            />
+                                        ))
           ):(<div>
             {summeryError ? (
               <p className="text-red-500">{summeryError}</p>
@@ -137,16 +167,44 @@ const ProjectDetails = () => {
           </div>)}
         </div>
       </div>
-    </div>
-
-    <div
-      class="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]"
-    >
-    {      project.type == 'ongrid'?
-    (<OngridProjectDataCard project={project} onGrid={onGrid}/>)
-    :(<OffgridProjectDataCard project={project} offGrid={offGrid}/>)}
       
     </div>
+
+
+    <div
+      className="bg-white rounded-lg border border-gray-300 p-5 flex-1 min-w-[600px]"
+    >
+{ project.type == 'ongrid'
+  ? (
+      <OngridProjectDataCard 
+        project={project}
+        onGrid={onGrid}
+        offGrid={offGrid}
+        setProject={setProject}
+        setOnGrid={setOnGrid}
+        setOffGrid={setOffGrid}
+
+      />
+    )
+  : (
+      <OffgridProjectDataCard 
+        project={project}
+        onGrid={onGrid}
+        offGrid={offGrid}
+        setProject={setProject}
+        setOnGrid={setOnGrid}
+        setOffGrid={setOffGrid}
+
+      />
+    )
+}
+
+      
+    </div>
+  </div>
+    <div className="flex flex-col gap-5 md:flex-row justify-center">
+    <PaymentStatusCard projectId={projectId} />
+  </div>
   </div>
         </>
         )}
@@ -155,7 +213,12 @@ const ProjectDetails = () => {
           <ScheduleServiceModel show={schedule} onClose={() => setSchedule(false)} projectId={project.id} />
         )}
     </div>
+    </div>
+    
+
   )
+  
+
 }
 
 export default ProjectDetails

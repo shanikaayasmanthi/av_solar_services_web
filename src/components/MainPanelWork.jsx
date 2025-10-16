@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const MainPanelWork = ({ serviceId }) => {
   const { token } = useAuth();
@@ -12,7 +13,7 @@ const MainPanelWork = ({ serviceId }) => {
     const fetchMainPanelData = async () => {
       try {
         const response = await axios.post(
-          'http://localhost:8000/api/mainpanel/details',
+          `${BASE_URL}api/mainpanel/details`,
           { service_id: serviceId },
           {
             headers: {
@@ -27,10 +28,12 @@ const MainPanelWork = ({ serviceId }) => {
         if (data.status === 'success' && data.data) {
           setMainPanelData(data.data);
         } else if (data.status === 'no_data') {
-          setError(data.message || 'Main panel work details not found for this service');
+          setMainPanelData(null);
+          setError(""); // Not an error
         } else {
-          setError('Main panel work data not available');
+          setError("Main panel work data not available"); // Real error
         }
+
 
       } catch (err) {
         console.error('Error fetching main panel work data:', err);
@@ -75,7 +78,15 @@ const MainPanelWork = ({ serviceId }) => {
   );
 
   if (loading) return <p className="text-gray-600">Loading main panel work details...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>; // Real error (e.g., validation, server error)
+  }
+
+  if (!mainPanelData) {
+    return <p className="text-gray-500 italic">Main panel work details not added yet.</p>; // No data but not error
+  }
+
 
   return (
     <div className="mt-6 w-full overflow-x-auto ">

@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { BASE_URL } from "../constants/BaseUrl.jsx";
 
-const NewProjectOpen = () => {
+const ExternalProjectOpen = () => {
   const { token } = useAuth();
   const location = useLocation();
   const customer_id = location.state?.customerId||null;
@@ -23,9 +23,14 @@ const NewProjectOpen = () => {
     service_years_in_agreement: "",
     service_rounds_in_agreement: "",
     customer_id: customer_id || null, 
+    company_name: "",
+    installation_completed: false,
+    project_installation_date: "",
+    system_turned_on: false,
+    system_on_date: "",
   });
 
-  // Log customer_id to ensure it's being received
+ 
   useEffect(() => {
     console.log("Customer ID received:", customer_id);
     if (customer_id) {
@@ -44,14 +49,9 @@ const NewProjectOpen = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); 
 
-    if (!formData.service_years_in_agreement || !formData.service_rounds_in_agreement) {
-    alert("Please fill in both Service Years and Service Rounds fields");
-    return;
-  }
-
     try {
       const response = await axios.post(
-        `${BASE_URL}api/openproject`,
+        `${BASE_URL}api/open-external-project`,
         formData,
         {
           headers: {
@@ -65,8 +65,8 @@ const NewProjectOpen = () => {
       if(response.status === 200) {
         console.log("Project created:", response.data);
       alert("Project opened successfully!");
-      // Optionally, navigate to another page or clear form
-      setFormData({ // Clear form after succn;essful submission
+
+      setFormData({ 
         project_address: "",
         no_of_panels: "",
         type: "",
@@ -78,6 +78,11 @@ const NewProjectOpen = () => {
         service_rounds_in_agreement: "",
         customer_id: customer_id || "",
         project_no:null,
+        company_name: "",
+        installation_completed: false,
+        project_installation_date: "",
+        system_turned_on: false,
+        system_on_date: "",
       });
       navigate("/solarProjects"); 
       }else{
@@ -96,7 +101,9 @@ const NewProjectOpen = () => {
   };
 
   return (
-    <div className="origin-top-left scale-[0.8] w-[120%]">
+        <div className="origin-top-left scale-[0.8] w-[120%]">
+    <>
+      {/* Title "New Project" outside the form container, similar to your previous "Customer Details" page */}
       <div className="flex gap-1 align-baseline contents-center mb-6">
 
   <div className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer
@@ -112,7 +119,6 @@ const NewProjectOpen = () => {
           New Project
         </h1>
         </div>
-       
 
       <div className="w-full max-w-4xl p-6 mx-auto bg-white rounded-lg shadow-xl sm:p-8 md:px-10 md:py-6">
         <h2 className="mb-4 text-2xl font-bold text-center text-gray-800">
@@ -176,6 +182,20 @@ const NewProjectOpen = () => {
                 <option value="off_grid&hybrid">Off-grid & Hybrid</option>
               </select>
 
+            {/* Company Name */}
+                <label htmlFor="company_name" className="block text-sm font-medium text-gray-700">
+                Company Name
+                </label>
+                <input
+                id="company_name"
+                name="company_name"
+                value={formData.company_name}
+                onChange={handleChange}
+                type="text"
+                placeholder="Company Name"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"/>
+<div className="flex flex-col gap-4 mt-2 sm:flex-row">
+                
                <label htmlFor="longitude" className="block mt-2 text-sm font-medium text-gray-700">
                Longitude
               </label>
@@ -188,6 +208,20 @@ const NewProjectOpen = () => {
                 placeholder="longitude"
                 className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
               />
+                                         <label htmlFor="lattitude" className="block mt-2 text-sm font-medium text-gray-700">
+               Latitude
+              </label>
+              <input
+                id="lattitude"
+                name="lattitude"
+                value={formData.lattitude}
+                onChange={handleChange}
+                type="double"
+                placeholder="latitude"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+              />
+              </div>
+                
             </div>
 
             {/* Right Side */}
@@ -224,8 +258,8 @@ const NewProjectOpen = () => {
                 </div>
               </div>
             
-              <label htmlFor="project_installation_date" className="block text-sm font-medium text-gray-700">
-                Date to Start Project
+              {/* <label htmlFor="project_installation_date" className="block text-sm font-medium text-gray-700">
+                Date to Start First Service
               </label>
               <input
                 id="project_installation_date"
@@ -234,7 +268,7 @@ const NewProjectOpen = () => {
                 onChange={handleChange}
                 type="date"
                 className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
-              />
+              /> */}
 
               <label htmlFor="nearest_town" className="block mt-2 text-sm font-medium text-gray-700">
                 Nearest Town
@@ -262,7 +296,6 @@ const NewProjectOpen = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="years"
-                    required
                     className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                   />
                 </div>
@@ -279,39 +312,100 @@ const NewProjectOpen = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="rounds"
-                    required
                     className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
                   />
                 </div>
+                
               </div>
+ {/* <div className="flex flex-col gap-4 mt-2 sm:flex-row"> */}
 
-             <label htmlFor="lattitude" className="block mt-2 text-sm font-medium text-gray-700">
-               Latitude
-              </label>
-              <input
-                id="lattitude"
-                name="lattitude"
-                value={formData.lattitude}
-                onChange={handleChange}
-                type="double"
-                placeholder="latitude"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
-              />
 
+                {/* Installation Completed Checkbox */}
+                <div className="flex items-center gap-2 mt-4">
+                <input
+                    id="installation_completed"
+                    name="installation_completed"
+                    type="checkbox"
+                    checked={formData.installation_completed}
+                    onChange={(e) =>
+                    setFormData({ ...formData, installation_completed: e.target.checked })
+                    }
+                    className="w-5 h-5"
+                />
+                <label htmlFor="installation_completed" className="text-sm font-medium text-gray-700">
+                    Installation Completed
+                </label>
+                </div>
+
+                {formData.installation_completed && (
+                <div className="mt-2">
+                    <label htmlFor="project_installation_date" className="block text-sm font-medium text-gray-700">
+                    Installation Date (The date one year prior to the first service, assuming one service per year)
+                    </label>
+                    <input
+                    id="project_installation_date"
+                    name="project_installation_date"
+                    value={formData.project_installation_date}
+                    onChange={handleChange}
+                    type="date"
+                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                    />
+                </div>
+                )}
+
+                {/* System Turned On Checkbox */}
+                <div className="flex items-center gap-2 mt-4">
+                <input
+                    id="system_turned_on"
+                    name="system_turned_on"
+                    type="checkbox"
+                    checked={formData.system_turned_on}
+                    onChange={(e) =>
+                    setFormData({ ...formData, system_turned_on: e.target.checked })
+                    }
+                    className="w-5 h-5"
+                />
+                <label htmlFor="system_turned_on" className="text-sm font-medium text-gray-700">
+                    System Turned On
+                </label>
+                </div>
+
+                {formData.system_turned_on && (
+                <div className="mt-2">
+                    <label htmlFor="system_on_date" className="block text-sm font-medium text-gray-700">
+                    System On Date
+                    </label>
+                    <input
+                    id="system_on_date"
+                    name="system_on_date"
+                    value={formData.system_on_date}
+                    onChange={handleChange}
+                    type="date"
+                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                    />
+                </div>
+                )}
+
+              {/* </div> */}
+
+
+             
             </div>
+
+            
           </div>
 
           <button
-            type="submit" 
+            type="submit" // Important: set type="submit" for form button
             className="self-center px-10 py-2 mt-2 font-semibold text-white transition-colors duration-200 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700"
           >
             Open Project
           </button>
         </form>
       </div>
-      
+      </>
       </div>
   );
 };
 
-export default NewProjectOpen;
+export default ExternalProjectOpen;
