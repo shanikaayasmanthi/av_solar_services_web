@@ -85,7 +85,7 @@ const ServiceDetails2 = () => {
 };
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
     <div className="relative">
       <div className="flex gap-2 items-start">
   <div
@@ -158,7 +158,7 @@ const ServiceDetails2 = () => {
         <div className="flex justify-end mt-5">
   <button
     onClick={() => navigate(-1)}
-    className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105"
+    className="bg-teal-600 hover:bg-teal-700 text-white mb-5 px-6 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105"
   >
     Previous
   </button>

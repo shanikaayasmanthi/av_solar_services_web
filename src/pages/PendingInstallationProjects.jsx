@@ -101,7 +101,7 @@ export default function PendingInstallationProjects() {
     };
 
     return (
-        <div className="origin-top-left scale-[0.75] w-[133.33%]">
+        <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
         <div className="relative mx-auto">
             <div className="flex items-center justify-between mb-10">
                 <h1 className="text-3xl font-bold">Pending Installation Projects</h1>
@@ -183,7 +183,7 @@ export default function PendingInstallationProjects() {
 
                     {filteredProjects.length > itemsPerPage && (
 
-                        <div className="flex justify-end items-center mt-6 space-x-2">
+                        <div className="flex justify-end items-center mt-6 mb-5 space-x-2">
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                                 disabled={currentPage === 1}

@@ -101,9 +101,9 @@ const ExternalProjectOpen = () => {
   };
 
   return (
-        <div className="origin-top-left scale-[0.8] w-[120%]">
+        <div className="origin-top-left scale-[0.8] w-[120%] max-h-[80vh]">
     <>
-      {/* Title "New Project" outside the form container, similar to your previous "Customer Details" page */}
+     
       <div className="flex gap-1 align-baseline contents-center mb-6">
 
   <div className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer
@@ -112,9 +112,6 @@ const ExternalProjectOpen = () => {
 >
   <ArrowBackIcon fontSize='medium' />
 </div>
-
-
-        {/* Title "New Project" outside the form container, similar to your previous "Customer Details" page */}
         <h1 className="mb-4 text-3xl font-bold">
           New Project
         </h1>
@@ -139,7 +136,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="text"
                 placeholder="project name"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               />
               <label htmlFor="project_address" className="block text-sm font-medium text-gray-700">
                 Site address
@@ -151,7 +148,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="text"
                 placeholder="site address"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               />
 
               <label htmlFor="no_of_panels" className="block mt-2 text-sm font-medium text-gray-700">
@@ -164,7 +161,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="text"
                 placeholder="no of panels"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               />
 
               <label htmlFor="type" className="block mt-2 text-sm font-medium text-gray-700">
@@ -175,7 +172,7 @@ const ExternalProjectOpen = () => {
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className="w-full p-2 pr-8 border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 pr-8 border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               >
                 <option value="">Select type</option>
                 <option value="on_grid">On-grid</option>
@@ -193,7 +190,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="text"
                 placeholder="Company Name"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"/>
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"/>
 <div className="flex flex-col gap-4 mt-2 sm:flex-row">
                 
                <label htmlFor="longitude" className="block mt-2 text-sm font-medium text-gray-700">
@@ -206,7 +203,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="double"
                 placeholder="longitude"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               />
                                          <label htmlFor="lattitude" className="block mt-2 text-sm font-medium text-gray-700">
                Latitude
@@ -218,7 +215,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="double"
                 placeholder="latitude"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               />
               </div>
                 
@@ -238,7 +235,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="number"
                 placeholder="system capacity in kW"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               />
                 </div>
 
@@ -253,7 +250,7 @@ const ExternalProjectOpen = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="project no"
-                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
                   />
                 </div>
               </div>
@@ -267,7 +264,7 @@ const ExternalProjectOpen = () => {
                 value={formData.project_installation_date}
                 onChange={handleChange}
                 type="date"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               /> */}
 
               <label htmlFor="nearest_town" className="block mt-2 text-sm font-medium text-gray-700">
@@ -280,7 +277,7 @@ const ExternalProjectOpen = () => {
                 onChange={handleChange}
                 type="text"
                 placeholder="nearest town"
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
               />
 
               <div className="flex flex-col gap-4 mt-2 sm:flex-row">
@@ -296,7 +293,7 @@ const ExternalProjectOpen = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="years"
-                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
                   />
                 </div>
 
@@ -312,7 +309,7 @@ const ExternalProjectOpen = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="rounds"
-                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
                   />
                 </div>
                 
@@ -348,7 +345,7 @@ const ExternalProjectOpen = () => {
                     value={formData.project_installation_date}
                     onChange={handleChange}
                     type="date"
-                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
                     />
                 </div>
                 )}
@@ -381,7 +378,7 @@ const ExternalProjectOpen = () => {
                     value={formData.system_on_date}
                     onChange={handleChange}
                     type="date"
-                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                    className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-50"
                     />
                 </div>
                 )}
@@ -396,8 +393,8 @@ const ExternalProjectOpen = () => {
           </div>
 
           <button
-            type="submit" // Important: set type="submit" for form button
-            className="self-center px-10 py-2 mt-2 font-semibold text-white transition-colors duration-200 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700"
+            type="submit" 
+            className="self-center px-10 py-2 mt-2 font-semibold text-white transition-colors duration-200 bg-teal-600 rounded-lg shadow-md hover:bg-teal-700"
           >
             Open Project
           </button>

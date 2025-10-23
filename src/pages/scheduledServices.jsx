@@ -77,7 +77,7 @@ const filteredServices = services.filter((service) => {
   );
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
       <div className="relative mx-auto">
         <h1 className="mb-5 text-3xl font-bold text-gray-800">Services</h1>
         <h2 className="text-2xl font-semibold text-gray-700">Scheduled Services</h2>

@@ -93,7 +93,7 @@ const DueService = () => {
   });
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
       <div className="origin-top-left w-full">
         <div className="relative max-h-[calc(100vh-60px)]">
           {/* Header Section */}
