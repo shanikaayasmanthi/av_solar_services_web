@@ -102,8 +102,8 @@ const ProjectDetails = () => {
   },[]);
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
-       <div className='max-h-[calc(140vh-70px)]'> 
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[80vh]">
+      
       {!projectLoading &&  project?.type &&
       (
         <>
@@ -202,7 +202,7 @@ const ProjectDetails = () => {
       
     </div>
   </div>
-    <div className="flex flex-col gap-5 md:flex-row justify-center">
+    <div className="flex flex-col gap-5 md:flex-row justify-center mb-5">
     <PaymentStatusCard projectId={projectId} />
   </div>
   </div>
@@ -212,7 +212,7 @@ const ProjectDetails = () => {
         {schedule && (
           <ScheduleServiceModel show={schedule} onClose={() => setSchedule(false)} projectId={project.id} />
         )}
-    </div>
+    
     </div>
     
 

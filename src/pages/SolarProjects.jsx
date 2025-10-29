@@ -116,7 +116,7 @@ export default function SolarProjects() {
     };
 
     return (
-        <div className="origin-top-left scale-[0.75] w-[133.33%]">
+        <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
         <div>
             <div className="flex items-center justify-between">
                 <h1 className="mb-6 text-3xl font-bold">Solar Projects</h1>

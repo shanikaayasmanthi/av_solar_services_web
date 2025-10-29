@@ -10,8 +10,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LocalPrintshopSharpIcon from '@mui/icons-material/LocalPrintshopSharp';
 import { BASE_URL } from "../constants/BaseUrl.jsx";
 
-
-
 const ServiceDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -178,9 +176,9 @@ const formatTime = (dateString) => {
 
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
-    <div className="relative mx-auto">
-        
+
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
+    <div className="relative mx-auto"> 
       <div className="flex gap-2 items-start">
   <div
     className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
@@ -189,14 +187,9 @@ const formatTime = (dateString) => {
     <ArrowBackIcon fontSize="medium" />
   </div>
   <div>
-
-    
-    
-           <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-3xl font-bold text-gray-800">
           Project No: {serviceDetails.project_no} - Completed Services
         </h1>
-
-
   </div>
 </div>
       {/* Header Section */}
@@ -274,13 +267,13 @@ const formatTime = (dateString) => {
         
         <button
           onClick={handleDetailsClick}
-          className="bg-teal-600 hover:bg-teal-700 text-white px-10 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105"
+          className="bg-teal-600 hover:bg-teal-700 text-white mb-5 px-10 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105"
         >
           Next
         </button>
       </div>
-    </div>
-    
+    </div>  
+   
   );
 };
 

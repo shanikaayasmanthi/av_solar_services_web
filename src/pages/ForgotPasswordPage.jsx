@@ -8,25 +8,29 @@ const ForgotPasswordPage = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  // const handleForgot = async () => {
-  //   try {
-  //     const res = await axios.post(`${BASE_URL}api/forgot-password`, { email });
-  //     setMessage(res.data.message + " | Token: " + res.data.reset_token); // dev only
-  //   } catch (err) {
-  //     setMessage(err.response?.data?.message || "Error sending reset link");
-  //   }
-  // };
-  const handleForgot = async () => {
-  try {
-    const res = await axios.post(`${BASE_URL}api/forgot-password`, { email });
-    const token = res.data.reset_token;
 
-    // navigate to reset-password page with token & email
-    navigate(`/reset-password?token=${token}&email=${email}`);
+//   const handleForgot = async () => {
+//   try {
+//     const res = await axios.post(`${BASE_URL}api/forgot-password`, { email });
+//     const token = res.data.reset_token;
+
+//     // navigate to reset-password page with token & email
+//     navigate(`/reset-password?token=${token}&email=${email}`);
+//   } catch (err) {
+//     setMessage(err.response?.data?.message || "Error sending reset link");
+//   }
+// };
+const handleForgot = async () => {
+  try {
+    await axios.post(`${BASE_URL}api/forgot-password`, { email });
+    // show success message — do not redirect with token
+    setMessage('If that email exists, a password reset link was sent. Check your inbox (and spam).');
   } catch (err) {
+    // Handle typical cases
     setMessage(err.response?.data?.message || "Error sending reset link");
   }
 };
+
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-10">

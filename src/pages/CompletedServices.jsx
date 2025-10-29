@@ -91,7 +91,7 @@ const CompletedServices = () => {
     <div>
       <Header />
       <Sidebar />
-<div className="origin-top-left scale-[0.75] w-[133.33%]">
+<div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[100vh]">
       <div className="relative mx-auto">
         
 <div className="flex gap-1 items-start">

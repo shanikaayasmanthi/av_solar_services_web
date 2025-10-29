@@ -93,7 +93,7 @@ if(response.data && response.data.success === true){
   },[])
   
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[80vh]">
     <div> {/* Added bg-gray-100 to main content for context */}
       <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
       <div className="grid grid-cols-1 gap-6 ml-4 md:grid-cols-4">

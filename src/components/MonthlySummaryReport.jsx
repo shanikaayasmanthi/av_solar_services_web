@@ -145,7 +145,7 @@ const ServiceSummary = () => {
     return date.toLocaleString('default', { month: 'long', year: 'numeric' });
   };
 
-  // Function to export data as CSV
+// Function to export data as CSV
 const exportToCSV = () => {
   const {
     onGrid,
@@ -161,31 +161,52 @@ const exportToCSV = () => {
 
   let csvContent = "data:text/csv;charset=utf-8,";
 
-  // Header
-  csvContent += "Type,Service Round,Number of Sites,Capacity (kW)\n";
+  // Main Title
+  csvContent += `"MONTHLY SERVICE SUMMARY - ${getMonthName()}"\n`;
+  csvContent += "\n"; // Empty line for spacing
 
+  // On-grid section header
+  csvContent += `"ON-GRID SERVICES"\n`;
+  
+  // On-grid table header
+  csvContent += `"","Service Round","Number of Sites","Capacity (kW)"\n`;
+  
   // On-grid data
   onGrid.forEach(service => {
-    csvContent += `On-grid,${formatServiceRound(service.service_round)},${service.no_of_sites},${service.capacity}\n`;
+    csvContent += `"","${formatServiceRound(service.service_round)}","${service.no_of_sites}","${service.capacity.toFixed(2)}"\n`;
   });
-  csvContent += `On-grid,Total On-grid,${totalOnGridSites},${totalOnGridCapacity}\n`;
+  
+  // On-grid totals
+  csvContent += `"","Total On-grid","${totalOnGridSites}","${totalOnGridCapacity.toFixed(2)}"\n`;
+  csvContent += "\n"; // Empty line for spacing
 
+  // Off-grid section header
+  csvContent += `"OFF-GRID SERVICES"\n`;
+  
+  // Off-grid table header
+  csvContent += `"","Service Round","Number of Sites","Capacity (kW)"\n`;
+  
   // Off-grid data
   offGrid.forEach(service => {
-    csvContent += `Off-grid,${formatServiceRound(service.service_round)},${service.no_of_sites},${service.capacity}\n`;
+    csvContent += `"","${formatServiceRound(service.service_round)}","${service.no_of_sites}","${service.capacity.toFixed(2)}"\n`;
   });
-  csvContent += `Off-grid,Total Off-grid,${totalOffGridSites},${totalOffGridCapacity}\n`;
+  
+  // Off-grid totals
+  csvContent += `"","Total Off-grid","${totalOffGridSites}","${totalOffGridCapacity.toFixed(2)}"\n`;
+  csvContent += "\n"; // Empty line for spacing
 
-  // Totals
-  csvContent += `Overall,Number of Sites Serviced in ${getMonthName().split(' ')[0]},${totalSites},\n`;
-  csvContent += `Overall,Total Capacity Serviced,,${totalCapacity}\n`;
-  csvContent += `Overall,Total Paid Services,${totalPaidServices},\n`;
+  // Overall summary section
+  csvContent += `"OVERALL SUMMARY"\n`;
+  csvContent += `"","Metric","Value",""\n`;
+  csvContent += `"","Number of Sites Serviced in ${getMonthName().split(' ')[0]}","${totalSites}",""\n`;
+  csvContent += `"","Total Capacity Serviced","${totalCapacity.toFixed(2)} kW",""\n`;
+  csvContent += `"","Total Paid Services","${totalPaidServices}",""\n`;
 
   // Encode and trigger download
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `service_summary_${selectedYear}_${selectedMonth}.csv`);
+  link.setAttribute("download", `monthly_service_summary_${selectedYear}_${selectedMonth}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

@@ -48,7 +48,7 @@ const fetchHoldProjects = async (page = 1) => {
   }, [token]);
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[80vh]">
         <div className="relative">
               <div className='flex gap-1 align-middle contents-center'>
             <div className=' text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200' onClick={() => navigate(-1)}>

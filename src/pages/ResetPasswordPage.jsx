@@ -82,26 +82,47 @@ const ResetPasswordPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleReset = async () => {
-    try {
-      const res = await axios.post(`${BASE_URL}api/reset-password`, {
-        email,
-        token,
-        password,
-        password_confirmation: confirmPassword,
-      });
+  // const handleReset = async () => {
+  //   try {
+  //     const res = await axios.post(`${BASE_URL}api/reset-password`, {
+  //       email,
+  //       token,
+  //       password,
+  //       password_confirmation: confirmPassword,
+  //     });
 
-      setMessage(res.data.message);
-      // after success, redirect to login
-      navigate("/");
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        setMessage(Object.values(err.response.data.errors).flat().join(", "));
-      } else {
-        setMessage(err.response?.data?.message || "Error resetting password");
-      }
+  //     setMessage(res.data.message);
+  //     // after success, redirect to login
+  //     navigate("/");
+  //   } catch (err) {
+  //     if (err.response?.data?.errors) {
+  //       setMessage(Object.values(err.response.data.errors).flat().join(", "));
+  //     } else {
+  //       setMessage(err.response?.data?.message || "Error resetting password");
+  //     }
+  //   }
+  // };
+
+  const handleReset = async () => {
+  try {
+    const res = await axios.post(`${BASE_URL}api/reset-password`, {
+      email,
+      token,
+      password,
+      password_confirmation: confirmPassword,
+    });
+    setMessage(res.data.message);
+    // A short delay then redirect to login
+    setTimeout(() => navigate('/'), 1300);
+  } catch (err) {
+    if (err.response?.data?.errors) {
+      setMessage(Object.values(err.response.data.errors).flat().join(", "));
+    } else {
+      setMessage(err.response?.data?.message || "Error resetting password");
     }
-  };
+  }
+};
+
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-10">

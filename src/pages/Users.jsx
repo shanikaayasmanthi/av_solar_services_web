@@ -91,7 +91,7 @@ const Users = () => {
   }, [currentUser]);
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
       <div className="relative mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 mb-0">User Status Overview</h1>
 
@@ -206,7 +206,7 @@ const Users = () => {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end mt-6 mb-5">
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}

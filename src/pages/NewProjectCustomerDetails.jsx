@@ -169,7 +169,7 @@ export default function NewProjectCustomerDetails() {
 
   return (
 
-    <div className="origin-top-left scale-[0.75] w-[133.33%]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[80vh]">
       <div className="flex gap-1 align-baseline contents-center">
 <div 
   className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer 
@@ -184,7 +184,7 @@ export default function NewProjectCustomerDetails() {
       </div>
 
       <div className="flex flex-col items-center w-full max-w-xl p-6 mx-auto bg-white rounded-lg shadow-xl sm:p-8 md:p-10">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-800">
+        <h2 className="mb-5 text-2xl font-semibold text-gray-800">
           Customer Details
         </h2>
 
@@ -251,7 +251,7 @@ export default function NewProjectCustomerDetails() {
               onChange={(e) => {
                 isNewCustomer && setName(e.target.value);
               }}
-              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -271,7 +271,7 @@ export default function NewProjectCustomerDetails() {
               onChange={(e) => {
                 isNewCustomer && setEmail(e.target.value);
               }}
-              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -291,7 +291,7 @@ export default function NewProjectCustomerDetails() {
               onChange={(e) => {
                 isNewCustomer && setAddress(e.target.value);
               }}
-              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -313,7 +313,7 @@ export default function NewProjectCustomerDetails() {
         onChange={(e) =>
           handlePhoneNumberChange(index, e.target.value)
         }
-        className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
       />
       {phoneNumbers.length > 1 && (
         <XCircleIcon
@@ -350,7 +350,7 @@ export default function NewProjectCustomerDetails() {
                 <button
                   type="button"
                   onClick={handleAddPhoneNumber}
-                  className="px-1 py-1 mt-0 text-blue-900 rounded-lg hover:text-blue-700"
+                  className="px-1 py-1 mt-0 text-teal-900 rounded-lg hover:text-teal-700"
                 >
                   Add Another Phone
                 </button>
@@ -375,7 +375,7 @@ export default function NewProjectCustomerDetails() {
 
         {!isNewCustomer && (
           <button
-            className="px-10 py-2 mt-8 font-semibold text-white transition-colors duration-200 bg-blue-600 rounded-lg cursor-pointer text-m hover:bg-blue-700"
+            className="px-10 py-2 mt-8 font-semibold text-white transition-colors duration-200 bg-teal-600 rounded-lg cursor-pointer text-m hover:bg-teal-700"
             onClick={handleonContiuneClick}
           >
             Continue
@@ -384,7 +384,7 @@ export default function NewProjectCustomerDetails() {
 
         {isNewCustomer && (
           <button
-            className="px-10 py-2 mt-8 font-semibold text-white transition-colors duration-200 bg-blue-600 rounded-lg cursor-pointer text-m hover:bg-blue-700"
+            className="px-10 py-2 mt-5 font-semibold text-white transition-colors duration-200 bg-teal-600 rounded-lg cursor-pointer text-m hover:bg-teal-700"
             onClick={handleonCreateAndContinueClick}
           >
             Create & Continue
