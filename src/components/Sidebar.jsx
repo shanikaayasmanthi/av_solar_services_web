@@ -68,7 +68,7 @@ const Sidebar = ({layout}) => {
         icon: Upcoming,
         onClickPath: "/pendingInstallationProjects",
         activeRoutes: ["/pendingInstallationProjects"],
-        label: "Pending"
+        label: "Pending Installations"
       },
       {
         id: "users",
@@ -88,7 +88,7 @@ const Sidebar = ({layout}) => {
                     lg:w-[95px] lg:p-4
                     xl:w-[100px] xl:p-4
                     hover:shadow-2xl hover:from-teal-700 hover:to-teal-800">
-        <ul className="flex flex-col items-center p-0 m-0 w-full">
+        <ul className="flex flex-col items-center w-full p-0 m-0">
           {sidebarItems.map((item) => {
             const isActive = item.activeRoutes.some((route) =>
               location.pathname.startsWith(route)
@@ -101,8 +101,8 @@ const Sidebar = ({layout}) => {
             const IconComponent = item.icon;
 
             return (
-              <li key={item.id} className="my-4 md:my-5 w-full flex justify-center">
-                <div className="relative group w-full flex justify-center">
+              <li key={item.id} className="flex justify-center w-full my-4 md:my-5">
+                <div className="relative flex justify-center w-full group">
                   <div
                     className={`p-2.5 rounded-xl transition-all duration-300 flex flex-col items-center ${
                       isActive 
@@ -119,16 +119,14 @@ const Sidebar = ({layout}) => {
                                   group-hover:text-white group-hover:scale-110`}
                       onClick={handleClick}
                     />
-                    {/* Tooltip for larger screens */}
-                    {/* <span className="absolute left-full ml-3 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 hidden md:block">
-                      {item.label}
-                    </span> */}
-                    {/* Label for active item on mobile */}
-                    {/* {isActive && (
-                      <span className="text-white text-[10px] mt-1 font-medium md:hidden">
-                        {item.label}
-                      </span> */}
-                    {/* )} */}
+                    {/* TOOLTIP LABEL */}
+                <span className="absolute left-full ml-4 px-3 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-lg 
+                                 opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0
+                                 transition-all duration-300 whitespace-nowrap z-[1000] pointer-events-none shadow-lg">
+                  {item.label}
+                  {/* Optional: Small triangle arrow for the tooltip */}
+                  <div className="absolute left-0 w-2 h-2 rotate-45 -translate-x-1 -translate-y-1/2 bg-gray-900 top-1/2"></div>
+                </span>
                   </div>
                 </div>
               </li>
@@ -137,8 +135,8 @@ const Sidebar = ({layout}) => {
         </ul>
         
         {/* Decorative elements */}
-        {/* <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-teal-400 bg-opacity-40 rounded-full"></div>
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-teal-400 bg-opacity-40 rounded-full"></div> */}
+        {/* <div className="absolute w-8 h-1 transform -translate-x-1/2 bg-teal-400 rounded-full top-4 left-1/2 bg-opacity-40"></div>
+        <div className="absolute w-8 h-1 transform -translate-x-1/2 bg-teal-400 rounded-full bottom-4 left-1/2 bg-opacity-40"></div> */}
       </div>
     </>
   );

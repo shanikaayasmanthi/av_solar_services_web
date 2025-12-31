@@ -87,34 +87,58 @@ const ServiceDetails2 = () => {
   return (
     <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
     <div className="relative">
-      <div className="flex gap-2 items-start">
+      <div className="flex items-start gap-2">
   <div
-    className="text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200"
+    className="px-2 py-2 text-black transition-colors duration-200 bg-transparent rounded-md cursor-pointer hover:bg-teal-100"
     onClick={() => navigate(-1)}
   >
     <ArrowBackIcon fontSize="medium" />
   </div>
   <div>
-         <h1 className="text-3xl font-bold mb-3">Project No: {projectNo} - Completed Services</h1>
+         <h1 className="mb-3 text-3xl font-bold">Project No: {projectNo} - Completed Services</h1>
 
 
   </div>
 </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-        <h2 className="text-xl font-medium mb-5">
+      <div className="flex flex-col items-start justify-between mb-2 md:flex-row md:items-center">
+        <h2 className="mb-5 text-xl font-medium">
           Customer: {customerName} - {town} (Service Round {serviceRound} )
         </h2>
-<div className="flex justify-between space-x-5 mb-5">
-          <div className="mt-3 md:mt-0 bg-teal-500 hover:bg-teal-600 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer">
-            <ImageIcon fontSize="medium" />
-          </div>
-                  <div
-          className="mt-3 md:mt-0 bg-teal-500 hover:bg-teal-600 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer"
-          onClick={handlePrint}
-        >
-          <LocalPrintshopSharpIcon fontSize="medium" />
-        </div>
+<div className="flex justify-between mb-5 space-x-5">
+          <div className="relative inline-block group">
+  {/* The Icon Container */}
+  <div className="flex items-center justify-center p-2 mt-3 text-white transition-all bg-teal-500 rounded-md shadow-md cursor-pointer md:mt-0 hover:bg-teal-600 hover:scale-105">
+    <ImageIcon fontSize="medium" />
+  </div>
+
+  {/* Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      View Gallery
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
+                  <div className="relative inline-block group">
+  {/* The Icon Container */}
+  <div
+    className="flex items-center justify-center p-2 mt-3 text-white transition-all bg-teal-500 rounded-md shadow-md cursor-pointer md:mt-0 hover:bg-teal-600 hover:scale-105"
+    onClick={handlePrint}
+  >
+    <LocalPrintshopSharpIcon fontSize="medium" />
+  </div>
+
+  {/* Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      Print
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
           </div>
       </div>
 
@@ -143,22 +167,22 @@ const ServiceDetails2 = () => {
 
         {/* Technicians Involved */}
         <div className="mt-4">
-          <h3 className="text-lg font-semibold mb-2">Technicians Involved:</h3>
+          <h3 className="mb-2 text-lg font-semibold">Technicians Involved:</h3>
           {technicians.length > 0 ? (
-            <ul className="list-disc list-inside text-gray-800 ml-10">
+            <ul className="ml-10 text-gray-800 list-disc list-inside">
               {technicians.map((name, index) => (
                 <li key={index}>{name}</li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-600 italic">No technicians assigned.</p>
+            <p className="italic text-gray-600">No technicians assigned.</p>
           )}
         </div>
         </div>
         <div className="flex justify-end mt-5">
   <button
     onClick={() => navigate(-1)}
-    className="bg-teal-600 hover:bg-teal-700 text-white mb-5 px-6 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105"
+    className="px-6 py-2 mb-5 font-medium text-white transition-transform duration-200 bg-teal-600 rounded-lg hover:bg-teal-700 hover:scale-105"
   >
     Previous
   </button>

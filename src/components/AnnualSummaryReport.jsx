@@ -249,27 +249,49 @@ const handlePrint = () => {
         </label>
                        <div className="flex justify-end">
         <div className ="flex justify-between space-x-4">
-      <button 
-  onClick={exportToCSV} 
-  className="bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105 "
-        >
+      <div className="relative inline-block group">
+  {/* The Button  for download  as CSV */}
+  <button 
+    onClick={exportToCSV} 
+    className="flex items-center justify-center px-2 py-2 font-medium text-white transition-transform duration-200 bg-teal-600 rounded-lg hover:bg-teal-700 hover:scale-105"
+  >
+    < FileDownloadSharpIcon fontSize='medium'/>
+  </button>
 
-  < FileDownloadSharpIcon fontSize='medium'/>
-</button>
-      <button 
-  onClick={handlePrint} 
-  className="bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-lg font-medium transition-transform duration-200 hover:scale-105 "
-        >
+  {/* The Label (Tooltip) */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      Download
+    </span>
+    {/* Small Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
+      <div className="relative inline-block group">
+  {/* The Button */}
+  <button 
+    onClick={handlePrint} 
+    className="flex items-center justify-center px-2 py-2 font-medium text-white transition-transform duration-200 bg-teal-600 rounded-lg hover:bg-teal-700 hover:scale-105"
+  >
+    <LocalPrintshopSharpIcon fontSize='medium'/>
+  </button>
 
-  < LocalPrintshopSharpIcon fontSize='medium'/>
-</button>
+  {/* The Label (Tooltip) */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      Print
+    </span>
+    {/* Small Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
 </div>
 
       </div>
         </div>
       </div>
       <h1 style={{ fontSize: "22px", fontWeight: "bold", marginBottom: "20px" }}>Annual Service Summary - {summaryData?.year}</h1>
-      <div className='flex justify-center overflow-x-auto mt-6'>
+      <div className='flex justify-center mt-6 overflow-x-auto'>
       <table id="service-summary-table" style={styles.table}>
         <thead>
           <tr>

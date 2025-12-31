@@ -234,19 +234,47 @@ printWindow.document.getElementById("solar-details").innerHTML = solarTable;
       <div className="flex justify-between items-center mb-2.5">
         <h3 className="m-0 text-lg font-semibold">Project Details</h3>
         <div className ="flex justify-end space-x-4">
-        <button
-         className={`px-2 py-2 rounded-md ${editMode ? 'bg-red-500 text-white hover:bg-red-700' : 'bg-teal-600 text-white hover:bg-teal-700 '} hover:transform hover:scale-105 transition-transform duration-200`}
-          onClick={() => setEditMode(!editMode)}
-        >
-          {editMode ? <CloseIcon fontSize="medium" /> : <EditDocumentIcon fontSize="medium" />}
-        </button>
+        <div className="relative inline-block group">
+  {/* The Button */}
+  <button
+    className={`px-2 py-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-md ${
+      editMode 
+        ? 'bg-red-500 text-white hover:bg-red-700' 
+        : 'bg-teal-600 text-white hover:bg-teal-700'
+    }`}
+    onClick={() => setEditMode(!editMode)}
+  >
+    {editMode ? <CloseIcon fontSize="medium" /> : <EditDocumentIcon fontSize="medium" />}
+  </button>
+
+  {/* Dynamic Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      {editMode ? "Cancel" : "Edit"}
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
         {!editMode && (
+  <div className="relative inline-block group">
+  {/* The Button */}
   <button
     onClick={handlePrint}
-    className="bg-teal-600 hover:bg-teal-700 text-white px-2 py-2 rounded-md shadow-md hover:transform hover:scale-105 transition-transform duration-200"
+    className="flex items-center justify-center px-2 py-2 text-white transition-all duration-200 bg-teal-600 rounded-md shadow-md hover:bg-teal-700 hover:scale-105"
   >
-     <LocalPrintshopSharpIcon fontSize="medium" />
+    <LocalPrintshopSharpIcon fontSize="medium" />
   </button>
+
+  {/* Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      Print
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
 )}
 </div>
 
@@ -425,9 +453,9 @@ printWindow.document.getElementById("solar-details").innerHTML = solarTable;
         </div>
 
         {editMode && (
-          <div className="pt-4 flex justify-end">
+          <div className="flex justify-end pt-4">
           <button
-            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            className="px-4 py-2 text-white bg-teal-600 rounded-md hover:bg-teal-700"
             onClick={handleSave}
           >
             Save Changes
