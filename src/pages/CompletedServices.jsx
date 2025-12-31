@@ -119,7 +119,7 @@ const CompletedServices = () => {
               return (
                 <div
                   key={index}
-                  className="flex flex-row items-center justify-between w-full max-w-lg p-4 mt-4 transition-shadow duration-300 bg-white border border-2 border-gray-300 rounded-lg shadow-md sm:max-w-xl"
+                  className="flex flex-row items-center justify-between w-full max-w-lg p-4 mt-4 transition-shadow duration-300 bg-white border-2 border-gray-300 rounded-lg shadow-md sm:max-w-xl"
                 >
                   <span className="text-lg font-semibold text-gray-700">
                     {getOrdinal(service.service_round)} ({service.service_type}) Round Service - {formatDate(service.service_date)}
