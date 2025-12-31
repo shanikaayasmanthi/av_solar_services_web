@@ -125,13 +125,34 @@ return (
       </span>
 
       <div
-        className="w-9 h-9 flex items-center justify-center bg-blue-100 rounded-xl text-blue-600 hover:bg-blue-200"
+        className="flex items-center justify-center text-blue-600 bg-blue-100 w-9 h-9 rounded-xl hover:bg-blue-200"
         onClick={(e) => {
           e.stopPropagation();
           setShowModal(true);
         }}
       >
-        {project.is_hold ? <RestoreIcon /> : <StopIcon />}
+        <div className="relative inline-block group">
+  {/* The Icon Button */}
+  <div 
+    className={`p-2 rounded-md transition-all cursor-pointer flex items-center justify-center hover:scale-110 ${
+      project.is_hold 
+        ? "text-blue-500 hover:bg-orange-50" 
+        : "text-blue-500 hover:bg-red-50"
+    }`}
+    onClick={() => handleToggleHold(project.id)} // Assuming you have a toggle function
+  >
+    {project.is_hold ? <RestoreIcon /> : <StopIcon />}
+  </div>
+
+  {/* Dynamic Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      {project.is_hold ? "Restore Project" : "Hold Project"}
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
       </div>
     </div>
     <HoldConfirmationModal

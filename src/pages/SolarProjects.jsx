@@ -173,7 +173,7 @@ export default function SolarProjects() {
 
     {/* External Sub Tabs - Positioned absolutely below the External button */}
      {activeTab === 'external' && (
-        <div className="absolute left-0 top-full mt-1 w-full min-w-max bg-white rounded-md border border-gray-200 shadow-md z-10">
+        <div className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-md top-full min-w-max">
             <div className="flex p-1 space-x-1">
                 <button
                     className={`flex-1 px-2 py-1 text-sm rounded ${
@@ -245,30 +245,56 @@ export default function SolarProjects() {
                                 ></path>
                             </svg>
                         </div>
-                        <div className="flex space-x-3 relative">
-                            <button className="flex items-center justify-center w-10 h-10 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 hover:transform hover:scale-105 transition-transform duration-200"
-                        onClick={()=>{setShowAddModel(true)}}>
-                            <svg
-                                className="font-size-medium w-6 h-6"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                        </button>
+                        <div className="relative flex space-x-3">
+                            <div className="relative inline-block group">
+  <button 
+    className="flex items-center justify-center w-10 h-10 text-white transition-transform duration-200 bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 hover:transform hover:scale-105"
+    onClick={() => { setShowAddModel(true) }}
+  >
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+    </svg>
+  </button>
+
+  {/* Label appearing on top */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      Add New
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
                         {showAddModel && (
-                                <div className="absolute top-full right-0 z-50 mt-1">
+                                <div className="absolute right-0 z-50 mt-1 top-full">
                                     <AddModel show={showAddModel} onClose={() => setShowAddModel(false)} />
                                 </div>
                             )}
 
-          <div className="mt-3 md:mt-0 bg-teal-600 hover:bg-teal-700 rounded-md p-2 text-white shadow-md transition-colors hover:scale-105 cursor-pointer"
-        onClick={() => navigate("/holdprojects")}
-        >
-          <HourglassTopIcon fontSize="medium" />
-        </div>
+<div className="relative inline-block group">
+  {/* The Icon Container */}
+  <div 
+    className="flex items-center justify-center p-2 mt-3 text-white transition-all bg-teal-600 rounded-md shadow-md cursor-pointer md:mt-0 hover:bg-teal-700 hover:scale-105"
+    onClick={() => navigate("/holdprojects")}
+  >
+    <HourglassTopIcon fontSize="medium" />
+  </div>
+
+  {/* The Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      Hold Projects
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
 
                         </div>
                     </div>
@@ -300,7 +326,7 @@ export default function SolarProjects() {
     <button
       onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
       disabled={currentPage === 1}
-      className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+      className="px-4 py-2 mx-2 text-white bg-teal-500 rounded disabled:opacity-50"
     >
       Previous
     </button>
@@ -310,7 +336,7 @@ export default function SolarProjects() {
     <button
       onClick={() => currentPage < Math.ceil(totalItems / itemsPerPage) && setCurrentPage(currentPage + 1)}
       disabled={currentPage === Math.ceil(totalItems / itemsPerPage)}
-      className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+      className="px-4 py-2 mx-2 text-white bg-teal-500 rounded disabled:opacity-50"
     >
       Next
     </button>

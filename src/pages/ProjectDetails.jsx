@@ -109,8 +109,7 @@ const ProjectDetails = () => {
         <>
             <div className='flex gap-1 align-baseline contents-center'>
 <div 
-  className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer 
-             hover:bg-teal-100 rounded-md transition-colors duration-200' 
+  className='flex items-center justify-center w-10 h-10 text-black transition-colors duration-200 bg-transparent rounded-md cursor-pointer hover:bg-teal-100' 
   onClick={() => navigate(-1)}
 >
   <ArrowBackIcon fontSize='medium' />
@@ -124,7 +123,7 @@ const ProjectDetails = () => {
 
   <div className="grid grid-cols-1 gap-5 ">
 
-  <div className="flex flex-col flex-wrap gap-5 md:flex-row justify-center">
+  <div className="flex flex-col flex-wrap justify-center gap-5 md:flex-row">
     <div className="flex flex-col gap-5">
 
 <CustomerCard projectId={projectId}  customerData={project.customer} />
@@ -137,11 +136,24 @@ const ProjectDetails = () => {
             className="rounded-full bg-[#00a68b] p-1.5 cursor-pointer" fontSize='medium'
             onClick={() => setSchedule(true)}
           /> */}
-          <div className="icon bg-teal-600 text-white rounded-md px-2 py-2 cursor-pointer hover:bg-teal-700 hover:transform hover:scale-105 transition-transform duration-200" 
-            onClick={() => setSchedule(true)}
-          >
-            <CalendarMonthIcon fontSize='medium' />
-          </div>
+          <div className="relative inline-block group">
+  {/* The Icon Container */}
+  <div 
+    className="flex items-center justify-center px-2 py-2 text-white transition-all duration-200 bg-teal-600 rounded-md cursor-pointer hover:bg-teal-700 hover:scale-105" 
+    onClick={() => setSchedule(true)}
+  >
+    <CalendarMonthIcon fontSize='medium' />
+  </div>
+
+  {/* Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      Schedule Service
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
           {/* <ScheduleService show={schedule} onClose={() => setSchedule(false)} /> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2.5">
@@ -202,7 +214,7 @@ const ProjectDetails = () => {
       
     </div>
   </div>
-    <div className="flex flex-col gap-5 md:flex-row justify-center mb-5">
+    <div className="flex flex-col justify-center gap-5 mb-5 md:flex-row">
     <PaymentStatusCard projectId={projectId} />
   </div>
   </div>

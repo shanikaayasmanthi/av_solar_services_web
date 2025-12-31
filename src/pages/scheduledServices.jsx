@@ -83,26 +83,38 @@ const filteredServices = services.filter((service) => {
         <h2 className="text-2xl font-semibold text-gray-700">Scheduled Services</h2>
 
         {/* Search bar and icon */}
-        <div className="absolute flex gap-4 top-4 right-6 items-center">
+        <div className="absolute flex items-center gap-4 top-4 right-6">
           <div className="relative">
             <input
               type="text"
               placeholder="Search by project, customer, date, assigner..."
-              className="w-80 px-4 py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              className="px-4 py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md w-80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            <div className="absolute text-gray-500 transform -translate-y-1/2 left-3 top-1/2">
               <SearchIcon />
             </div>
           </div>
 
-          <div
-            className="text-white transition-colors duration-200 bg-teal-500 rounded-md shadow-md cursor-pointer md:p-2 hover:bg-teal-600 hover:scale-110"
-            onClick={handleDetailsClick}
-          >
-            <AssignmentTurnedInOutlinedIcon fontSize="medium" />
-          </div>
+          <div className="relative inline-block group">
+  {/* The Icon Container */}
+  <div
+    className="flex items-center justify-center p-2 text-white transition-colors duration-200 bg-teal-500 rounded-md shadow-md cursor-pointer hover:bg-teal-600 hover:scale-110"
+    onClick={handleDetailsClick}
+  >
+    <AssignmentTurnedInOutlinedIcon fontSize="medium" />
+  </div>
+
+  {/* The Tooltip Label */}
+  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
+    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+      View Details
+    </span>
+    {/* Arrow */}
+    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+  </div>
+</div>
         </div>
 
         {/* Services list */}
