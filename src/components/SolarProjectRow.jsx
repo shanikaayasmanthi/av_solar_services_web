@@ -17,7 +17,12 @@ const SolarProjectRow = ({project,onStatusChange}) => {
   };
 
   const handleOnClick = (id) => {
-    Navigate(`/projectDetails/${id}`);
+    if(id===undefined || id===null) {
+      // console.warn("Invalid project ID:", id);
+      return;
+    }else {
+      Navigate(`/projectdetails/${id}`);
+    } 
   }
 
     const handleConfirm = async (remarks) => {
@@ -83,86 +88,75 @@ const SolarProjectRow = ({project,onStatusChange}) => {
   };
 
 return (
-  <>
-    <div
-      key={project.id}
-      className="
-        flex flex-col md:grid
-        md:grid-cols-[1fr_4fr_2fr_2fr_auto]
-        items-center gap-x-6 gap-y-3
-        w-[90%] md:w-full lg:w-[90%] xl:w-[80%]
-        p-5 md:p-4 lg:p-5
-        bg-gradient-to-r from-gray-50 via-white to-gray-50
-        border border-gray-200 rounded-2xl
-        shadow-md hover:shadow-xl
-        text-black text-lg font-medium cursor-pointer
-        transition-all duration-300 ease-in-out
-        transform hover:-translate-y-1
-      "
-      onClick={() => handleOnClick(project.id)}
-    >
-      {/* Project ID */}
-      <span className="mb-1 text-sm font-semibold text-blue-700 md:text-base md:mb-0">
-        #{getProjectNumber()}
-      </span>
-
-      {/* Project Name */}
-      <span 
-        className="mb-1 text-base font-semibold text-center text-gray-900 truncate md:text-lg md:mb-0 md:text-left"
-        title={project.company_name ? `Company: ${project.company_name}` : ''}
+    <>
+      <tr 
+        onClick={handleOnClick.bind(null, project.id)}
+        className="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
       >
-        {getDisplayName()}
-      </span>
+        {/* Project ID */}
+        <td className="px-6 py-4 whitespace-nowrap">
+          <span className="text-sm font-bold text-blue-700">
+            #{getProjectNumber()}
+          </span>
+        </td>
 
-      {/* Nearest Town */}
-      <span className="mb-1 text-sm text-center text-gray-600 truncate md:text-base md:mb-0 md:text-left">
-        {getNearestTown()}
-      </span>
+        {/* Project Name */}
+        <td className="px-6 py-4">
+          <div className="max-w-xs text-base font-semibold text-gray-900 truncate" title={getDisplayName()}>
+            {getDisplayName()}
+          </div>
+        </td>
 
-      {/* Type */}
-      <span className="mb-1 text-sm font-medium text-center text-gray-800 md:text-base md:mb-0 md:text-left">
-        {formatType(project.type)}
-      </span>
+        {/* Location */}
+        <td className="px-6 py-4">
+          <span className="text-sm text-gray-600">
+            {getNearestTown()}
+          </span>
+        </td>
 
-      <div
-        className="flex items-center justify-center text-blue-600 bg-blue-100 w-9 h-9 rounded-xl hover:bg-blue-200"
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowModal(true);
-        }}
-      >
-        <div className="relative inline-block group">
-  {/* The Icon Button */}
-  <div 
-    className={`p-2 rounded-md transition-all cursor-pointer flex items-center justify-center hover:scale-110 ${
-      project.is_hold 
-        ? "text-blue-500 hover:bg-orange-50" 
-        : "text-blue-500 hover:bg-red-50"
-    }`}
-    onClick={() => handleToggleHold(project.id)} // Assuming you have a toggle function
-  >
-    {project.is_hold ? <RestoreIcon /> : <StopIcon />}
-  </div>
+        {/* Type */}
+        <td className="px-6 py-4">
+          <span className="inline-flex px-3 py-1 text-xs font-medium leading-5 text-teal-800 bg-teal-100 rounded-full">
+            {formatType(project.type)}
+          </span>
+        </td>
 
-  {/* Dynamic Tooltip Label */}
-  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
-    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
-      {project.is_hold ? "Restore Project" : "Hold Project"}
-    </span>
-    {/* Arrow */}
-    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
-  </div>
-</div>
-      </div>
-    </div>
-    <HoldConfirmationModal
-      show={showModal}
-      onClose={() => setShowModal(false)}
-      onConfirm={handleConfirm}
-      actionType={project.is_hold ? "release" : "hold"}
-    />
-  </>
-);
+        {/* Action Button */}
+        <td className="px-6 py-4 text-center">
+          <div className="flex justify-center">
+            <div className="relative inline-block group/tooltip">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowModal(true);
+                }}
+                className={`p-2 rounded-lg transition-colors ${
+                  project.is_hold ? "text-orange-500 hover:bg-orange-50" : "text-blue-500 hover:bg-blue-50"
+                }`}
+              >
+                {project.is_hold ? <RestoreIcon /> : <StopIcon />}
+              </button>
+              
+              {/* Tooltip */}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:flex flex-col items-center z-[50]">
+                <span className="bg-gray-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap">
+                  {project.is_hold ? "Restore" : "Hold"}
+                </span>
+                <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <HoldConfirmationModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleConfirm}
+        actionType={project.is_hold ? "release" : "hold"}
+      />
+    </>
+  );
 };
 
 export default SolarProjectRow;
