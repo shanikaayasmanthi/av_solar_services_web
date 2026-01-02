@@ -74,6 +74,7 @@ export default function SolarProjects() {
         // );
         //         setProjects(filteredProjects);
         setProjects(projectsData.data);
+        console.log("Projects Data:", projectsData.data);
         setCurrentPage(projectsData.current_page);
         setItemsPerPage(projectsData.per_page);
         setTotalItems(projectsData.total);
@@ -109,6 +110,7 @@ export default function SolarProjects() {
     externalSubTab,
     searchQuery,
     refreshTrigger,
+    itemsPerPage,
   ]);
 
   const handlePageChange = (pageNumber) => {
@@ -120,7 +122,7 @@ export default function SolarProjects() {
   };
 
   return (
-    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh] mb-10">
       <div>
         <div className="flex items-center justify-between">
           <h1 className="mb-6 text-3xl font-bold">Solar Projects</h1>
@@ -329,7 +331,9 @@ export default function SolarProjects() {
                 <th className="px-6 py-3 font-semibold">Project ID</th>
                 <th className="px-6 py-3 font-semibold">Project Name</th>
                 <th className="px-6 py-3 font-semibold">Location</th>
+                <th className="px-6 py-3 font-semibold">Due Amount</th>
                 <th className="px-6 py-3 font-semibold">Type</th>
+                <th className="px-6 py-3 font-semibold">Next Service</th>
                 <th className="px-6 py-3 font-semibold text-center">Actions</th>
               </tr>
             </thead>
@@ -353,15 +357,33 @@ export default function SolarProjects() {
           </table>
         </div>
         <div className="flex justify-end mt-10 right-20">
+        {/* Items Per Page Selector */}
+  <div className="flex items-center content-center justify-end gap-4 right-20">
+    <span className="text-sm text-gray-600">Items per page:</span>
+    <select
+      value={itemsPerPage}
+      onChange={(e) => {
+        setItemsPerPage(Number(e.target.value));
+        handlePageChange(1); // Reset to first page on items per page change
+      }}
+      className="p-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white"
+    >
+      {[8, 10, 15, 20, 25].map((size) => (
+        <option key={size} value={size}>
+          {size}
+        </option>
+      ))}
+    </select>
+  </div>
           {/* Pagination Controls */}
           {projects.length > 0 && (
-            <div className="flex justify-end mt-6">
+            <div className="flex items-center">
               <button
                 onClick={() =>
                   currentPage > 1 && setCurrentPage(currentPage - 1)
                 }
                 disabled={currentPage === 1}
-                className="px-4 py-2 mx-2 text-white bg-teal-500 rounded disabled:opacity-50"
+                className="px-4 py-2 mx-2 text-white transition-colors bg-teal-500 rounded disabled:opacity-50 hover:bg-teal-600"
               >
                 Previous
               </button>
@@ -374,7 +396,7 @@ export default function SolarProjects() {
                   setCurrentPage(currentPage + 1)
                 }
                 disabled={currentPage === Math.ceil(totalItems / itemsPerPage)}
-                className="px-4 py-2 mx-2 text-white bg-teal-500 rounded disabled:opacity-50"
+                className="px-4 py-2 mx-2 text-white transition-colors bg-teal-500 rounded disabled:opacity-50 hover:bg-teal-600"
               >
                 Next
               </button>
