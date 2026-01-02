@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import StopIcon from '@mui/icons-material/Stop';
 import { Navigate, useNavigate } from 'react-router-dom';
 import HoldConfirmationModal from "./HoldConfirmationModal";
@@ -6,18 +6,26 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { BASE_URL } from "../constants/BaseUrl.jsx";
+import ScheduleServiceModel from './ScheduleServiceModel.jsx';
+import { CalendarMonth } from '@mui/icons-material';
 
 const SolarProjectRow = ({project,onStatusChange}) => {
   const { token } = useAuth();
   const Navigate = useNavigate();
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
   const formatType = (type) => {
     if (!type) return "N/A";
     return type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' ');
   };
 
   const handleOnClick = (id) => {
-    Navigate(`/projectDetails/${id}`);
+    if(id===undefined || id===null) {
+      // console.warn("Invalid project ID:", id);
+      return;
+    }else {
+      Navigate(`/projectdetails/${id}`);
+    } 
   }
 
     const handleConfirm = async (remarks) => {
@@ -82,85 +90,181 @@ const SolarProjectRow = ({project,onStatusChange}) => {
     return primaryName;
   };
 
+  const DueAmount = () => {
+    // Placeholder logic for Due Amount
+    // Replace with actual logic to fetch or calculate due amount
+    return project.payment?.due_payment || "N/A";
+  };
+
+  const getNextServiceDateInfo = () => {
+  const service = project.next_service_date; // Using your JSON key
+  
+  if (!service || !service.date) {
+    return { label: "N/A", status: "none" };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const dueDate = new Date(service.date);
+  
+  // Calculate the date 6 months from today
+  const sixMonthsFromNow = new Date();
+  sixMonthsFromNow.setMonth(today.getMonth() + 6);
+
+  let status = "future"; // Default: Teal (More than 6 months away)
+
+  if (dueDate < today) {
+    status = "past"; // Red (Overdue)
+  } else if (dueDate <= sixMonthsFromNow) {
+    status = "upcoming"; // Yellow (Within 6 months)
+  }
+
+  const label = `${service.date} (${service.round_label})`;
+
+  return { label, status };
+};
+
 return (
   <>
-    <div
-      key={project.id}
-      className="
-        flex flex-col md:grid
-        md:grid-cols-[1fr_4fr_2fr_2fr_auto]
-        items-center gap-x-6 gap-y-3
-        w-[90%] md:w-full lg:w-[90%] xl:w-[80%]
-        p-5 md:p-4 lg:p-5
-        bg-gradient-to-r from-gray-50 via-white to-gray-50
-        border border-gray-200 rounded-2xl
-        shadow-md hover:shadow-xl
-        text-black text-lg font-medium cursor-pointer
-        transition-all duration-300 ease-in-out
-        transform hover:-translate-y-1
-      "
-      onClick={() => handleOnClick(project.id)}
+    <tr
+      onClick={handleOnClick.bind(null, project.id)}
+      className="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
     >
       {/* Project ID */}
-      <span className="mb-1 text-sm font-semibold text-blue-700 md:text-base md:mb-0">
-        #{getProjectNumber()}
-      </span>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className="text-sm font-bold text-blue-700">
+          #{getProjectNumber()}
+        </span>
+      </td>
 
       {/* Project Name */}
-      <span 
-        className="mb-1 text-base font-semibold text-center text-gray-900 truncate md:text-lg md:mb-0 md:text-left"
-        title={project.company_name ? `Company: ${project.company_name}` : ''}
-      >
-        {getDisplayName()}
-      </span>
+      <td className="px-6 py-4">
+        <div
+          className="max-w-xs text-base font-semibold text-gray-900 truncate"
+          title={getDisplayName()}
+        >
+          {getDisplayName()}
+        </div>
+      </td>
 
-      {/* Nearest Town */}
-      <span className="mb-1 text-sm text-center text-gray-600 truncate md:text-base md:mb-0 md:text-left">
-        {getNearestTown()}
-      </span>
+      {/* Location */}
+      <td className="px-6 py-4">
+        <span className="text-sm text-gray-600">{getNearestTown()}</span>
+      </td>
+
+      {/* Due Amount */}
+      <td className="px-6 py-4">
+        <span
+          className={`inline-flex px-3 text-sm text-gray-600 ${
+            DueAmount() === "N/A"
+              ? "bg-transparent"
+              : DueAmount() > 0
+              ? "bg-red-100 text-red-800 rounded-full py-1"
+              : "bg-transparent"
+          }`}
+        >
+          {DueAmount()}
+        </span>
+      </td>
 
       {/* Type */}
-      <span className="mb-1 text-sm font-medium text-center text-gray-800 md:text-base md:mb-0 md:text-left">
-        {formatType(project.type)}
-      </span>
+      <td className="px-6 py-4">
+        <span className="inline-flex px-3 py-1 text-xs font-medium leading-5 text-teal-800 bg-teal-100 rounded-full">
+          {formatType(project.type)}
+        </span>
+      </td>
 
-      <div
-        className="flex items-center justify-center text-blue-600 bg-blue-100 w-9 h-9 rounded-xl hover:bg-blue-200"
+      {/* next service date */}
+<td className="px-2 py-4 whitespace-nowrap">
+  {(() => {
+    const { label, status } = getNextServiceDateInfo();
+    
+    // Define styles for each status
+    const styles = {
+      past: "text-red-800 bg-red-100 ",
+      upcoming: "text-amber-800 bg-amber-100 ",
+      future: "text-blue-800 bg-blue-100 ",
+      none: "text-gray-500 bg-gray-100"
+    };
+
+    return (
+      <span className={`inline-flex px-3 py-1 text-xs font-medium leading-5 rounded-full ${styles[status]}`}>
+        {label}
+      </span>
+    );
+  })()}
+</td>
+
+      {/* Action Button */}
+<td className="px-6 py-4 text-center">
+  <div className="flex items-center justify-center space-x-2">
+{/* Existing Hold/Restore Button */}
+    <div className="relative inline-block group/tooltip">
+      <button
         onClick={(e) => {
           e.stopPropagation();
           setShowModal(true);
         }}
+        className={`p-2 rounded-lg transition-colors ${
+          project.is_hold
+            ? "text-orange-500 hover:bg-orange-50"
+            : "text-blue-500 hover:bg-blue-50"
+        }`}
       >
-        <div className="relative inline-block group">
-  {/* The Icon Button */}
-  <div 
-    className={`p-2 rounded-md transition-all cursor-pointer flex items-center justify-center hover:scale-110 ${
-      project.is_hold 
-        ? "text-blue-500 hover:bg-orange-50" 
-        : "text-blue-500 hover:bg-red-50"
-    }`}
-    onClick={() => handleToggleHold(project.id)} // Assuming you have a toggle function
-  >
-    {project.is_hold ? <RestoreIcon /> : <StopIcon />}
-  </div>
+        {project.is_hold ? <RestoreIcon /> : <StopIcon />}
+      </button>
 
-  {/* Dynamic Tooltip Label */}
-  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-[9999]">
-    <span className="bg-gray-800 text-white text-[11px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
-      {project.is_hold ? "Restore Project" : "Hold Project"}
-    </span>
-    {/* Arrow */}
-    <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
-  </div>
-</div>
+      {/* Tooltip */}
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:flex flex-col items-center z-[50]">
+        <span className="bg-gray-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap">
+          {project.is_hold ? "Restore" : "Hold"}
+        </span>
+        <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
       </div>
     </div>
+    
+    {/* NEW: Schedule Service Button (Only shows if NOT on hold) */}
+    {!project.is_hold && (
+      <div className="relative inline-block group/tooltip">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowScheduleModal(true);
+          }}
+          className="p-2 text-teal-600 transition-colors rounded-lg hover:bg-teal-50"
+        >
+          {/* Using a standard SVG Calendar Icon */}
+          <CalendarMonth fontSize='small'/>
+        </button>
+
+        {/* Tooltip */}
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:flex flex-col items-center z-[50]">
+          <span className="bg-gray-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap">
+            Schedule Service
+          </span>
+          <div className="w-2 h-2 -mt-1 rotate-45 bg-gray-800"></div>
+        </div>
+      </div>
+    )}
+
+  </div>
+</td>
+    </tr>
+
     <HoldConfirmationModal
       show={showModal}
       onClose={() => setShowModal(false)}
       onConfirm={handleConfirm}
       actionType={project.is_hold ? "release" : "hold"}
     />
+
+    {/* Render the Modal */}
+      <ScheduleServiceModel 
+        show={showScheduleModal} 
+        onClose={() => setShowScheduleModal(false)} 
+        projectId={project.id}
+      />
   </>
 );
 };

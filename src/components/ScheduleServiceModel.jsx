@@ -28,7 +28,6 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
   const [assignerError, setAssignerError] = useState("");
   const [dateError, setDateError] = useState("");
   const [apiError, setApiError] = useState("");
-  if (!show) return null;
 
   //get the next service round no
   const getNextServiceRound = async () => {
@@ -212,7 +211,10 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    
   }, [showSuggestions]);
+
+  if (!show) return null;
 
   return (
     <div>
