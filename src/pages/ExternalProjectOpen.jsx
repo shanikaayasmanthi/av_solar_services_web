@@ -18,7 +18,7 @@ const ExternalProjectOpen = () => {
     project_no:null,
     type: "", 
     system_capacity: "",
-    project_installation_date: "",
+    // project_installation_date: "",
     nearest_town: "", 
     service_years_in_agreement: "",
     service_rounds_in_agreement: "",
@@ -70,7 +70,7 @@ const ExternalProjectOpen = () => {
         project_address: "",
         no_of_panels: "",
         type: "",
-        project_installation_date: "",
+        // project_installation_date: "",
         system_capacity: "",
         project_name: "",
         nearest_town: "",
@@ -104,10 +104,9 @@ const ExternalProjectOpen = () => {
         <div className="origin-top-left scale-[0.8] w-[120%] max-h-[80vh]">
     <>
      
-      <div className="flex gap-1 align-baseline contents-center mb-6">
+      <div className="flex gap-1 mb-6 align-baseline contents-center">
 
-  <div className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer
-             hover:bg-teal-100 rounded-md transition-colors duration-200'
+  <div className='flex items-center justify-center w-10 h-10 text-black transition-colors duration-200 bg-transparent rounded-md cursor-pointer hover:bg-teal-100'
   onClick={() => navigate(-1)}
 >
   <ArrowBackIcon fontSize='medium' />
