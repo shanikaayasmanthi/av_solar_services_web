@@ -65,10 +65,10 @@ const LoginPage = () => {
 };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-cover bg-center bg-no-repeat"
+    <div className="flex items-center justify-center min-h-screen px-4 bg-center bg-no-repeat bg-cover"
       style={{
         backgroundImage: "url('/LoginBg.jpg')", 
-        backgroundImage: "linear-gradient(rgba(228, 228, 228, 0), rgba(20, 46, 101, 0.5)), url('/LoginBg.jpg')"
+        // backgroundImage: "linear-gradient(rgba(228, 228, 228, 0), rgba(20, 46, 101, 0.5)), url('/LoginBg.jpg')"
       }}
     >
 
@@ -112,7 +112,7 @@ const LoginPage = () => {
 
         <button
           onClick={handleLogin}
-          className="block w-1/2 py-2 mx-auto text-white transition bg-blue-600 rounded-full hover:bg-blue-700 mb-6"
+          className="block w-1/2 py-2 mx-auto mb-6 text-white transition bg-blue-600 rounded-full hover:bg-blue-700"
         >
           Login
         </button>
