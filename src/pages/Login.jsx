@@ -41,7 +41,8 @@ const LoginPage = () => {
       navigate("/accounts");
     }else if (user.user_type === "super admin") {
   login(user, token);
-  setShowChoice(true); 
+  navigate("/dashboard");
+  // setShowChoice(true); 
 } 
     else {
         setErrorMsg("Access denied. Only Admins and Account Officers can login.");
@@ -119,7 +120,7 @@ const LoginPage = () => {
 
         
       </div>
-       <SuperAdminChoiceModal open={showChoice} onClose={handleChoice} />
+       {/* <SuperAdminChoiceModal open={showChoice} onClose={handleChoice} /> */}
     </div>
   );
 

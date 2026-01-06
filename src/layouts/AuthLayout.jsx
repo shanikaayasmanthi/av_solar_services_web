@@ -7,7 +7,7 @@ export default function AuthLayout() {
   return (
     <div>
       <Header showNotification={true} />
-      <Sidebar layout="admin"/>
+      <Sidebar/>
       <div className='mt-[70px] md:ml-[90px] p-9 ml-[40px]'>
         <Outlet/>
       </div>
