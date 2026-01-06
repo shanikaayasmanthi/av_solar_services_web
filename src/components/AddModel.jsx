@@ -13,6 +13,9 @@ const AddModel = ({ show, onClose }) => {
     navigate("/CustomerDetails",{state:{customerType:'existing'}});
   };
 
+
+
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -44,6 +47,7 @@ const AddModel = ({ show, onClose }) => {
         <p className="w-full px-4 py-2 text-center text-black cursor-pointer hover:bg-gray-100 rounded-b-md" onClick={handleDetailsClick1}>
           Existing Customer
         </p>
+
       </div>
     </div>
   );

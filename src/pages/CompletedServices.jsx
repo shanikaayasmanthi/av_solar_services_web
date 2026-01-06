@@ -4,6 +4,8 @@ import { useAuth } from "../contexts/AuthContext";
 import axios from 'axios';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const CompletedServices = () => {
   const { project_id } = useParams();
@@ -31,7 +33,7 @@ const CompletedServices = () => {
   useEffect(() => {
     const fetchCompletedServices = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/services/completed-by-project-id`, {
+        const response = await axios.get(`${BASE_URL}api/services/completed-by-project-id`, {
           params: { project_id },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +56,7 @@ const CompletedServices = () => {
     }
     console.log("Navigating with service:", service);
 
-    navigate(`/servicedetails/${service.service_id}`, {
+    navigate(`/servicedetails/${service.service_id}/${service.project_id}`, {
       state: {
         serviceId: service.service_id,
         project_id: service.project_id,
@@ -71,19 +73,44 @@ const CompletedServices = () => {
     });
   };
 
+    // Format date function
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No date';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString(); // This will format to local date format
+      
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString; 
+    }
+  };
+
   return (
     <div>
-      <Header />
-      <Sidebar />
-      <div className="relative px-6 py-4 ">
-        <div className=" mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Project No: {projectNo} - Completed Services</h1>
-          <h2 className="text-xl font-medium text-gray-600">Customer: {customerName} - {town}</h2>
-        </div>
+      {/* <Header />
+      <Sidebar /> */}
+<div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[100vh]">
+      <div className="relative mx-auto">
+        
+<div className="flex items-start gap-1">
+  <div
+    className="px-2 py-2 text-black transition-colors duration-200 bg-transparent rounded-md cursor-pointer hover:bg-teal-100"
+    onClick={() => navigate(-1)}
+  >
+    <ArrowBackIcon fontSize="medium" />
+  </div>
+  <div>
+    <h1 className="mb-5 text-3xl font-bold text-gray-800">Project No: {projectNo} - Completed Services</h1>
+    <h2 className="mb-8 text-xl font-medium text-gray-600">Customer: {customerName} - {town}</h2>
+  </div>
+</div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+
+        <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-1 lg:grid-cols-3">
           {serviceRounds.length === 0 ? (
-            <div className="text-center text-gray-500 bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div className="p-6 text-center text-gray-500 rounded-lg shadow-sm bg-gray-50">
               No completed service rounds found.
             </div>
           ) : (
@@ -92,13 +119,13 @@ const CompletedServices = () => {
               return (
                 <div
                   key={index}
-                  className="flex flex-row items-center justify-between border border-gray-200 p-4 rounded-lg bg-white shadow-md hover:shadow-lg  hover:-translate-y-1 transition-shadow duration-300 max-w-lg w-full sm:max-w-xl mt-4"
+                  className="flex flex-row items-center justify-between w-full max-w-lg p-4 mt-4 transition-shadow duration-300 bg-white border-2 border-gray-300 rounded-lg shadow-md sm:max-w-xl"
                 >
-                  <span className="font-semibold text-gray-700 text-lg">
-                    {getOrdinal(service.service_round)} Round Service - {service.service_date}
+                  <span className="text-lg font-semibold text-gray-700">
+                    {getOrdinal(service.service_round)} ({service.service_type}) Round Service - {formatDate(service.service_date)}
                   </span>
                   <button
-                    className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium hover:scale-105 transition-transform duration-200"
+                    className="px-5 py-2 font-medium text-white transition-transform duration-200 bg-teal-600 rounded-lg hover:bg-teal-700 hover:scale-105"
                     onClick={() => handleDetailsClick(service)}
                   >
                     View
@@ -108,6 +135,7 @@ const CompletedServices = () => {
             })
           )}
         </div>
+      </div>
       </div>
     </div>
   );

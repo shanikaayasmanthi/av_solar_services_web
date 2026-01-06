@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
+import { ArrowLeftCircleIcon, XCircleIcon } from "@heroicons/react/16/solid";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function NewProjectCustomerDetails() {
   const navigate = useNavigate();
@@ -11,14 +13,16 @@ export default function NewProjectCustomerDetails() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumbers, setPhoneNumbers] = useState([""]); // Changed to an array
   const [isNewCustomer, setIsNewCustomer] = useState(null);
   const [query, setQuery] = useState("");
   const [searchqueryError, setSearchQueryError] = useState("");
-  const {token} = useAuth();
+  const { token } = useAuth();
   const [customer, setCustomer] = useState({});
   const [customerLoading, setCustomerLoading] = useState(true);
   const [customerFound, setCustomerFound] = useState(false);
+  
+  const [isOtherCompanyProject, setIsOtherCompanyProject] = useState(false);
 
   useEffect(() => {
     if (customerType === "new") {
@@ -28,94 +32,164 @@ export default function NewProjectCustomerDetails() {
       setIsNewCustomer(false);
       setCustomerFound(false);
     }
-  },[customerType,customer]);
+  }, [customerType, customer]);
 
-  const searchCustomer = async() => {
+  const searchCustomer = async () => {
     if (!query.trim()) {
       setSearchQueryError("Please enter a customer name to search");
       setCustomer(null);
       setCustomerFound(false);
       return;
     }
-    const response = await axios.get('http://127.0.0.1:8000/api/search-customer', 
+    try {
+      const response = await axios.get(
+        `${BASE_URL}api/search-customer`,
         {
-            headers: {
+          headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-            },
-            params: { 
-                query : query }
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            query: query,
+          },
         }
-    );
+      );
 
-    if(response.status !== 200){
+      if (response.status === 200) {
+        setCustomer(response.data.data.customer);
+        setCustomerFound(true);
+        setSearchQueryError(""); // Clear any previous errors
+      } else {
         setSearchQueryError("No customer found with that email");
-        // setCustomer(null);
+        setCustomer(null);
         setCustomerFound(false);
-        setCustomerLoading(false);
-        return;
-    }else{
-      setCustomer(response.data.data.customer);
-      setCustomerFound(true);
+      }
+    } catch (error) {
+      console.error("Error searching customer:", error);
+         // More specific error handling
+    if (error.response && error.response.status === 404) {
+      setSearchQueryError("No customer found with this email. Please check the email and try again.");
+    } else if (error.response && error.response.status === 500) {
+      setSearchQueryError("Server error. Please try again later.");
+    } else if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
+      setSearchQueryError("Network error. Please check your connection and try again.");
+    } else {
+      setSearchQueryError("An error occurred while searching for the customer.");
     }
     
+    setCustomer(null);
+    setCustomerFound(false);
+  } finally {
     setCustomerLoading(false);
-    
-
-    console.log(customer);
-    
-  };
+  }
+};
 
   const handleonContiuneClick = () => {
     if (customer.id > 0) {
-      navigate("/openProject", { state: { customerId: customer.id } });
+      if (isOtherCompanyProject) {
+        navigate("/openExternalProject", { state: { customerId: customer.id } });
+      } else {
+        navigate("/openProject", { state: { customerId: customer.id } });
+      }
     } else {
       alert("Please search for a customer first.");
     }
   };
 
-  const handleonCreateAndContinueClick = async()=>{
-    if(!name || !email || !address || !phone){
-      alert("Please fill all the fields");
+  const handleonCreateAndContinueClick = async () => {
+    if (
+      !name ||
+      !email ||
+      !address ||
+      phoneNumbers.some((phone) => !phone.trim())
+    ) {
+      alert(
+        "Please fill all the fields and provide at least one phone number."
+      );
       return;
     }
+
+    console.log(name, email, address, phoneNumbers);
     
-    const response = await axios.post('http://127.0.0.1:8000/api/register',
-      {
-        name: name,
-        email: email,
-        address: address,
-        phone_numbers: [phone],
-      },
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}api/addcustomer`,
+        {
+          name: name,
+          email: email,
+          address: address,
+          phone_numbers: phoneNumbers.filter((phone) => phone.trim() !== ""), // Send only non-empty phone numbers
         },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        // Assuming 201 Created for successful registration
+        alert("Customer created successfully!");
+        if (isOtherCompanyProject) {
+          navigate("/openExternalProject", {
+            state: { customerId: response.data.user_id },
+          });
+        } else {
+          navigate("/openProject", {
+            state: { customerId: response.data.user_id },
+          });
+        }
+      } else {
+        alert("Failed to create customer. Please try again.");
       }
-    );
-    
-  }
+    } catch (error) {
+      console.error("Error creating customer:", error);
+      alert("An error occurred while creating the customer.");
+    }
+  };
+
+  const handleAddPhoneNumber = () => {
+    setPhoneNumbers([...phoneNumbers, ""]); // Add an empty string for a new input
+  };
+
+  const handlePhoneNumberChange = (index, value) => {
+    const newPhoneNumbers = [...phoneNumbers];
+    newPhoneNumbers[index] = value;
+    setPhoneNumbers(newPhoneNumbers);
+  };
+
+  const handleRemovePhoneNumber = (index) => {
+    const newPhoneNumbers = phoneNumbers.filter((_, i) => i !== index);
+    setPhoneNumbers(newPhoneNumbers);
+  };
 
   return (
-    <div>
-      <div className="flex gap-1 align-baseline contents-center">
-        <ArrowLeftCircleIcon
-          className="w-6 h-6 my-2 text-black cursor-pointer"
-          onClick={() => navigate(-1)}
-        />
 
-        <h1 className="mb-4 text-3xl font-bold">New Project</h1>
+    <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[80vh]">
+      <div className="flex gap-1 align-baseline contents-center">
+<div 
+  className='flex items-center justify-center w-10 h-10 bg-transparent text-black cursor-pointer 
+             hover:bg-teal-100 rounded-md transition-colors duration-200' 
+  onClick={() => navigate(-1)}
+>
+  <ArrowBackIcon fontSize='medium' />
+</div>
+
+
+        <h1 className="flex justify-start mb-4 text-3xl font-bold">New Project</h1>
       </div>
 
       <div className="flex flex-col items-center w-full max-w-xl p-6 mx-auto bg-white rounded-lg shadow-xl sm:p-8 md:p-10">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-800">
+        <h2 className="mb-5 text-2xl font-semibold text-gray-800">
           Customer Details
         </h2>
 
-        {/* <div className='mb-8'> */}
+
+
         {!isNewCustomer && (
           <>
             <div className="flex flex-col items-center justify-center w-full gap-4 mb-2 md:flex-row">
@@ -128,6 +202,7 @@ export default function NewProjectCustomerDetails() {
                     setQuery(e.target.value);
                     setSearchQueryError("");
                   }}
+                  value={query}
                 />
                 <svg
                   className="absolute w-5 h-5 text-gray-700 transform left-3 bottom-[11px]"
@@ -144,6 +219,8 @@ export default function NewProjectCustomerDetails() {
                   ></path>
                 </svg>
               </div>
+
+
               <button
                 className="flex-shrink-0 px-5 py-2 text-white transition-colors duration-200 bg-teal-600 rounded-lg cursor-pointer hover:bg-teal-700"
                 onClick={searchCustomer}
@@ -156,9 +233,8 @@ export default function NewProjectCustomerDetails() {
             )}
           </>
         )}
-        {/* </div> */}
 
-                        <div className="flex flex-col w-full gap-4 mt-4">
+        <div className="flex flex-col w-full gap-4 mt-4">
           <div>
             <label
               htmlFor="name"
@@ -169,11 +245,13 @@ export default function NewProjectCustomerDetails() {
             <input
               id="name"
               type="text"
-              disabled ={!isNewCustomer}
+              disabled={!isNewCustomer}
               placeholder="name"
-              value={customer?customer.name: name}
-              onChange={(e) => {isNewCustomer?setName(e.target.value):null}}
-              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={isNewCustomer ? name : customer?.name || ""}
+              onChange={(e) => {
+                isNewCustomer && setName(e.target.value);
+              }}
+              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -188,10 +266,12 @@ export default function NewProjectCustomerDetails() {
               id="email"
               type="text"
               placeholder="email"
-              disabled ={!isNewCustomer}
-              value={customer?customer.email: email}
-              onChange={(e) => {isNewCustomer?setEmail(e.target.value):null}}
-              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              disabled={!isNewCustomer}
+              value={isNewCustomer ? email : customer?.email || ""}
+              onChange={(e) => {
+                isNewCustomer && setEmail(e.target.value);
+              }}
+              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -205,11 +285,13 @@ export default function NewProjectCustomerDetails() {
             <input
               id="address"
               type="text"
-              disabled ={!isNewCustomer}
+              disabled={!isNewCustomer}
               placeholder="address"
-              value={customer?customer.address: address}
-              onChange={(e) => {isNewCustomer?setAddress(e.target.value):null}}
-              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={isNewCustomer ? address : customer?.address || ""}
+              onChange={(e) => {
+                isNewCustomer && setAddress(e.target.value);
+              }}
+              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
 
@@ -220,55 +302,94 @@ export default function NewProjectCustomerDetails() {
             >
               Tel. No
             </label>
-            {customer.phone_numbers && customer.phone_numbers.length > 0 ?(
-              <div className="flex flex-row flex-wrap gap-2">
-                {customer.phone_numbers.map((phone, index) => (
-                <input
-                key={index}
-              id="phone"
-              type="text"
-              disabled ={!isNewCustomer}
-              placeholder="Tel. No"
-              value={phone}
-              onChange={(e) => {isNewCustomer?setPhone(e.target.value):null}}
-              className="p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-fit"
-            />
-              )
-            )}
-              </div>):(
-              <input
-              id="phone"
-              type="text"
-              disabled ={!isNewCustomer}
-              placeholder="Tel. No"
-              value={phone}
-              onChange={(e) => {isNewCustomer?setPhone(e.target.value):null}}
-              className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+{isNewCustomer ? (
+  phoneNumbers.map((phone, index) => (
+    <div key={index} className="flex items-center gap-2 mb-2">
+      <input
+        id={`phone-${index}`}
+        type="text"
+        placeholder="Tel. No"
+        value={phone}
+        onChange={(e) =>
+          handlePhoneNumberChange(index, e.target.value)
+        }
+        className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+      />
+      {phoneNumbers.length > 1 && (
+        <XCircleIcon
+          className="w-6 h-6 text-red-500 cursor-pointer hover:text-red-700"
+          onClick={() => handleRemovePhoneNumber(index)}
+        />
+      )}
+    </div>
+  ))
+) : customer && customer.phone_numbers && customer.phone_numbers.length > 0 ? ( // Added null check here
+  <div className="flex flex-row flex-wrap gap-2">
+    {customer.phone_numbers.map((phone, index) => (
+      <input
+        key={index}
+        id={`phone-display-${index}`}
+        type="text"
+        disabled={true}
+        value={phone}
+        className="p-2 bg-gray-100 border border-gray-200 rounded-lg w-fit"
+      />
+    ))}
+  </div>
+) : (
+  <input
+    id="phone-placeholder"
+    type="text"
+    disabled={true}
+    placeholder="No phone numbers"
+    className="w-full p-2 bg-gray-100 border border-gray-200 rounded-lg"
+  />
+)}
+            {isNewCustomer && (
+              <div className="flex justify-end w-full">
+                <button
+                  type="button"
+                  onClick={handleAddPhoneNumber}
+                  className="px-1 py-1 mt-0 text-teal-900 rounded-lg hover:text-teal-700"
+                >
+                  Add Another Phone
+                </button>
+              </div>
             )}
           </div>
         </div>
-        {!isNewCustomer &&(
-            <button
-          className="px-10 py-2 mt-8 font-semibold text-white transition-colors duration-200 bg-blue-600 rounded-lg cursor-pointer text-m hover:bg-blue-700"
-          onClick={handleonContiuneClick}
-        >
-          Continue
-        </button>
-        )}
-
-        {
-            isNewCustomer&&(
-                <button
-          className="px-10 py-2 mt-8 font-semibold text-white transition-colors duration-200 bg-blue-600 rounded-lg cursor-pointer text-m hover:bg-blue-700"
-          onClick={handleonCreateAndContinueClick}
-        >
-          Create & Continue
-        </button>
-            )
-        }
 
         
+       <div className="flex items-center mb-4 mt-4">
+          <input
+            id="otherCompany"
+            type="checkbox"
+            checked={isOtherCompanyProject}
+            onChange={(e) => setIsOtherCompanyProject(e.target.checked)}
+            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label htmlFor="otherCompany" className="ml-2 text-gray-700">
+            Other Company Project
+          </label>
+        </div>
+
+        {!isNewCustomer && (
+          <button
+            className="px-10 py-2 mt-8 font-semibold text-white transition-colors duration-200 bg-teal-600 rounded-lg cursor-pointer text-m hover:bg-teal-700"
+            onClick={handleonContiuneClick}
+          >
+            Continue
+          </button>
+        )}
+
+        {isNewCustomer && (
+          <button
+            className="px-10 py-2 mt-5 font-semibold text-white transition-colors duration-200 bg-teal-600 rounded-lg cursor-pointer text-m hover:bg-teal-700"
+            onClick={handleonCreateAndContinueClick}
+          >
+            Create & Continue
+          </button>
+        )}
       </div>
     </div>
   );

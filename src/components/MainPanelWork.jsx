@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const MainPanelWork = ({ serviceId }) => {
   const { token } = useAuth();
@@ -12,7 +13,7 @@ const MainPanelWork = ({ serviceId }) => {
     const fetchMainPanelData = async () => {
       try {
         const response = await axios.post(
-          'http://localhost:8000/api/mainpanel/details',
+          `${BASE_URL}api/mainpanel/details`,
           { service_id: serviceId },
           {
             headers: {
@@ -27,10 +28,12 @@ const MainPanelWork = ({ serviceId }) => {
         if (data.status === 'success' && data.data) {
           setMainPanelData(data.data);
         } else if (data.status === 'no_data') {
-          setError(data.message || 'Main panel work details not found for this service');
+          setMainPanelData(null);
+          setError(""); // Not an error
         } else {
-          setError('Main panel work data not available');
+          setError("Main panel work data not available"); // Real error
         }
+
 
       } catch (err) {
         console.error('Error fetching main panel work data:', err);
@@ -51,7 +54,9 @@ const MainPanelWork = ({ serviceId }) => {
   const renderReadingCommentRow = (label, data) => (
     <tr>
       <td className="bg-gray-50 font-medium px-4 py-2 border border-gray-300">{label}</td>
-      <td className="border border-gray-300 px-4 py-2 text-center">{data?.reading ?? '-'}</td>
+      <td className="border border-gray-300 px-4 py-2 text-center">
+        {data?.reading ?? data?.value ?? data?.description ?? data?.status ?? '-'}
+      </td>
       <td className="border border-gray-300 px-4 py-2 ">{data?.comments ?? '-'}</td>
     </tr>
   );
@@ -70,12 +75,29 @@ const MainPanelWork = ({ serviceId }) => {
       <td className="border border-gray-300 px-4 py-2 text-center">
         {checked === true ? 'Yes' : checked === false ? 'No' : '-'}
       </td>
-      <td className="border border-gray-300 px-4 py-2 text-center">{comment ?? '-'}</td>
+      <td className="border border-gray-300 px-4 py-2">{comment ?? '-'}</td>
+    </tr>
+  );
+
+  const renderStatusRow = (label, data) => (
+    <tr>
+      <td className="bg-gray-50 font-medium px-4 py-2 border border-gray-300">{label}</td>
+      <td className="border border-gray-300 px-4 py-2 text-center">
+        {data?.status === 1 ? 'Yes' : data?.status === 0 ? 'No' : data?.status ?? '-'}
+      </td>
+      <td className="border border-gray-300 px-4 py-2 ">{data?.comments ?? '-'}</td>
     </tr>
   );
 
   if (loading) return <p className="text-gray-600">Loading main panel work details...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>; // Real error (e.g., validation, server error)
+  }
+
+  if (!mainPanelData) {
+    return <p className="text-gray-500 italic">Main panel work details not added yet.</p>; // No data but not error
+  }
 
   return (
     <div className="mt-6 w-full overflow-x-auto ">
@@ -89,23 +111,29 @@ const MainPanelWork = ({ serviceId }) => {
                 <th className="border p-3 text-left w-[40%]">Comments</th>
             </tr>
           </thead>
-          <tbody>
-            {renderReadingCommentRow("On Grid Voltage", mainPanelData?.on_grid_voltage)}
-            {renderReadingCommentRow("Off Grid Voltage", mainPanelData?.off_grid_voltage)}
-            {renderReadingCommentRow("Inverter Service Fan Time", mainPanelData?.invertor_service_fan_time)}
-            {renderReadingCommentRow("Breaker Service", mainPanelData?.breaker_service)}
-            {renderReadingCommentRow("DC Surge Arrestors", mainPanelData?.DC_surge_arrestors)}
-            {renderReadingCommentRow("AC Surge Arrestors", mainPanelData?.AC_surge_arrestors)}
-            {renderReadingCommentRow("MC4 Condition", mainPanelData?.invertor_connection_MC4_condition)}
-            {renderReadingCommentRow("Startup Time", mainPanelData?.invertor_startup_time)}
-            {renderReadingCommentRow("E Today", mainPanelData?.e_today_invertor)}
-            {renderReadingCommentRow("E Total", mainPanelData?.e_total_invertor)}
-            {renderBooleanRow("Alta Vision Sticker", mainPanelData?.alta_vision_sticker?.checked, mainPanelData?.alta_vision_sticker?.comments)}
-            {renderBooleanRow("Wi-Fi Config Done", mainPanelData?.wifi_config_done?.checked, mainPanelData?.wifi_config_done?.comments)}
-            {renderSimpleRow("Router Username", mainPanelData?.router_username, mainPanelData?.router_username_comments)}
-            {renderSimpleRow("Router Password", mainPanelData?.router_password, mainPanelData?.router_password_comments)}
-            {renderSimpleRow("Router Serial Number", mainPanelData?.router_serial_number, mainPanelData?.router_serial_number_comments)}
-          </tbody>
+            <tbody>
+              {renderReadingCommentRow("On Grid Voltage", mainPanelData?.on_grid_voltage)}
+              {renderReadingCommentRow("Off Grid Voltage", mainPanelData?.off_grid_voltage)}
+              {renderBooleanRow("Inverter Fan Time", mainPanelData?.invertor_fan_time?.checked, mainPanelData?.invertor_fan_time?.comments)}
+              {renderBooleanRow("Breaker Service", mainPanelData?.breaker_service?.checked, mainPanelData?.breaker_service?.comments)}
+              {renderStatusRow("DC Surge Arrestors", mainPanelData?.dc_surge_arrestors)}
+              {renderStatusRow("AC Surge Arrestors", mainPanelData?.ac_surge_arrestors)}
+              {renderStatusRow("Inverter MC4 Condition", mainPanelData?.invertor_mc4_condition)}
+              {renderReadingCommentRow("Low Voltage Range", mainPanelData?.low_voltage_range)}
+              {renderReadingCommentRow("High Voltage Range", mainPanelData?.high_voltage_range)}
+              {renderReadingCommentRow("Low Frequency Range", mainPanelData?.low_frequency_range)}
+              {renderReadingCommentRow("High Frequency Range", mainPanelData?.high_frequency_range)}
+              {renderReadingCommentRow("Inverter Startup Time", mainPanelData?.invertor_startup_time)}
+              {renderReadingCommentRow("E Today", mainPanelData?.e_today)}
+              {renderReadingCommentRow("E Total", mainPanelData?.e_total)}
+              {renderReadingCommentRow("Power Bulb Blinking Style", mainPanelData?.power_bulb_blinking_style)}
+              {renderBooleanRow("Alta Vision Sticker", mainPanelData?.alta_vision_sticker?.available, mainPanelData?.alta_vision_sticker?.comments)}
+              {renderBooleanRow("Wi-Fi Config Done", mainPanelData?.wifi_config_done?.done, mainPanelData?.wifi_config_done?.comments)}
+              {renderSimpleRow("Router Username", mainPanelData?.router_credentials?.username, mainPanelData?.router_credentials?.username_comments)}
+              {renderSimpleRow("Router Password", mainPanelData?.router_credentials?.password, mainPanelData?.router_credentials?.password_comments)}
+              {renderSimpleRow("Router Serial Number", mainPanelData?.router_credentials?.serial_number, mainPanelData?.router_credentials?.serial_number_comments)}
+              {renderBooleanRow("Took Photos", mainPanelData?.took_photos?.status, mainPanelData?.took_photos?.comments)}
+            </tbody>
         </table>
       </div>
     </div>

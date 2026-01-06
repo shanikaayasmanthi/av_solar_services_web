@@ -5,6 +5,8 @@ import { useAuth } from "../contexts/AuthContext";
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const SearchServices = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +19,7 @@ const SearchServices = () => {
   useEffect(() => {
     const fetchProjects = async (page = 1) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/projects/completed?page=${page}`, {
+    const response = await axios.get(`${BASE_URL}api/projects/completed?page=${page}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -54,9 +56,17 @@ const SearchServices = () => {
     <div>
       <Header />
       <Sidebar />
-      <div className="relative">
+      <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
+      <div className="relative mx-auto">
         <div className="flex items-center justify-between mb-10 mr-10">
-          <h1 className="text-3xl font-bold">Completed Services</h1>
+          <div className='flex gap-1 align-middle contents-center'>
+            <div className=' text-black cursor-pointer bg-transparent px-2 py-2 hover:bg-teal-100 rounded-md transition-colors duration-200' onClick={() => navigate(-1)}>
+              <ArrowBackIcon fontSize='medium' />
+            </div>
+            <h1 className="text-3xl font-bold">Completed Services</h1>
+
+            </div>
+          
           <div className="md:min-w-[200px] relative">
             <input
               type="text"
@@ -71,7 +81,7 @@ const SearchServices = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {filteredProjects.length === 0 ? (
             <div className="text-gray-500">No matching projects found.</div>
           ) : (
@@ -97,17 +107,18 @@ const SearchServices = () => {
 </div>
 
       </div>
+      </div>
     </div>
   );
 };
 
 const ProjectCard = ({ filteredProjects, handleDetailsClick }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 p-6">
       {filteredProjects.map((project, index) => (
         <div
           key={index}
-          className="w-full max-w-sm p-6 border border-gray-300 bg-white rounded-xl shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+               className="w-full max-w-sm p-6 border border-gray-300 bg-white rounded-xl shadow-sm hover:shadow-lg  hover:-translate-y-1 hover:border-lg border-2  hover:border-teal-500 transform duration-300 cursor-pointer"
           onClick={() => handleDetailsClick(project)}
         >
           <div className="flex items-center justify-end mb-4">

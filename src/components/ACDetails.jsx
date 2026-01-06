@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 const ACDetails = ({ serviceId }) => {
   const { token } = useAuth();
@@ -11,7 +12,7 @@ const ACDetails = ({ serviceId }) => {
   useEffect(() => {
     const fetchACData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/ac/details-by-service-id", {
+        const response = await axios.get(`${BASE_URL}api/ac/details-by-service-id`, {
           params: { service_id: serviceId },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -25,11 +26,14 @@ const ACDetails = ({ serviceId }) => {
       } catch (err) {
   console.error("Error fetching AC data:", err.response?.data || err.message);
   
-  if (err.response && err.response.status === 404) {
-    setError(err.response.data.message || "AC data not found.");
-  } else {
-    setError("Failed to load AC data.");
-  }
+if (err.response && err.response.status === 404) {
+  // Data not added yet, not a real error
+  setError("");  // Clear error
+  setAcData(null);  // Ensure no data
+} else {
+  setError("Failed to load AC data."); // Real error (e.g., server issue)
+}
+
 
   setLoading(false);
   return;
@@ -64,8 +68,17 @@ finally {
     </tr>
   );
 
-  if (loading) return <p className="text-gray-600">Loading AC details...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+if (loading) return <p className="text-gray-600">Loading AC details...</p>;
+
+if (error) {
+  return <p className="text-red-500">{error}</p>; // For real errors
+}
+
+// Show message if AC details not yet added
+if (!acData) {
+  return <p className="text-gray-500 italic">AC details not added yet.</p>;
+}
+
 
   return (
     <div className="mt-6 w-full overflow-x-auto">

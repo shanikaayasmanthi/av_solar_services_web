@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { PrinterIcon } from "@heroicons/react/24/outline";
-import { CalendarDaysIcon } from "@heroicons/react/16/solid";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
+import { BASE_URL } from "../constants/BaseUrl.jsx";
 
 export default function ScheduleServiceModel({ show, onClose, projectId }) {
   const formatDate = (date) => {
@@ -14,6 +15,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
   };
   const { token } = useAuth();
   const [nextServiceRound, setNextServiceRound] = useState(0);
+  const [serviceType, setServiceType] = useState("");
   const [assigner, setAssigner] = useState("");
   const [assignerId, setAssignerId] = useState(0);
   const [date, setDate] = useState(formatDate(new Date()));
@@ -26,13 +28,12 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
   const [assignerError, setAssignerError] = useState("");
   const [dateError, setDateError] = useState("");
   const [apiError, setApiError] = useState("");
-  if (!show) return null;
 
   //get the next service round no
   const getNextServiceRound = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/get-next-service-round",
+        `${BASE_URL}api/get-next-service-round`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -42,9 +43,12 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           },
         }
       );
+      console.log(response.data);
+      
       if (response.status === 200) {
         const responseData = response.data.data;
         setNextServiceRound(responseData.next_service_round);
+        setServiceType(responseData.service_type);
       } else {
         console.log("No service rounds found for this project.");
         // return 0;
@@ -61,7 +65,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           error.response.data.message === "Already have a service to complete"
         ) {
           setNextServiceRound(0);
-          setServiceRoundError("Already have a service to complete");
+          // setServiceRoundError("Already have a service to complete");
         }
       }
       // console.error("Error getting next service round:", error);
@@ -100,10 +104,11 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
         return;
       }
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/schedule-next-service",
+        `${BASE_URL}api/schedule-next-service`,
         {
           project_id: projectId,
           service_round: nextServiceRound,
+          service_type: serviceType,
           supervisor_id: assignerId,
           service_date: date,
         },
@@ -139,7 +144,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
     }
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/search-supervisors",
+        `${BASE_URL}api/search-supervisors`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -206,7 +211,10 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    
   }, [showSuggestions]);
+
+  if (!show) return null;
 
   return (
     <div>
@@ -232,7 +240,7 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
           {/* Topic 1 - Header with Print Icon and Title */}
           <div className="flex items-center mb-5 gap-7">
             <div className="text-gray-700">
-              <CalendarDaysIcon className="w-6 h-6" />{" "}
+              <CalendarMonthIcon fontSize='medium' />{" "}
             </div>
             <h3 className="m-0 text-xl font-semibold">Schedule Next Service</h3>{" "}
           </div>
@@ -241,11 +249,11 @@ export default function ScheduleServiceModel({ show, onClose, projectId }) {
             <div className="flex flex-row flex-wrap items-center justify-between round">
               <span className="mb-1 text-sm">Service round</span>{" "}
               <div>
-                <input
+                  <input
                   name="round"
                   type="text"
                   placeholder="Service round"
-                  value={nextServiceRound}
+                  value={nextServiceRound!=0?`${nextServiceRound}  (${serviceType})`:"Already scheduled service"}
                   onChange={(v) => {
                     setNextServiceRound(v.target.value);
                     setServiceRoundError("");
