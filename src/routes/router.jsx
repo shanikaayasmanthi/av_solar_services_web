@@ -28,6 +28,7 @@ import AccountsLayout from "../layouts/AccountsLayout.jsx";
 import Profile from "../pages/Profile.jsx";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.jsx";
+import AddInvoice from "../pages/AddInvoice.jsx";
 
 
 
@@ -89,6 +90,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "", element: <AccountsPage /> },
+      { path: "addinvoice", element: <AddInvoice /> }
     ],
   },
 
