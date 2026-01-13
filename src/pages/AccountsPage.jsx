@@ -132,11 +132,10 @@ const AccountsPage = () => {
           {/* add invoice */}
           <button
             onClick={() => {
-              navigate("/accounts/addinvoice");
                           }}
             className="px-4 py-2 text-white bg-teal-500 rounded-md hover:bg-teal-600"
           >
-            Invoice
+            Make payment
           </button>
 
           {/* Search Button */}
