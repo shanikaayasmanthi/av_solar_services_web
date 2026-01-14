@@ -9,10 +9,11 @@ import { Upcoming } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import PaymentIcon from "@mui/icons-material/Payment";
 
-const Sidebar = ({layout}) => {
+const Sidebar = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const layout = user.user_type;
   
   
   let sidebarItems = [];
@@ -28,8 +29,64 @@ const Sidebar = ({layout}) => {
         label: "Payments"
       }
     ];
-  } else {
+  } else if (layout === "super admin") {
     // Admin layout (admin + super admin inside admin)
+    sidebarItems = [
+      {
+        id: "dashboard",
+        icon: DatasetIcon,
+        onClickPath: "/dashboard",
+        activeRoutes: ["/dashboard"],
+        label: "Dashboard"
+      },
+      {
+        id: "projects",
+        icon: FaxIcon,
+        onClickPath: "/solarprojects",
+        activeRoutes: [
+          "/solarproject",
+          "/projectDetails",
+          "/CustomerDetails",
+          "/openProject",
+        ],
+        label: "Projects"
+      },
+      {
+        id: "services",
+        icon: MiscellaneousServicesIcon,
+        onClickPath: "/scheduledServices",
+        activeRoutes: [
+          "/scheduledServices",
+          "/Searchservices",
+          "/completedservices",
+          "/servicedetails",
+          "/serviceDetails2",
+        ],
+        label: "Services"
+      },
+      {
+        id: "pending",
+        icon: Upcoming,
+        onClickPath: "/pendingInstallationProjects",
+        activeRoutes: ["/pendingInstallationProjects"],
+        label: "Pending Installations"
+      },
+      {
+        id: "users",
+        icon: GroupsIcon,
+        onClickPath: "/users",
+        activeRoutes: ["/users", "/addusers"],
+        label: "Users"
+      },
+      {
+        id: "payments",
+        icon: PaymentIcon,
+        onClickPath: "/accounts",
+        activeRoutes: ["/accounts"],
+        label: "Payments"
+      }
+    ];
+  }else{
     sidebarItems = [
       {
         id: "dashboard",

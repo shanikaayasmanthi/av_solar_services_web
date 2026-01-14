@@ -7,8 +7,9 @@ import Sidebar from "../components/Sidebar";
 export default function AccountsLayout() {
    return (
     <div>
-      <Sidebar layout="accounts" />
-        <Header showNotification={false} />
+    <Header showNotification={false} />
+      <Sidebar />
+        
 
         <div className='mt-[70px] md:ml-[90px] p-9 ml-[40px]'>
           <Outlet />
