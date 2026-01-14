@@ -8,6 +8,7 @@ import FaxIcon from "@mui/icons-material/Fax";
 import { Upcoming } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import PaymentIcon from "@mui/icons-material/Payment";
+import InvoiceIcon from '@mui/icons-material/ReceiptLong';
 
 const Sidebar = () => {
   const { user } = useAuth();
@@ -27,6 +28,13 @@ const Sidebar = () => {
         onClickPath: "/accounts",
         activeRoutes: ["/accounts"],
         label: "Payments"
+      },
+      {
+        id:"invoices",
+        icon: InvoiceIcon,
+        onClickPath: "/invoices",
+        activeRoutes: ["/invoices", "/invoiceDetails"],
+        label: "Invoices"
       }
     ];
   } else if (layout === "super admin") {
@@ -84,6 +92,13 @@ const Sidebar = () => {
         onClickPath: "/accounts",
         activeRoutes: ["/accounts"],
         label: "Payments"
+      },
+      {
+        id:"invoices",
+        icon: InvoiceIcon,
+        onClickPath: "/invoices",
+        activeRoutes: ["/invoices","/addinvoice"],
+        label: "Invoices"
       }
     ];
   }else{
@@ -139,7 +154,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className="fixed top-[100px] left-2 w-[70px] h-[80%] bg-gradient-to-b from-teal-600 to-teal-700 p-4 rounded-2xl shadow-xl z-[999] flex flex-col items-center transition-all duration-300 ease-in-out
+      <div className="fixed top-[100px] left-2 w-[70px] h-fit bg-gradient-to-b from-teal-600 to-teal-700 p-4 rounded-2xl shadow-xl z-[999] flex flex-col items-center transition-all duration-300 ease-in-out
                     md:w-[90px] md:p-3 md:top-[80px] md:left-3 my-4
                     sm:w-[65px] sm:p-2 sm:transform-none sm:pointer-events-auto
                     lg:w-[95px] lg:p-4

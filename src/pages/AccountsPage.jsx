@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import EditDocumentIcon from "@mui/icons-material/EditDocument";
 import SearchIcon from "@mui/icons-material/Search";
 import { BASE_URL } from "../constants/BaseUrl.jsx";
+import { useNavigate } from "react-router-dom";
 
 const AccountsPage = () => {
   const { token } = useAuth();
@@ -19,6 +20,7 @@ const AccountsPage = () => {
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
   const [searchInput, setSearchInput] = useState(""); // Separate state for input field
+  const navigate  = useNavigate();
 
   const fetchPayments = async (pageNo = 1, search = "") => {
     try {
@@ -108,7 +110,7 @@ const AccountsPage = () => {
   return (
     <>
     <div className="origin-top-left scale-[0.75] w-[133.33%] max-h-[70vh]">
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex items-center justify-between mb-10">
         <h1 className="text-3xl font-bold">Payments Dashboard</h1>
         
         {/* Search Input */}
@@ -117,20 +119,29 @@ const AccountsPage = () => {
             <input
               type="text"
               placeholder="Search by project no, name, customer..."
-              className="w-80 px-15 py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              className="py-2 pl-10 text-gray-700 bg-gray-100 border border-transparent rounded-md w-80 px-15 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={handleKeyPress}
             />
-            <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+            <div className="absolute text-gray-500 transform -translate-y-1/2 left-2 top-1/2">
               <SearchIcon />
             </div>
           </div>
-          
+
+          {/* add invoice */}
+          <button
+            onClick={() => {
+                          }}
+            className="px-4 py-2 text-white bg-teal-500 rounded-md hover:bg-teal-600"
+          >
+            Make payment
+          </button>
+
           {/* Search Button */}
           {/* <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600"
+            className="px-4 py-2 text-white bg-teal-500 rounded-md hover:bg-teal-600"
           > */}
             {/* Search
           </button>
@@ -139,7 +150,7 @@ const AccountsPage = () => {
           {/* {searchTerm && (
             <button
               onClick={handleClearSearch}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+              className="px-4 py-2 text-gray-700 bg-gray-300 rounded-md hover:bg-gray-400"
             >
               Clear
             </button>
@@ -149,12 +160,12 @@ const AccountsPage = () => {
 
       {/* Search Status */}
       {searchTerm && (
-        <div className="mb-4 p-3 bg-teal-50 border border-teal-200 rounded-md">
+        <div className="p-3 mb-4 border border-teal-200 rounded-md bg-teal-50">
           <p className="text-teal-700">
             Showing results for: "<strong>{searchTerm}</strong>"
             <button 
               onClick={handleClearSearch}
-              className="ml-2 text-teal-600 hover:text-teal-800 underline"
+              className="ml-2 text-teal-600 underline hover:text-teal-800"
             >
               Clear search
             </button>
@@ -163,31 +174,31 @@ const AccountsPage = () => {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white shadow rounded-lg">
-        <table className="w-full border-collapse border border-gray-400">
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <table className="w-full border border-collapse border-gray-400">
           <thead className="bg-gray-200">
             <tr>
-              <th className="border border-gray-400 px-1 py-2 w-1/17">Project No</th>
-              <th className="border border-gray-400 px-4 py-2 w-3/17">Project Name</th>
-              <th className="border border-gray-400 px-4 py-2 w-3/17">Customer Name</th>
-              <th className="border border-gray-400 px-2 py-2 w-2/17">Total Payment</th>
-              <th className="border border-gray-400 px-2 py-2 w-2/17">Paid Amount</th>
-              <th className="border border-gray-400 px-2 py-2 w-2/17">Due Amount</th>
-              <th className="border border-gray-400 px-4 py-2 w-3/17">Notes</th>
-              <th className="border border-gray-400 px-1 py-2 w-1/17">Action</th>
+              <th className="px-1 py-2 border border-gray-400 w-1/17">Project No</th>
+              <th className="px-4 py-2 border border-gray-400 w-3/17">Project Name</th>
+              <th className="px-4 py-2 border border-gray-400 w-3/17">Customer Name</th>
+              <th className="px-2 py-2 border border-gray-400 w-2/17">Total Payment</th>
+              <th className="px-2 py-2 border border-gray-400 w-2/17">Paid Amount</th>
+              <th className="px-2 py-2 border border-gray-400 w-2/17">Due Amount</th>
+              <th className="px-4 py-2 border border-gray-400 w-3/17">Notes</th>
+              <th className="px-1 py-2 border border-gray-400 w-1/17">Action</th>
             </tr>
           </thead>
           <tbody>
             {displayedProjects.map((proj, index) => (
               <tr key={index} className="text-center">
-                <td className="border border-gray-400 px-1 py-2 w-1/17">{proj.project_no || "-"}</td>
-                <td className="border border-gray-400 px-4 py-2 w-3/17">{proj.project_name}</td>
-                <td className="border border-gray-400 px-4 py-2 w-3/17">{proj.customer_name}</td>
-                <td className="border border-gray-400 px-2 py-2 w-2/17">{formatCurrency(proj.payment.total)}</td>
-                <td className="border border-gray-400 px-2 py-2 w-2/17">{formatCurrency(proj.payment.paid)}</td>
-                <td className="border border-gray-400 px-2 py-2 w-2/17">{formatCurrency(proj.payment.due)}</td>
-                <td className="border border-gray-400 px-4 py-2 w-3/17">{proj.payment.notes || "-"}</td>
-                <td className="border border-gray-400 px-1 py-2 w-1/17">
+                <td className="px-1 py-2 border border-gray-400 w-1/17">{proj.project_no || "-"}</td>
+                <td className="px-4 py-2 border border-gray-400 w-3/17">{proj.project_name}</td>
+                <td className="px-4 py-2 border border-gray-400 w-3/17">{proj.customer_name}</td>
+                <td className="px-2 py-2 border border-gray-400 w-2/17">{formatCurrency(proj.payment.total)}</td>
+                <td className="px-2 py-2 border border-gray-400 w-2/17">{formatCurrency(proj.payment.paid)}</td>
+                <td className="px-2 py-2 border border-gray-400 w-2/17">{formatCurrency(proj.payment.due)}</td>
+                <td className="px-4 py-2 border border-gray-400 w-3/17">{proj.payment.notes || "-"}</td>
+                <td className="px-1 py-2 border border-gray-400 w-1/17">
                   <button
                     className="text-teal-600 hover:text-teal-800"
                     onClick={() => {
@@ -213,7 +224,7 @@ const AccountsPage = () => {
 
       {/* No Results Message */}
       {displayedProjects.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="py-8 text-center text-gray-500">
           {searchTerm ? "No projects found matching your search." : "No projects found."}
         </div>
       )}
@@ -224,7 +235,7 @@ const AccountsPage = () => {
           <button
             disabled={page === 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+            className="px-4 py-2 mx-2 text-white bg-teal-500 rounded disabled:opacity-50"
           >
             Prev
           </button>
@@ -234,7 +245,7 @@ const AccountsPage = () => {
           <button
             disabled={page === lastPage}
             onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
-            className="px-4 py-2 mx-2 bg-teal-500 text-white rounded disabled:opacity-50"
+            className="px-4 py-2 mx-2 text-white bg-teal-500 rounded disabled:opacity-50"
           >
             Next
           </button>
@@ -248,9 +259,9 @@ const AccountsPage = () => {
 
       {showModal && editPayment && (
         
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-96" style={{transform: 'scale(0.75)',transformOrigin: 'center center', }}>
-            <h2 className="text-lg font-bold mb-4">Edit Payment</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded shadow-lg w-96" style={{transform: 'scale(0.75)',transformOrigin: 'center center', }}>
+            <h2 className="mb-4 text-lg font-bold">Edit Payment</h2>
             <label className="block mb-2">Total Payment</label>
             <input
               type="number"
@@ -264,7 +275,7 @@ const AccountsPage = () => {
                   due: (total - paid).toFixed(2)
                 });
               }}
-              className="border p-2 w-full mb-3"
+              className="w-full p-2 mb-3 border"
             />
 
             <label className="block mb-2">Paid Amount</label>
@@ -280,14 +291,14 @@ const AccountsPage = () => {
                   due: (total - paid).toFixed(2)
                 });
               }}
-              className="border p-2 w-full mb-3"
+              className="w-full p-2 mb-3 border"
             />
 
             <label className="block mb-2">Due Amount</label>
             <input
               type="number"
               value={editPayment.due}
-              className="border p-2 w-full mb-3 bg-gray-100"
+              className="w-full p-2 mb-3 bg-gray-100 border"
               readOnly
             />
 
@@ -297,7 +308,7 @@ const AccountsPage = () => {
               onChange={(e) =>
                 setEditPayment({ ...editPayment, notes: e.target.value })
               }
-              className="border p-2 w-full mb-3"
+              className="w-full p-2 mb-3 border"
               rows={3}
             />
 
@@ -310,7 +321,7 @@ const AccountsPage = () => {
               </button>
               <button
                 onClick={handleSavePayment}
-                className="px-4 py-2 bg-teal-500 text-white rounded"
+                className="px-4 py-2 text-white bg-teal-500 rounded"
               >
                 Save
               </button>

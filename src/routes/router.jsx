@@ -28,6 +28,8 @@ import AccountsLayout from "../layouts/AccountsLayout.jsx";
 import Profile from "../pages/Profile.jsx";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.jsx";
+import AddInvoice from "../pages/AddInvoice.jsx";
+import { Invoices } from "../pages/Invoices.jsx";
 
 
 
@@ -81,14 +83,16 @@ const router = createBrowserRouter([
 
   // Protected Routes for accounts
   {
-    path: "/accounts",
+    path: "/",
     element: (
       <ProtectedRoute allowedRoles={["accounts","super admin"]}>
         <AuthLayout />
       </ProtectedRoute>
     ),
     children: [
-      { path: "", element: <AccountsPage /> },
+      { path: "/accounts", element: <AccountsPage /> },
+      { path: "/addinvoice", element: <AddInvoice /> },
+      {path:"/invoices", element:<Invoices/>}
     ],
   },
 
